@@ -29,3 +29,12 @@ bodyText3(context) {
   final bodyText3 = Theme.of(context).textTheme.bodySmall;
   return bodyText3;
 }
+bodyText4(context) {
+  final bodyText4 = Theme.of(context).textTheme.titleMedium;
+  return bodyText4;
+}
+bodyText5(context) {
+  final bodyText5 = Theme.of(context).textTheme.titleSmall;
+  return bodyText5;
+}
+

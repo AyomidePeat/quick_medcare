@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:quick_medcare/utils/colors.dart';
 import 'package:quick_medcare/utils/textstyle.dart';
 
 class CustomTextField extends StatelessWidget {
@@ -13,14 +14,16 @@ class CustomTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
+    return TextField(cursorColor: black, 
       decoration: InputDecoration(
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(5),
-        ),
+        enabledBorder: const OutlineInputBorder(borderSide: BorderSide(color: Colors.transparent)),
+        focusedBorder:const OutlineInputBorder(borderSide: BorderSide(color: Colors.transparent)) ,
         hintText: hint,
         hintStyle: bodyText2(context),
         prefixIcon: icon,
+        fillColor: white,
+        filled: true,
+        
       ),
     );
   }

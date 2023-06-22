@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:quick_medcare/utils/textstyle.dart';
+import 'package:quick_medcare/utils/colors.dart';
+
 
 class MainButton extends StatelessWidget {
   final VoidCallback onpressed;
-  final String text;
+  final Widget child;
   final double height;
   final double width;
   const MainButton(
       {super.key,
       required this.onpressed,
-      required this.text,
+      required this.child,
       required this.height,
       required this.width});
 
@@ -20,11 +21,12 @@ class MainButton extends StatelessWidget {
       width: width,
       child: ElevatedButton(
         onPressed: onpressed,
-        child: Text(text, style: bodyText2(context)),
         style: ElevatedButton.styleFrom(
+            backgroundColor: blue,
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(5))),
-      ),
+        child: child),
+    
     );
   }
 }

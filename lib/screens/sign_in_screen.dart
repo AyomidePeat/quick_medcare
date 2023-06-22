@@ -1,52 +1,37 @@
 import 'package:flutter/material.dart';
-import 'package:quick_medcare/screens/sign_in_screen.dart';
 import 'package:quick_medcare/utils/colors.dart';
 import 'package:quick_medcare/utils/textstyle.dart';
 import 'package:quick_medcare/widgets/main_button.dart';
 import 'package:quick_medcare/widgets/text_button_widget.dart';
 import 'package:quick_medcare/widgets/textfield_widget.dart';
 
-class SignUpScreen extends StatefulWidget {
-  const SignUpScreen({super.key});
+class SignInScreen extends StatefulWidget {
+  const SignInScreen({super.key});
 
   @override
-  State<SignUpScreen> createState() => _SignUpScreenState();
+  State<SignInScreen> createState() => _SignInScreenState();
 }
 
-class _SignUpScreenState extends State<SignUpScreen> {
-  final firstNameController = TextEditingController();
-  final lastNameController = TextEditingController();
+class _SignInScreenState extends State<SignInScreen> {
   final emailController = TextEditingController();
-
   final passwordController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: grey,
-      
+     
       body: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 50,horizontal: 15.0),
+        padding: const EdgeInsets.symmetric(vertical: 50, horizontal: 15.0),
         child: SingleChildScrollView(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(height: size.height*0.08),
-              Text('Sign Up', style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: blue, fontFamily: 'Poppins-Regular')),
+               SizedBox(height: size.height*0.08),
+              Text('Sign In', style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: blue, fontFamily: 'Poppins-Regular')),
               const SizedBox(height: 30),
-              CustomTextField(
-                  controller: firstNameController,
-                  hint: 'First Name',
-                  icon: const Icon(Icons.person,
-                      color: Color.fromARGB(255, 136, 133, 133))),
-              const SizedBox(height: 20),
-              CustomTextField(
-                  controller: lastNameController,
-                  hint: 'Last Name',
-                  icon: const Icon(Icons.person,
-                      color: Color.fromARGB(255, 136, 133, 133))),
-              const SizedBox(height: 20),
+              
               CustomTextField(
                   controller: emailController,
                   hint: 'Email',
@@ -60,18 +45,26 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     Icons.lock,
                     color: Color.fromARGB(255, 136, 133, 133),
                   )),
-                  const SizedBox(height: 20),
-              Row(
+              const SizedBox(height: 20),
+              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Checkbox(
-                      value: true,
-                      onChanged: (value) {
-                        value = true;
-                      }),
-                  Text(
-                    'I Agree to the Terms and Conditions',
-                    style: bodyText2(context),
-                  )
+                  Row(
+                    children: [
+                      Checkbox(
+                          value: true,
+                          onChanged: (value) {
+                            value = true;
+                          }),
+                      Text(
+                        'Remember',
+                        style: bodyText2(context),
+                      )
+                    ],
+                  ),
+                  CustomTextButton(
+                      text:  'Forgot Password',
+                       onPressed: (){},
+                      )
                 ],
               ),
               const SizedBox(height: 20),
@@ -85,10 +78,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
               Row(mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const Text('You have an account?'),
-                  CustomTextButton(onPressed: () {Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const SignInScreen()));}, text: 'Sign In'),
+                  CustomTextButton(onPressed: () {}, text: 'Sign In'),
                 ],
               )
             ],
