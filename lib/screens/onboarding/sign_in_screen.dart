@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:quick_medcare/screens/home_screen.dart';
+import 'package:quick_medcare/screens/onboarding/sign_up_screen.dart';
 import 'package:quick_medcare/utils/colors.dart';
 import 'package:quick_medcare/utils/textstyle.dart';
 import 'package:quick_medcare/widgets/main_button.dart';
@@ -86,8 +87,15 @@ class _SignInScreenState extends State<SignInScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text('You have an account?'),
-                  CustomTextButton(onPressed: () {}, text: 'Sign In'),
+                  const Text('New here?'),
+                  CustomTextButton(
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => SignUpScreen()));
+                      },
+                      text: 'Sign Up'),
                 ],
               )
             ],

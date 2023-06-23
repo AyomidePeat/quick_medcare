@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:quick_medcare/screens/sign_up_screen.dart';
+import 'package:quick_medcare/screens/onboarding/sign_up_screen.dart';
 import 'package:quick_medcare/widgets/main_button.dart';
 
 import '../utils/colors.dart';

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:quick_medcare/screens/sign_in_screen.dart';
+import 'package:quick_medcare/screens/onboarding/sign_in_screen.dart';
 import 'package:quick_medcare/utils/colors.dart';
 import 'package:quick_medcare/utils/textstyle.dart';
 import 'package:quick_medcare/widgets/main_button.dart';
@@ -70,13 +70,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       }),
                   Text(
                     'I Agree to the Terms and Conditions',
-                    style: bodyText2(context),
+                    style: bodyText2(context),overflow: TextOverflow.fade,
                   )
                 ],
               ),
               const SizedBox(height: 20),
               MainButton(
-                onpressed: () {},
+                onpressed: () {Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const SignInScreen()));},
                 width: size.width,
                 height: 40,
                 child: Text('Sign Up Account', style:TextStyle(color:white)),
