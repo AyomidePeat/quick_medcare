@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:quick_medcare/screens/home_screen.dart';
 import 'package:quick_medcare/utils/colors.dart';
 import 'package:quick_medcare/utils/textstyle.dart';
 import 'package:quick_medcare/widgets/main_button.dart';
@@ -20,7 +21,6 @@ class _SignInScreenState extends State<SignInScreen> {
     final size = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: grey,
-     
       body: Padding(
         padding: const EdgeInsets.symmetric(vertical: 50, horizontal: 15.0),
         child: SingleChildScrollView(
@@ -28,10 +28,14 @@ class _SignInScreenState extends State<SignInScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-               SizedBox(height: size.height*0.08),
-              Text('Sign In', style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: blue, fontFamily: 'Poppins-Regular')),
+              SizedBox(height: size.height * 0.08),
+              Text('Sign In',
+                  style: TextStyle(
+                      fontSize: 28,
+                      fontWeight: FontWeight.bold,
+                      color: blue,
+                      fontFamily: 'Poppins-Regular')),
               const SizedBox(height: 30),
-              
               CustomTextField(
                   controller: emailController,
                   hint: 'Email',
@@ -46,7 +50,8 @@ class _SignInScreenState extends State<SignInScreen> {
                     color: Color.fromARGB(255, 136, 133, 133),
                   )),
               const SizedBox(height: 20),
-              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Row(
                     children: [
@@ -62,20 +67,24 @@ class _SignInScreenState extends State<SignInScreen> {
                     ],
                   ),
                   CustomTextButton(
-                      text:  'Forgot Password',
-                       onPressed: (){},
-                      )
+                    text: 'Forgot Password',
+                    onPressed: () {},
+                  )
                 ],
               ),
               const SizedBox(height: 20),
               MainButton(
-                onpressed: () {},
+                onpressed: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => HomeScreen()));
+                },
                 width: size.width,
                 height: 40,
-                child: Text('Sign Up Account', style:TextStyle(color:white)),
+                child: Text('Sign In', style: TextStyle(color: white)),
               ),
               const SizedBox(height: 20),
-              Row(mainAxisAlignment: MainAxisAlignment.center,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const Text('You have an account?'),
                   CustomTextButton(onPressed: () {}, text: 'Sign In'),

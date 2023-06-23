@@ -4,7 +4,7 @@ import 'package:quick_medcare/screens/sign_up_screen.dart';
 import 'package:quick_medcare/widgets/main_button.dart';
 
 import '../utils/colors.dart';
-import '../utils/textstyle.dart';
+
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -18,9 +18,9 @@ class _SplashScreenState extends State<SplashScreen> {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     return Scaffold(
-        backgroundColor: Color.fromARGB(255, 41, 86, 233),
+        backgroundColor: const Color.fromARGB(255, 41, 86, 233),
         body: Column(
-          //mainAxisAlignment: MainAxisAlignment.center,
+          
           children: [
             SizedBox(
               height: size.height * 0.2,
@@ -58,7 +58,7 @@ class _SplashScreenState extends State<SplashScreen> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => SignUpScreen()));
+                                builder: (context) => const SignUpScreen()));
                       },
                       height: 40,
                       width: 170,
