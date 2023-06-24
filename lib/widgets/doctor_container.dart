@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:quick_medcare/utils/colors.dart';
 
 class DoctorContainer extends StatelessWidget {
   final String image;

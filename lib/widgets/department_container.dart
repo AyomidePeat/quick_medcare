@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:quick_medcare/utils/colors.dart';
 
 class DepartmentContainer extends StatelessWidget {
   final String text;
   final screen;
-  const DepartmentContainer({super.key, required this.text, required this.screen});
+  final String icon;
+  const DepartmentContainer(
+      {super.key, required this.text, required this.screen, required this.icon});
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +16,8 @@ class DepartmentContainer extends StatelessWidget {
       },
       child: Container(
         height: 50,
-        width: 150,
+       width: 150,
+        padding: EdgeInsets.all(8.0),
         decoration: BoxDecoration(
           color: Colors.transparent,
           borderRadius: BorderRadius.circular(10),
@@ -23,8 +25,12 @@ class DepartmentContainer extends StatelessWidget {
         ),
         child: Align(
             alignment: Alignment.center,
-            child: Text(
-              text,
+            child: Row(mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [ SizedBox(height: 20, child: Image.asset(icon)),
+                Text(
+                  text,
+                ),
+              ],
             )),
       ),
     );

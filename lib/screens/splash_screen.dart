@@ -19,11 +19,11 @@ class _SplashScreenState extends State<SplashScreen> {
     final size = MediaQuery.of(context).size;
     return Scaffold(
         backgroundColor: const Color.fromARGB(255, 41, 86, 233),
-        body: Column(
+        body: Column(mainAxisAlignment: MainAxisAlignment.end,
           
           children: [
             SizedBox(
-              height: size.height * 0.2,
+             // height: size.height * 0.15,
             ),
             Padding(
               padding: const EdgeInsets.all(20.0),
