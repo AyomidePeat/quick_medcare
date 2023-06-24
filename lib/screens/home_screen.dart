@@ -170,13 +170,13 @@ class AppointmentContainer extends StatelessWidget {
           children: [
             Row(
               children: [
-                const CircleAvatar(),
+                const CircleAvatar(backgroundImage: AssetImage('images/marian.jpg'),minRadius:25 ,),
                 const SizedBox(width: 10),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Dr. Christabel Heritage ',
+                      'Dr. Joeph Marian Adewole ',
                       style: bodyText4(context),
                     ),
                     Text('10:30AM. General Consultation',
@@ -189,9 +189,9 @@ class AppointmentContainer extends StatelessWidget {
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
                   color: const Color.fromARGB(255, 41, 86, 233)),
-              child: const Padding(
-                padding: EdgeInsets.all(5.0),
-                child: Text('Starts in 2 mins'),
+              child:  Padding(
+                padding: const EdgeInsets.all(5.0),
+                child: Text('Starts in 2 mins', style: bodyText4(context),),
               ),
             )
           ],

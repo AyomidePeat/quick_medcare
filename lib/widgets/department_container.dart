@@ -16,7 +16,7 @@ class DepartmentContainer extends StatelessWidget {
       },
       child: Container(
         height: 50,
-       width: 150,
+       width: 170,
         padding: EdgeInsets.all(8.0),
         decoration: BoxDecoration(
           color: Colors.transparent,

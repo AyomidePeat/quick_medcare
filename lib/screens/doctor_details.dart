@@ -37,7 +37,7 @@ class _DoctorDetailsScreenState extends State<DoctorDetailsScreen> {
         elevation: 0,
         backgroundColor: Colors.transparent,
         centerTitle: true,
-        title: Text('Doctor\'s details', style: headline2(context)),
+        title: Text('Doctor\'s details',  style: headline2(context)),
       ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
@@ -55,38 +55,40 @@ class _DoctorDetailsScreenState extends State<DoctorDetailsScreen> {
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          widget.name,
-                          overflow: TextOverflow.fade,
-                          style: headline3(context),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 10),
-                          child: Row(
-                            children: [
-                              for (int i = 0; i <= 4; i++)
-                                const Icon(Icons.star,
-                                    color: Color.fromARGB(255, 255, 204, 65),
-                                    size: 18),
-                              const SizedBox(width: 4),
-                              Text(
-                                '24 reviews',
-                                style: bodyText2(context),
-                              )
-                            ],
+                  SizedBox(width: size.width*0.5,
+                    child: Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            widget.name,
+                            overflow: TextOverflow.fade,
+                            style: headline3(context),
                           ),
-                        ),
-                        Text(
-                          widget.department,
-                          style: bodyText2(context),
-                        ),
-                      ],
-                    ).animate().fadeIn(duration: 500.ms),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 10),
+                            child: Row(
+                              children: [
+                                for (int i = 0; i <= 4; i++)
+                                  const Icon(Icons.star,
+                                      color: Color.fromARGB(255, 255, 204, 65),
+                                      size: 18),
+                                const SizedBox(width: 4),
+                                Text(
+                                  '(24)',
+                                  style: bodyText2(context),
+                                )
+                              ],
+                            ),
+                          ),
+                          Text(
+                            widget.department,
+                            style: bodyText2(context),
+                          ),
+                        ],
+                      ).animate().fadeIn(duration: 500.ms),
+                    ),
                   )
                 ],
               ),
@@ -270,12 +272,12 @@ class DetailsContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        width: size.width * 0.24,
+        width: size.width * 0.29,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             Icon(icon, color: color),
-            Column(
+            Column(crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   details,

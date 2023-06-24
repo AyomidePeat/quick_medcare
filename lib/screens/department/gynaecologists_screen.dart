@@ -109,9 +109,11 @@ class _GynaecologistsScreenState extends State<GynaecologistsScreen> {
                          padding: const EdgeInsets.all(10.0),
                          child: Column(crossAxisAlignment: CrossAxisAlignment.start,
                            children: [
-                             Text(
-                               'Dr. Heritage Odewale',overflow: TextOverflow.fade,
-                               style: headline3(context),
+                             SizedBox(width: size.width*0.3,
+                               child: Text(
+                                 'Dr. Heritage Odewale',overflow: TextOverflow.fade,
+                                 style: headline3(context),
+                               ),
                              ),
                               Padding(
                                 padding: const EdgeInsets.symmetric(vertical:10),
