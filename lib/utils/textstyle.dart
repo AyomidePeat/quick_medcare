@@ -16,9 +16,22 @@ headline3(context) {
   final headline3 = Theme.of(context).textTheme.displaySmall;
   return headline3;
 }
-headLineText4() {
-  return TextStyle(fontFamily:'Poppins-Regular' ,fontSize: 12, fontWeight: FontWeight.bold, color: black);
+
+headline4() {
+  return TextStyle(
+      fontFamily: 'Poppins-Regular',
+      fontSize: 12,
+      fontWeight: FontWeight.bold,
+      color: black);
 }
+headline5() {
+  return TextStyle(
+      fontFamily: 'Poppins-Regular',
+      fontSize: 12,
+      fontWeight: FontWeight.bold,
+      color: black);
+}
+
 bodyText1(context) {
   final bodyText1 = Theme.of(context).textTheme.bodyLarge;
   return bodyText1;
@@ -43,7 +56,16 @@ bodyText5(context) {
   final bodyText5 = Theme.of(context).textTheme.titleSmall;
   return bodyText5;
 }
-bodyText6() {
-  return TextStyle(fontFamily:'Poppins-Regular' ,fontSize: 12,  color: Color.fromARGB(255, 167, 164, 164));
-}
 
+bodyText6() {
+  return TextStyle(
+      fontFamily: 'Poppins-Regular',
+      fontSize: 12,
+      color: Color.fromARGB(255, 167, 164, 164));
+}
+bodyText7() {
+  return TextStyle(
+      fontFamily: 'Poppins-Regular',
+      fontSize: 12,
+      color: Colors.black);
+}

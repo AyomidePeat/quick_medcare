@@ -3,7 +3,7 @@ import 'package:quick_medcare/utils/colors.dart';
 import 'package:quick_medcare/widgets/chat_list.dart';
 import 'package:quick_medcare/widgets/chat_textfield.dart';
 
-import '../utils/textstyle.dart';
+import '../../utils/textstyle.dart';
 
 class ChatScreen extends StatelessWidget {
   const ChatScreen({super.key});

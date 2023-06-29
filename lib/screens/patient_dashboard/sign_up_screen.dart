@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:quick_medcare/screens/onboarding/sign_in_screen.dart';
+import 'package:quick_medcare/screens/patient_dashboard/sign_in_screen.dart';
 import 'package:quick_medcare/utils/colors.dart';
 import 'package:quick_medcare/utils/textstyle.dart';
 import 'package:quick_medcare/widgets/main_button.dart';
@@ -38,8 +38,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 child: Container(
                   height: 100,
                   width: 110,
-                  decoration:
-                      BoxDecoration(borderRadius: BorderRadius.circular(15), color:white),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(15), color: white),
                   child: const Icon(Icons.camera_alt_outlined),
                 ),
               ),
@@ -97,6 +97,37 @@ class _SignUpScreenState extends State<SignUpScreen> {
               CustomTextField(
                   controller: weightController,
                   hint: 'Weight',
+                  icon: const Icon(Icons.monitor_weight,
+                      color: Color.fromARGB(255, 136, 133, 133))),
+             
+              const SizedBox(height: 20),
+              CustomTextField(
+                  controller: weightController,
+                  hint: 'Health Insurance Agency',
+                  icon: const Icon(Icons.monitor_weight,
+                      color: Color.fromARGB(255, 136, 133, 133))),
+              const SizedBox(height: 20),
+              CustomTextField(
+                  controller: weightController,
+                  hint: 'Blood Type',
+                  icon: const Icon(Icons.monitor_weight,
+                      color: Color.fromARGB(255, 136, 133, 133))),
+              const SizedBox(height: 20),
+              CustomTextField(
+                  controller: weightController,
+                  hint: 'Genotype',
+                  icon: const Icon(Icons.monitor_weight,
+                      color: Color.fromARGB(255, 136, 133, 133))),
+              const SizedBox(height: 20),
+              CustomTextField(
+                  controller: weightController,
+                  hint: 'Cholesterol',
+                  icon: const Icon(Icons.monitor_weight,
+                      color: Color.fromARGB(255, 136, 133, 133))),
+              const SizedBox(height: 20),
+              CustomTextField(
+                  controller: weightController,
+                  hint: 'Blood Pressure',
                   icon: const Icon(Icons.monitor_weight,
                       color: Color.fromARGB(255, 136, 133, 133))),
               const SizedBox(height: 20),

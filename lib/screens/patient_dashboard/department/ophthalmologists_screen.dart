@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../widgets/doctor_container.dart';
+import '../../../widgets/doctor_container.dart';
 
 class OphthalmologistsScreen extends StatefulWidget {
   const OphthalmologistsScreen({super.key});

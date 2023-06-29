@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:quick_medcare/screens/home_screen.dart';
-import 'package:quick_medcare/screens/onboarding/sign_up_screen.dart';
+import 'package:quick_medcare/screens/patient_dashboard/home_screen.dart';
+import 'package:quick_medcare/screens/patient_dashboard/sign_up_screen.dart';
 import 'package:quick_medcare/utils/colors.dart';
 import 'package:quick_medcare/utils/textstyle.dart';
 import 'package:quick_medcare/widgets/main_button.dart';

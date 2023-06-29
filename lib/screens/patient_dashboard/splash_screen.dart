@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:quick_medcare/screens/onboarding/sign_up_screen.dart';
+import 'package:quick_medcare/screens/patient_dashboard/sign_up_screen.dart';
 import 'package:quick_medcare/widgets/main_button.dart';
 
-import '../utils/colors.dart';
+import '../../utils/colors.dart';
 
 
 class SplashScreen extends StatefulWidget {

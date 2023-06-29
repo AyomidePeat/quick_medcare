@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:quick_medcare/screens/splash_screen.dart';
+import 'package:quick_medcare/screens/doctors_dashboard/home_screen.dart';
+import 'package:quick_medcare/screens/patient_dashboard/splash_screen.dart';
 import 'package:quick_medcare/utils/colors.dart';
 
 void main() {
@@ -32,6 +33,6 @@ class MyApp extends StatelessWidget {
               .copyWith(secondary: black)
               .copyWith(background: white),
         ),
-        home: const SplashScreen());
+        home: const Patients());
   }
 }

@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_expandable_text/flutter_expandable_text.dart';
-import 'package:quick_medcare/screens/appointment_screen.dart';
-import 'package:quick_medcare/screens/chat_screen.dart';
+import 'package:quick_medcare/screens/patient_dashboard/appointment_screen.dart';
+import 'package:quick_medcare/screens/patient_dashboard/chat_screen.dart';
 import 'package:quick_medcare/utils/colors.dart';
 import 'package:quick_medcare/utils/textstyle.dart';
 import 'package:quick_medcare/widgets/main_button.dart';
 
-import '../widgets/text_button_widget.dart';
+import '../../widgets/text_button_widget.dart';
 
 class DoctorDetailsScreen extends StatefulWidget {
   final String image;
@@ -37,7 +37,7 @@ class _DoctorDetailsScreenState extends State<DoctorDetailsScreen> {
         elevation: 0,
         backgroundColor: Colors.transparent,
         centerTitle: true,
-        title: Text('Doctor\'s details',  style: headline2(context)),
+        title: Text('Doctor\'s details', style: headline2(context)),
       ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
@@ -55,7 +55,8 @@ class _DoctorDetailsScreenState extends State<DoctorDetailsScreen> {
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
-                  SizedBox(width: size.width*0.5,
+                  SizedBox(
+                    width: size.width * 0.5,
                     child: Padding(
                       padding: const EdgeInsets.all(10.0),
                       child: Column(
@@ -127,7 +128,7 @@ class _DoctorDetailsScreenState extends State<DoctorDetailsScreen> {
                   ],
                 ),
               ),
-              Text('About doctor:', style: headLineText4()),
+              Text('About doctor:', style: headline4()),
               const SizedBox(height: 15),
               ExpandableText(
                   "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ac odio tempor orci dapibus ultrices in iaculis nunc sed. Sed ullamcorper morbi tincidunt ornare massa eget egestas. Pharetra sit amet aliquam id diam maecenas ultricies mi eget. Fermentum leo vel orci porta non pulvinar neque. Risus quis varius quam quisque id. Fringilla phasellus faucibus scelerisque eleifend donec pretium vulputate sapien nec. Ut sem nulla pharetra diam sit amet nisl. Enim tortor at auctor urna nunc id cursus metus aliquam. Sit amet est placerat in egestas erat. Est ante in nibh mauris. Viverra nibh cras pulvinar mattis nunc. Orci porta non pulvinar neque laoreet suspendisse interdum consectetur. Nulla facilisi etiam dignissim diam quis enim lobortis scelerisque. Mi eget mauris pharetra et ultrices neque ornare aenean..",
@@ -137,13 +138,13 @@ class _DoctorDetailsScreenState extends State<DoctorDetailsScreen> {
                 });
               },
                   readLessText: "Show less",
-                  linkTextStyle: headLineText4(),
+                  linkTextStyle: headline4(),
                   trimType: TrimType.lines,
                   trim: textRead ? 29 : 4,
                   style: bodyText2(context)),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 20.0),
-                child: Text('Specialization:', style: headLineText4()),
+                child: Text('Specialization:', style: headline4()),
               ),
               Container(
                 padding:
@@ -156,7 +157,7 @@ class _DoctorDetailsScreenState extends State<DoctorDetailsScreen> {
                 ),
               ),
               const SizedBox(height: 20),
-              Text('Available Times:', style: headLineText4()),
+              Text('Available Times:', style: headline4()),
               const SizedBox(height: 10),
               Text(
                 'Today',
@@ -209,31 +210,27 @@ class _DoctorDetailsScreenState extends State<DoctorDetailsScreen> {
                 ]),
               ),
               const SizedBox(height: 15),
-             
-                 Center(
-                   child: CustomTextButton(
-                            onPressed: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => const AppointmentScreen()));
-                            },
-                            
-                             text: 'Book Appointment',
-                              
-                   )
-                        .animate()
-                        .then(duration: 300.ms)
-                        .fadeIn(duration: 500.ms)
-                        .slideY(duration: 500.ms, begin: 3),
-                 ),
-                       MainButton(
+              Center(
+                child: CustomTextButton(
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const AppointmentScreen()));
+                  },
+                  text: 'Book Appointment',
+                )
+                    .animate()
+                    .then(duration: 300.ms)
+                    .fadeIn(duration: 500.ms)
+                    .slideY(duration: 500.ms, begin: 3),
+              ),
+              MainButton(
                       onpressed: () {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) =>
-                                    const ChatScreen()));
+                                builder: (context) => const ChatScreen()));
                       },
                       height: 40,
                       width: double.infinity,
@@ -277,11 +274,12 @@ class DetailsContainer extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             Icon(icon, color: color),
-            Column(crossAxisAlignment: CrossAxisAlignment.start,
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   details,
-                  style: headLineText4(),
+                  style: headline4(),
                 ),
                 Text(
                   aspect,

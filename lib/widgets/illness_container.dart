@@ -43,7 +43,7 @@ class IllnessContainer extends StatelessWidget {
               children: [
                 Text(
                   '$illness, $treatmentMode',
-                  style: headLineText4(),
+                  style: headline4(),
                 ),
                 Text(
                   date,

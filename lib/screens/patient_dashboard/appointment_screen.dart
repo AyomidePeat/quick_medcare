@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:quick_medcare/widgets/calendar_widget.dart';
 
-import '../utils/textstyle.dart';
+import '../../utils/textstyle.dart';
 
 class AppointmentScreen extends StatefulWidget {
   const AppointmentScreen({super.key});

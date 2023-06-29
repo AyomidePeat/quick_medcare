@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:quick_medcare/screens/doctor_details.dart';
+import 'package:quick_medcare/screens/patient_dashboard/doctor_details.dart';
 
-import '../../utils/textstyle.dart';
+import '../../../utils/textstyle.dart';
 
 
 class GynaecologistsScreen extends StatefulWidget {
