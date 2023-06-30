@@ -218,7 +218,7 @@ class ContactInfo extends StatelessWidget {
               children: [
                 Text('Home Address:', style: bodyText7()),
                 SizedBox(
-                    width: 200,
+                    width: 150,
                     child: Text(' 12, XYZ street, LA',
                         overflow: TextOverflow.fade, style: headline4())),
               ],
@@ -307,7 +307,7 @@ class NextOfKinContainer extends StatelessWidget {
               children: [
                 Text('Home Address:', style: bodyText7()),
                 SizedBox(
-                    width: 200,
+                    width: 150,
                     child: Text(' 12, XYZ street, LA',
                         overflow: TextOverflow.fade, style: headline4())),
               ],

@@ -81,7 +81,7 @@ class _PatientsState extends State<Patients> {
                       padding: const EdgeInsets.symmetric(vertical: 10.0),
                       child: CustomContainer(
                         color:  Colors.transparent,
-                        height: 120,
+                        height: 130,
                         width: double.infinity,
                         border: Border.all(width: 0.4, color: Colors.lightBlue),
                         child: Row(
@@ -178,7 +178,7 @@ class AppointmentContainer extends StatelessWidget {
             Row(
               children: [
                 const CircleAvatar(
-                  backgroundImage: AssetImage('images/marian.jpg'),
+                  backgroundImage: AssetImage('images/patient.jpg'),
                   minRadius: 25,
                 ),
                 const SizedBox(width: 10),
