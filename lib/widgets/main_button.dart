@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:quick_medcare/utils/colors.dart';
 
-
 class MainButton extends StatelessWidget {
   final VoidCallback onpressed;
   final Widget child;
@@ -20,13 +19,14 @@ class MainButton extends StatelessWidget {
       height: height,
       width: width,
       child: ElevatedButton(
-        onPressed: onpressed,
-        style: ElevatedButton.styleFrom(
+          onPressed: onpressed,
+          style: ElevatedButton.styleFrom(
             backgroundColor: blue,
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(5))),
-        child: child),
-    
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(5),
+            ),
+          ),
+          child: child),
     );
   }
 }

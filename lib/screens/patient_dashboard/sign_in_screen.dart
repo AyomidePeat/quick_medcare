@@ -38,13 +38,13 @@ class _SignInScreenState extends State<SignInScreen> {
                       color: blue,
                       fontFamily: 'Poppins-Regular')),
               const SizedBox(height: 30),
-              CustomTextField(
+              CustomTextField(obscureText: false,
                   controller: emailController,
                   hint: 'Email',
                   icon: const Icon(Icons.email,
                       color: Color.fromARGB(255, 136, 133, 133))),
               const SizedBox(height: 20),
-              CustomTextField(
+              CustomTextField(obscureText: true,
                   controller: passwordController,
                   hint: 'Password',
                   icon: const Icon(

@@ -43,14 +43,13 @@ dependencies:
   flutter_expandable_text: ^1.0.0
   firebase_core: ^2.14.0
   firebase_auth: ^4.6.3
-  cloud_firestore: ^4.8.2
-  json_annotation: ^4.8.1
+  cloud_firestore: ^4.3.1
+  loading_animation_widget: ^1.2.0+4
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  json_serializable: ^6.7.0
-  build_runner: ^2.4.6
+  
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is

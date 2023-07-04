@@ -43,7 +43,7 @@ class AuthenticationMethods {
     password.trim();
     String output = "Something went wrong";
     if (email != "" && password != "") {
-//functions
+
       try {
         await firebaseAuth.signInWithEmailAndPassword(
             email: email, password: password);
