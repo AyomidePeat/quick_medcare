@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 
-import '../models/user_model.dart';
+import '../models/patient_model.dart';
 import 'firestore_repo.dart';
 
 class AuthenticationMethods {
@@ -23,13 +23,20 @@ class AuthenticationMethods {
         await firebaseAuth.createUserWithEmailAndPassword(
             email: email, password: password);
 
-        UserDetailsModel user = UserDetailsModel(
+        PatientDetailsModel patient = PatientDetailsModel(
             firstName: firstName, lastName: lastName, gender: gender);
-        await Firestore.uploadUserDetailsToDatabase(user: user);
+        await fireStore.uploadPatientDetailsToDatabase(patient: patient);
 
         output = "Success";
       } on FirebaseAuthException catch (e) {
-        output = e.message.toString();
+        if (e.code == 'weak-password') {
+          output = "Password is too weak";
+        } else if (e.code == 'email-already-in-use') {
+          output = 'Email already registered';
+        }
+        return output;
+      } catch (e) {
+        print(e);
       }
     } else {
       output = "Please fill up all the fields.";
@@ -43,7 +50,6 @@ class AuthenticationMethods {
     password.trim();
     String output = "Something went wrong";
     if (email != "" && password != "") {
-
       try {
         await firebaseAuth.signInWithEmailAndPassword(
             email: email, password: password);

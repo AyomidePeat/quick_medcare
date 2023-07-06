@@ -1,10 +1,10 @@
-class UserDetailsModel {
+class PatientDetailsModel {
   final String firstName;
   final String lastName;
   final String gender;
 
 
-  UserDetailsModel({
+  PatientDetailsModel({
     required this.firstName,
     required this.lastName,
     required this.gender,
@@ -21,8 +21,8 @@ class UserDetailsModel {
       
       };
 
-  factory UserDetailsModel.getModelFromJson({required Map<String, dynamic> json}) {
-    return UserDetailsModel(
+  factory PatientDetailsModel.getModelFromJson({required Map<String, dynamic> json}) {
+    return PatientDetailsModel(
        firstName: json['firstName'],
         gender: json['gender'],
         lastName: json['lastName']);

@@ -1,29 +1,29 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import '../models/user_model.dart';
+import '../models/patient_model.dart';
 
 FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
 FirebaseAuth firebaseAuth = FirebaseAuth.instance;
 
 class Firestore {
-  static Future uploadUserDetailsToDatabase(
-      {required UserDetailsModel user}) async {
+   Future uploadPatientDetailsToDatabase(
+      {required PatientDetailsModel? patient}) async {
     await firebaseFirestore
-        .collection("users")
-        .doc(firebaseAuth.currentUser?.uid)
-        .set(user.toJson());
+        .collection("patients")
+        .doc(firebaseAuth.currentUser!.uid)
+        .set(patient!.toJson());
   }
 
-  Future<UserDetailsModel?> getUserDetails() async {
+  Future<PatientDetailsModel?> getUserDetails() async {
     DocumentSnapshot snapshot = await firebaseFirestore
-        .collection('users')
+        .collection('patients')
         .doc(firebaseAuth.currentUser?.uid)
         .get();
     if (snapshot.exists) {
-      UserDetailsModel user = UserDetailsModel.getModelFromJson(
+      PatientDetailsModel patient = PatientDetailsModel.getModelFromJson(
         json: snapshot.data() as dynamic,
       );
-      return user;
+      return patient;
     } else {
       return null;
     }

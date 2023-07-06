@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:quick_medcare/firebase_reposisitories/auth_repo.dart';
 import 'package:quick_medcare/screens/doctors_dashboard/home_screen.dart';
 import 'package:quick_medcare/screens/patient_dashboard/home_screen.dart';
 import 'package:quick_medcare/screens/patient_dashboard/sign_up_screen.dart';
@@ -16,8 +17,16 @@ class SignInScreen extends StatefulWidget {
 }
 
 class _SignInScreenState extends State<SignInScreen> {
+    AuthenticationMethods authHandler = AuthenticationMethods();
+bool isLoading = false;
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+  @override
+  void dispose() {
+    super.dispose();
+    emailController.dispose();
+    passwordController.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -76,9 +85,30 @@ class _SignInScreenState extends State<SignInScreen> {
               ),
               const SizedBox(height: 20),
               MainButton(
-                onpressed: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => HomeScreen()));
+                onpressed: () async{
+                   setState(() {
+                      isLoading = true;
+                    });
+                   String message = await authHandler.signIn(
+                        email: emailController.text,
+                        password: passwordController.text);
+                          if (message=='Success' ){
+                            
+                            
+                              Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => HomeScreen()));
+                            } else {
+                                setState(() {
+                            isLoading = false;
+                          });
+                              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                backgroundColor: blue,
+                                  content: Text(message,
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(fontSize: 16))));
+                            }
                 },
                 width: size.width,
                 height: 40,

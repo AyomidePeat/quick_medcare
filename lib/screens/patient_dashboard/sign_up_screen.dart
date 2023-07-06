@@ -45,7 +45,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
     );
   }
 
-  
   @override
   void dispose() {
     super.dispose();
@@ -202,29 +201,31 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       setState(() {
                         isLoading = true;
                       });
-                      final output = await authHandler.signUp(
+                      String message = await authHandler.signUp(
                           firstName: firstNameController.text,
                           lastName: lastNameController.text,
                           gender: genderController.text,
                           email: emailController.text,
                           password: passwordController.text);
-                      
-                        if (output == "Success") {
-                          showSnackBar;
-                          replaceWithSignInScreen();
-                        } else {
-                           print('Button Pressed'); 
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                              backgroundColor: blue,
-                              content: Text(output,
-                                  textAlign: TextAlign.center,
-                                  style: const TextStyle(fontSize: 16))));
-                          setState(() {
-                            isLoading = false;
-                          });
-                         
-                        }
-                      
+                      if (message == 'Success') {
+                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                            content: Text("Account created successfully",
+                                style: TextStyle(fontSize: 16))));
+                        Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const SignInScreen()));
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                            content: Text(message,
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(fontSize: 16))));
+                        print('button pressedc');
+
+                        setState(() {
+                          isLoading = false;
+                        });
+                      }
                     },
                     width: size.width,
                     height: 40,
