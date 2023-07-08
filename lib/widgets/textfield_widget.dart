@@ -18,6 +18,7 @@ class CustomTextField extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextField(
       cursorColor: black,obscureText: obscureText,
+      controller: controller,
       decoration: InputDecoration(
       
         enabledBorder: const OutlineInputBorder(

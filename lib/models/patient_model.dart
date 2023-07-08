@@ -21,11 +21,12 @@ class PatientDetailsModel {
       
       };
 
-  factory PatientDetailsModel.getModelFromJson({required Map<String, dynamic> json}) {
+  factory PatientDetailsModel.getModelFromJson({ Map<String, dynamic>? json}) {
     return PatientDetailsModel(
-       firstName: json['firstName'],
+       firstName: json!['firstName'],
         gender: json['gender'],
-        lastName: json['lastName']);
+        lastName: json['lastName']
+        );
   }
 }
 class OtherInfoModel {

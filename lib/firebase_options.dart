@@ -47,29 +47,29 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyBoXjgXS4sgeR1WEBpWAX7cbjD9QFyJTNs',
-    appId: '1:676224114514:web:29f2571d55cf61fd30248b',
-    messagingSenderId: '676224114514',
-    projectId: 'quickmedcare',
-    authDomain: 'quickmedcare.firebaseapp.com',
-    storageBucket: 'quickmedcare.appspot.com',
+    apiKey: 'AIzaSyA4_m1DsijaUU9YMIYopAMuTAfzw6JwOBo',
+    appId: '1:1091936495961:web:6bba3aa9d73466383e4448',
+    messagingSenderId: '1091936495961',
+    projectId: 'quick-medcare1234',
+    authDomain: 'quick-medcare1234.firebaseapp.com',
+    storageBucket: 'quick-medcare1234.appspot.com',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyACdoTcPSghvu6PVl8faoIClTBEiSqFTLw',
-    appId: '1:676224114514:android:8e57bd6f8885f6f530248b',
-    messagingSenderId: '676224114514',
-    projectId: 'quickmedcare',
-    storageBucket: 'quickmedcare.appspot.com',
+    apiKey: 'AIzaSyCvGkEy_rn9BMtOuJKJICKuZxR2k8QEeKE',
+    appId: '1:1091936495961:android:66f5d4e1df571e903e4448',
+    messagingSenderId: '1091936495961',
+    projectId: 'quick-medcare1234',
+    storageBucket: 'quick-medcare1234.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyAhe6aTRooxHCw59pQs75ugT1t-CMiF3kU',
-    appId: '1:676224114514:ios:4d31fdca695d5fbf30248b',
-    messagingSenderId: '676224114514',
-    projectId: 'quickmedcare',
-    storageBucket: 'quickmedcare.appspot.com',
-    iosClientId: '676224114514-hr84u9tlsmnki6kr6ft31brcbqi40mmt.apps.googleusercontent.com',
+    apiKey: 'AIzaSyAjI0yRa8TB7TY-seV7rxdxfrZ-MMv2PiY',
+    appId: '1:1091936495961:ios:428e6f290977a5aa3e4448',
+    messagingSenderId: '1091936495961',
+    projectId: 'quick-medcare1234',
+    storageBucket: 'quick-medcare1234.appspot.com',
+    iosClientId: '1091936495961-l5ars9mo393qomttbdufcqu4jpjfmhm9.apps.googleusercontent.com',
     iosBundleId: 'com.example.quickMedcare',
   );
 }

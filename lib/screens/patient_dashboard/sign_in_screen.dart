@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:quick_medcare/firebase_reposisitories/auth_repo.dart';
 import 'package:quick_medcare/screens/doctors_dashboard/home_screen.dart';
 import 'package:quick_medcare/screens/patient_dashboard/home_screen.dart';
 import 'package:quick_medcare/screens/patient_dashboard/sign_up_screen.dart';
@@ -9,6 +8,8 @@ import 'package:quick_medcare/widgets/main_button.dart';
 import 'package:quick_medcare/widgets/text_button_widget.dart';
 import 'package:quick_medcare/widgets/textfield_widget.dart';
 
+import '../../firebase_reposisitories/firebase_auth.dart';
+
 class SignInScreen extends StatefulWidget {
   const SignInScreen({super.key});
 
@@ -17,7 +18,7 @@ class SignInScreen extends StatefulWidget {
 }
 
 class _SignInScreenState extends State<SignInScreen> {
-    AuthenticationMethods authHandler = AuthenticationMethods();
+    AuthenticationMethod authHandler = AuthenticationMethod();
 bool isLoading = false;
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
@@ -93,7 +94,11 @@ bool isLoading = false;
                         email: emailController.text,
                         password: passwordController.text);
                           if (message=='Success' ){
-                            
+                                                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                 
+                                  content: Text("Account created successfully",
+                                    
+                                      style: TextStyle(fontSize: 16))));
                             
                               Navigator.pushReplacement(
                                   context,

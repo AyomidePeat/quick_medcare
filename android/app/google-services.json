@@ -1,33 +1,33 @@
 {
   "project_info": {
-    "project_number": "676224114514",
-    "project_id": "quickmedcare",
-    "storage_bucket": "quickmedcare.appspot.com"
+    "project_number": "1091936495961",
+    "project_id": "quick-medcare1234",
+    "storage_bucket": "quick-medcare1234.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:676224114514:android:8e57bd6f8885f6f530248b",
+        "mobilesdk_app_id": "1:1091936495961:android:66f5d4e1df571e903e4448",
         "android_client_info": {
           "package_name": "com.example.quick_medcare"
         }
       },
       "oauth_client": [
         {
-          "client_id": "676224114514-ngood8csq2ft6lf51sducc5una6lm5i1.apps.googleusercontent.com",
+          "client_id": "1091936495961-eh419iom07gdjb9f2bpkjeou9sorqrp0.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyACdoTcPSghvu6PVl8faoIClTBEiSqFTLw"
+          "current_key": "AIzaSyCvGkEy_rn9BMtOuJKJICKuZxR2k8QEeKE"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "676224114514-ngood8csq2ft6lf51sducc5una6lm5i1.apps.googleusercontent.com",
+              "client_id": "1091936495961-eh419iom07gdjb9f2bpkjeou9sorqrp0.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
