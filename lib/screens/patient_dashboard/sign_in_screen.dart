@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:quick_medcare/screens/doctors_dashboard/home_screen.dart';
 import 'package:quick_medcare/screens/patient_dashboard/home_screen.dart';
 import 'package:quick_medcare/screens/patient_dashboard/sign_up_screen.dart';
@@ -94,11 +95,7 @@ bool isLoading = false;
                         email: emailController.text,
                         password: passwordController.text);
                           if (message=='Success' ){
-                                                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                 
-                                  content: Text("Account created successfully",
-                                    
-                                      style: TextStyle(fontSize: 16))));
+                                                        
                             
                               Navigator.pushReplacement(
                                   context,
@@ -117,7 +114,8 @@ bool isLoading = false;
                 },
                 width: size.width,
                 height: 40,
-                child: Text('Sign In', style: TextStyle(color: white)),
+                child: isLoading
+                      ? LoadingAnimationWidget.inkDrop(color: white, size: 25):Text('Sign In', style: TextStyle(color: white)),
               ),
               const SizedBox(height: 20),
               Row(

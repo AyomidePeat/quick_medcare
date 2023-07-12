@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:quick_medcare/firebase_reposisitories/cloud_firestore.dart';
+import 'package:quick_medcare/models/patient_model.dart';
 import 'package:quick_medcare/screens/patient_dashboard/appointment_screen.dart';
 import 'package:quick_medcare/screens/patient_dashboard/department/dentists_screen.dart';
 import 'package:quick_medcare/screens/patient_dashboard/department/dermatologists_screen.dart';
@@ -12,14 +15,20 @@ import 'package:quick_medcare/utils/textstyle.dart';
 import 'package:quick_medcare/widgets/department_container.dart';
 import 'package:quick_medcare/widgets/illness_container.dart';
 
-class HomeScreen extends StatefulWidget {
+import 'other_details.dart';
+
+final cloudStoreDocsProvider = FutureProvider((ref) async {
+  cloudStoreProvider;
+});
+
+class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  ConsumerState<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends ConsumerState<HomeScreen> {
   List icon = [
     'icons/tooth.png',
     'icons/skin.png',
@@ -27,12 +36,25 @@ class _HomeScreenState extends State<HomeScreen> {
     'icons/neurologist.png',
     'icons/eyes.png',
   ];
-  List illness = ['Toothache', 'Rashes', 'Antenatal', 'Migrain', 'Eye pain'
+  List illness = ['Toothache', 'Rashes', 'Antenatal', 'Migrain', 'Eye pain'];
+  List date = [
+    '21.05.2023',
+    '10.04.2023',
+    '09.02.2023',
+    '04.02.2023',
+    '06.01.2023'
   ];
-  List date = ['21.05.2023', '10.04.2023', '09.02.2023', '04.02.2023', '06.01.2023'];
-  List treatmentMode = ['physical treatment', 'online prescription','hospital visit', 'online prescription', 'online diagnosis'];
+  List treatmentMode = [
+    'physical treatment',
+    'online prescription',
+    'hospital visit',
+    'online prescription',
+    'online diagnosis'
+  ];
   @override
   Widget build(BuildContext context) {
+    final cloudStoreRef = ref.watch(cloudStoreProvider);
+
     final size = MediaQuery.of(context).size;
     String currentDate = DateFormat('EEEE').format(DateTime.now());
 
@@ -50,8 +72,35 @@ class _HomeScreenState extends State<HomeScreen> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Hello, John 👋', style: headline3(context)),
-                    SizedBox(height: 5),
+                    FutureBuilder<PatientDetailsModel?>(
+                        future: cloudStoreRef.getUser(),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const Text('Hello',
+                                style: TextStyle(
+                                  fontFamily: 'Poppins',
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 17,
+                                ));
+                          } else {
+                            if (snapshot.hasData && snapshot.data != null) {
+                              // User details retrieved successfully
+                              PatientDetailsModel getPatientName =
+                                  snapshot.data!;
+                              String firstName =
+                                  getPatientName.firstName; // Get the username
+                              return Text(
+                                'Hello $firstName👋',
+                                style: headline3(context),
+                              );
+                            } else {
+                              return const Text('Hello👋');
+                            }
+                          }
+                        }),
+                    const SizedBox(height: 5),
                     Text(
                       'How do you feel this $currentDate?',
                       overflow: TextOverflow.fade,
@@ -105,7 +154,44 @@ class _HomeScreenState extends State<HomeScreen> {
                   ],
                 ),
               ),
-              const SizedBox(height: 25),
+              const SizedBox(height: 20),
+              StreamBuilder<List<OtherInfoModel>>(
+                  stream: cloudStoreRef.getUserDetails(),
+                  builder: (context, snapshot) {
+                    if (snapshot.data!.isEmpty) {
+                      return InkWell(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => OtherDetailsScreen()));
+                        },
+                        child: Column(
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text('Complete your registration',
+                                    textAlign: TextAlign.center,
+                                    style:
+                                        TextStyle(fontSize: 13, color: blue)),
+                                Icon(Icons.arrow_forward_ios,
+                                    color: blue, size: 15)
+                              ],
+                            )
+                                .animate(
+                                  onPlay: (controller) =>
+                                      controller.repeat(reverse: true),
+                                )
+                                .fadeIn(duration: 1000.ms),
+                            const SizedBox(height: 10)
+                          ],
+                        ),
+                      );
+                    } else {
+                      return const SizedBox(height: 5);
+                    }
+                  }),
               Text(
                 'Upcoming appointment',
                 style: headline3(context),
@@ -120,22 +206,29 @@ class _HomeScreenState extends State<HomeScreen> {
                 style: headline3(context),
               ),
               Flexible(
-                child: ListView.builder(itemBuilder: (BuildContext context, int index) {
+                  child: ListView.builder(
+                itemBuilder: (BuildContext context, int index) {
                   return IllnessContainer(
-                      icon: icon[index],
-                      illness: illness[index],
-                      treatmentMode: treatmentMode[index],
-                      date: date[index]).animate().slideY(begin:3, duration:Duration(milliseconds: index*300 ));
+                          icon: icon[index],
+                          illness: illness[index],
+                          treatmentMode: treatmentMode[index],
+                          date: date[index])
+                      .animate()
+                      .slideY(
+                          begin: 3,
+                          duration: Duration(milliseconds: index * 300));
                 },
-                itemCount: icon.length,)
-              )
+                itemCount: icon.length,
+              )),
             ],
           ),
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => AppointmentScreen()));
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const AppointmentScreen()));
           },
           backgroundColor: blue,
           tooltip: 'Book Appointment',
@@ -170,7 +263,10 @@ class AppointmentContainer extends StatelessWidget {
           children: [
             Row(
               children: [
-                const CircleAvatar(backgroundImage: AssetImage('images/marian.jpg'),minRadius:25 ,),
+                const CircleAvatar(
+                  backgroundImage: AssetImage('images/marian.jpg'),
+                  minRadius: 25,
+                ),
                 const SizedBox(width: 10),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -189,9 +285,12 @@ class AppointmentContainer extends StatelessWidget {
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
                   color: const Color.fromARGB(255, 41, 86, 233)),
-              child:  Padding(
+              child: Padding(
                 padding: const EdgeInsets.all(5.0),
-                child: Text('Starts in 2 mins', style: bodyText4(context),),
+                child: Text(
+                  'Starts in 2 mins',
+                  style: bodyText4(context),
+                ),
               ),
             )
           ],

@@ -1,6 +1,9 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:quick_medcare/firebase_options.dart';
+import 'package:quick_medcare/screens/patient_dashboard/other_details.dart';
+import 'package:quick_medcare/screens/patient_dashboard/sign_up_screen.dart';
 import 'package:quick_medcare/screens/patient_dashboard/splash_screen.dart';
 import 'package:quick_medcare/utils/colors.dart';
 
@@ -9,7 +12,7 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform
   );
-  runApp(const MyApp());
+  runApp(const ProviderScope(child: MyApp()));
 }
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -37,6 +40,6 @@ class MyApp extends StatelessWidget {
               .copyWith(secondary: black)
               .copyWith(background: white),
         ),
-        home: const SplashScreen());
+        home: const SignUpScreen());
   }
 }

@@ -24,6 +24,22 @@ headline4() {
       fontWeight: FontWeight.bold,
       color: black);
 }
+
+
+headline8() {
+  return TextStyle(
+      fontFamily: 'Poppins-Regular',
+      fontSize: 14,
+      fontWeight: FontWeight.bold,
+      color: white);
+}
+headline7() {
+  return TextStyle(
+      fontFamily: 'Poppins-Regular',
+      fontSize: 18,
+      fontWeight: FontWeight.bold,
+      color: white);
+}
 headline5() {
   return TextStyle(
       fontFamily: 'Poppins-Regular',
@@ -69,3 +85,9 @@ bodyText7() {
       fontSize: 12,
       color: Colors.black);
 }
+bodyText8() {
+  return TextStyle(
+      fontFamily: 'Poppins-Regular',
+      fontSize: 12,
+      
+      color: Colors.black45);}
