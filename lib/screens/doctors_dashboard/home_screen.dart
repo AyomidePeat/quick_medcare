@@ -7,7 +7,6 @@ import '../../utils/textstyle.dart';
 import '../../widgets/main_button.dart';
 
 class Patients extends StatefulWidget {
-  
   const Patients({super.key});
 
   @override
@@ -16,7 +15,7 @@ class Patients extends StatefulWidget {
 
 class _PatientsState extends State<Patients> {
   int regNo = 09457;
-   String category = 'Online';
+  String category = 'Online';
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,7 +36,7 @@ class _PatientsState extends State<Patients> {
                   Padding(
                     padding: const EdgeInsets.all(10.0),
                     child:
-                        Text('Dr. Heritage Odewole', style: headline3(context)),
+                        Text('Dr. Heritage Odewole', style: headLine3(black)),
                   ),
                 ],
               ),
@@ -80,7 +79,7 @@ class _PatientsState extends State<Patients> {
                     return Padding(
                       padding: const EdgeInsets.symmetric(vertical: 10.0),
                       child: CustomContainer(
-                        color:  Colors.transparent,
+                        color: Colors.transparent,
                         height: 130,
                         width: double.infinity,
                         border: Border.all(width: 0.4, color: Colors.lightBlue),
@@ -101,7 +100,7 @@ class _PatientsState extends State<Patients> {
                                 children: [
                                   Text(
                                     'Jane Doe',
-                                    style: headline4(),
+                                    style: headLine4(black),
                                   ),
                                   Text(
                                     '$category',
@@ -121,7 +120,6 @@ class _PatientsState extends State<Patients> {
                                     height: 10,
                                   ),
                                   MainButton(
-                                     
                                       height: 30,
                                       width: 120,
                                       onpressed: () {
@@ -187,10 +185,10 @@ class AppointmentContainer extends StatelessWidget {
                   children: [
                     Text(
                       'John Doe',
-                      style: bodyText4(context),
+                      style: bodyText3(black),
                     ),
                     Text('10:30AM. General Consultation',
-                        style: bodyText5(context))
+                        style: bodyText3(black))
                   ],
                 )
               ],
@@ -203,7 +201,7 @@ class AppointmentContainer extends StatelessWidget {
                 padding: const EdgeInsets.all(5.0),
                 child: Text(
                   'Starts in 2 mins',
-                  style: bodyText4(context),
+                  style: bodyText3(black),
                 ),
               ),
             )

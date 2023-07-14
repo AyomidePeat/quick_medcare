@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:quick_medcare/utils/colors.dart';
 import 'package:quick_medcare/utils/textstyle.dart';
 
 class IllnessContainer extends StatelessWidget {
@@ -43,11 +44,11 @@ class IllnessContainer extends StatelessWidget {
               children: [
                 Text(
                   '$illness, $treatmentMode',
-                  style: headline4(),
+                  style: headLine3(black),
                 ),
                 Text(
                   date,
-                  style: bodyText6(),
+                  style: bodyText3(grey),
                 )
               ],
             )

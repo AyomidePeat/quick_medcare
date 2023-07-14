@@ -10,6 +10,7 @@ import 'package:quick_medcare/screens/patient_dashboard/department/dermatologist
 import 'package:quick_medcare/screens/patient_dashboard/department/gynaecologists_screen.dart';
 import 'package:quick_medcare/screens/patient_dashboard/department/neurologists_screen.dart';
 import 'package:quick_medcare/screens/patient_dashboard/department/ophthalmologists_screen.dart';
+import 'package:quick_medcare/screens/patient_dashboard/profile_screen.dart';
 import 'package:quick_medcare/utils/colors.dart';
 import 'package:quick_medcare/utils/textstyle.dart';
 import 'package:quick_medcare/widgets/department_container.dart';
@@ -54,10 +55,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final cloudStoreRef = ref.watch(cloudStoreProvider);
-
     final size = MediaQuery.of(context).size;
     String currentDate = DateFormat('EEEE').format(DateTime.now());
-
+    String? imageUrl = 'images/userIcon.png';
+    String firstName = '';
+    String gender = '';
+    String lastName = '';
     return SafeArea(
       top: false,
       child: Scaffold(
@@ -86,14 +89,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                 ));
                           } else {
                             if (snapshot.hasData && snapshot.data != null) {
-                              // User details retrieved successfully
-                              PatientDetailsModel getPatientName =
+                              PatientDetailsModel getPatientDetails =
                                   snapshot.data!;
-                              String firstName =
-                                  getPatientName.firstName; // Get the username
+                              firstName = getPatientDetails.firstName;
+                              gender = getPatientDetails.gender;
+                              lastName = getPatientDetails.lastName;
                               return Text(
                                 'Hello $firstName👋',
-                                style: headline3(context),
+                                style: headLine3(black),
                               );
                             } else {
                               return const Text('Hello👋');
@@ -104,16 +107,56 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     Text(
                       'How do you feel this $currentDate?',
                       overflow: TextOverflow.fade,
-                      style: bodyText3(context),
+                      style: bodyText4(black),
                     ),
                     const SizedBox(height: 5),
                   ],
                 ),
-                const Row(
+                Row(
                   children: [
-                    Icon(Icons.notifications_none_sharp),
-                    SizedBox(width: 5),
-                    CircleAvatar(),
+                    const Icon(Icons.notifications_none_sharp),
+                    const SizedBox(width: 5),
+                    FutureBuilder<String?>(
+                     future: cloudStoreRef.getDpWithListener((newImageUrl) {
+    setState(() {
+      imageUrl = newImageUrl;
+    });
+  }),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const CircleAvatar(
+                            backgroundColor: Colors.grey,
+                            radius: 50,
+                            child: CircularProgressIndicator(),
+                          );
+                        } else if (snapshot.hasError || snapshot.data == null) {
+                          return CircleAvatar(
+                            backgroundColor: Colors.grey,
+                            radius: 50,
+                            backgroundImage:
+                                Image.asset('images/userIcon.png').image,
+                          );
+                        } else {
+                          
+                            imageUrl = snapshot.data!                           ;
+
+                        
+                          return GestureDetector(
+                            child: CircleAvatar(
+                              backgroundImage: NetworkImage(imageUrl!),
+                            ),
+                            onTap: () => Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => ProfileScreen(image:imageUrl,
+                                        name: '$firstName $lastName',
+                                        gender: gender,
+                                        id: '001'))),
+                          );
+                        }
+                      },
+                    ),
                   ],
                 ),
               ],
@@ -158,35 +201,29 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               StreamBuilder<List<OtherInfoModel>>(
                   stream: cloudStoreRef.getUserDetails(),
                   builder: (context, snapshot) {
-                    if (snapshot.data!.isEmpty) {
+                    if (snapshot.data == null || snapshot.data!.isEmpty) {
                       return InkWell(
                         onTap: () {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => OtherDetailsScreen()));
+                                  builder: (context) =>
+                                      const OtherDetailsScreen()));
                         },
-                        child: Column(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text('Complete your registration',
-                                    textAlign: TextAlign.center,
-                                    style:
-                                        TextStyle(fontSize: 13, color: blue)),
-                                Icon(Icons.arrow_forward_ios,
-                                    color: blue, size: 15)
-                              ],
-                            )
-                                .animate(
-                                  onPlay: (controller) =>
-                                      controller.repeat(reverse: true),
-                                )
-                                .fadeIn(duration: 1000.ms),
-                            const SizedBox(height: 10)
+                            Text('Complete your registration',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(fontSize: 13, color: blue)),
+                            Icon(Icons.arrow_forward_ios, color: blue, size: 15)
                           ],
-                        ),
+                        )
+                            .animate(
+                              onPlay: (controller) =>
+                                  controller.repeat(reverse: true),
+                            )
+                            .fadeIn(duration: 1000.ms),
                       );
                     } else {
                       return const SizedBox(height: 5);
@@ -194,7 +231,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   }),
               Text(
                 'Upcoming appointment',
-                style: headline3(context),
+                style: headLine3(black),
               ),
               const SizedBox(height: 15),
               AppointmentContainer(size: size),
@@ -203,7 +240,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               ),
               Text(
                 'My illness history',
-                style: headline3(context),
+                style: headLine3(black),
               ),
               Flexible(
                   child: ListView.builder(
@@ -273,10 +310,10 @@ class AppointmentContainer extends StatelessWidget {
                   children: [
                     Text(
                       'Dr. Joeph Marian Adewole ',
-                      style: bodyText4(context),
+                      style: bodyText2(white),
                     ),
                     Text('10:30AM. General Consultation',
-                        style: bodyText5(context))
+                        style: bodyText4(white))
                   ],
                 )
               ],
@@ -289,7 +326,7 @@ class AppointmentContainer extends StatelessWidget {
                 padding: const EdgeInsets.all(5.0),
                 child: Text(
                   'Starts in 2 mins',
-                  style: bodyText4(context),
+                  style: bodyText3(white),
                 ),
               ),
             )

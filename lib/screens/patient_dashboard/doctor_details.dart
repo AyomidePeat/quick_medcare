@@ -37,7 +37,7 @@ class _DoctorDetailsScreenState extends State<DoctorDetailsScreen> {
         elevation: 0,
         backgroundColor: Colors.transparent,
         centerTitle: true,
-        title: Text('Doctor\'s details', style: headline2(context)),
+        title: Text('Doctor\'s details', style: headLine2(black)),
       ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
@@ -65,7 +65,7 @@ class _DoctorDetailsScreenState extends State<DoctorDetailsScreen> {
                           Text(
                             widget.name,
                             overflow: TextOverflow.fade,
-                            style: headline3(context),
+                            style: headLine3(black),
                           ),
                           Padding(
                             padding: const EdgeInsets.symmetric(vertical: 10),
@@ -128,7 +128,7 @@ class _DoctorDetailsScreenState extends State<DoctorDetailsScreen> {
                   ],
                 ),
               ),
-              Text('About doctor:', style: headline4()),
+              Text('About doctor:', style: headLine4(black)),
               const SizedBox(height: 15),
               ExpandableText(
                   "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ac odio tempor orci dapibus ultrices in iaculis nunc sed. Sed ullamcorper morbi tincidunt ornare massa eget egestas. Pharetra sit amet aliquam id diam maecenas ultricies mi eget. Fermentum leo vel orci porta non pulvinar neque. Risus quis varius quam quisque id. Fringilla phasellus faucibus scelerisque eleifend donec pretium vulputate sapien nec. Ut sem nulla pharetra diam sit amet nisl. Enim tortor at auctor urna nunc id cursus metus aliquam. Sit amet est placerat in egestas erat. Est ante in nibh mauris. Viverra nibh cras pulvinar mattis nunc. Orci porta non pulvinar neque laoreet suspendisse interdum consectetur. Nulla facilisi etiam dignissim diam quis enim lobortis scelerisque. Mi eget mauris pharetra et ultrices neque ornare aenean..",
@@ -138,13 +138,13 @@ class _DoctorDetailsScreenState extends State<DoctorDetailsScreen> {
                 });
               },
                   readLessText: "Show less",
-                  linkTextStyle: headline4(),
+                  linkTextStyle: headLine4(black),
                   trimType: TrimType.lines,
                   trim: textRead ? 29 : 4,
                   style: bodyText2(context)),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 20.0),
-                child: Text('Specialization:', style: headline4()),
+                child: Text('Specialization:', style: headLine4(black)),
               ),
               Container(
                 padding:
@@ -157,11 +157,11 @@ class _DoctorDetailsScreenState extends State<DoctorDetailsScreen> {
                 ),
               ),
               const SizedBox(height: 20),
-              Text('Available Times:', style: headline4()),
+              Text('Available Times:', style: headLine4(black)),
               const SizedBox(height: 10),
               Text(
                 'Today',
-                style: bodyText6(),
+                style: bodyText3(grey),
               ),
               const SizedBox(height: 10),
               SingleChildScrollView(
@@ -187,7 +187,7 @@ class _DoctorDetailsScreenState extends State<DoctorDetailsScreen> {
               const SizedBox(height: 15),
               Text(
                 'Tomorrow',
-                style: bodyText6(),
+                style: bodyText3(grey),
               ),
               const SizedBox(height: 10),
               SingleChildScrollView(
@@ -279,7 +279,7 @@ class DetailsContainer extends StatelessWidget {
               children: [
                 Text(
                   details,
-                  style: headline4(),
+                  style: headLine4(grey),
                 ),
                 Text(
                   aspect,

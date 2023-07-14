@@ -75,7 +75,7 @@ bool isLoading = false;
                           }),
                       Text(
                         'Remember',
-                        style: bodyText2(context),
+                        style: bodyText3(black),
                       )
                     ],
                   ),

@@ -21,7 +21,7 @@ class ChatScreen extends StatelessWidget {
             const SizedBox(width: 10),
             Column(crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Dr. Heritage', style: headline3(context)),
+                Text('Dr. Heritage', style: headLine3(black)),
                 Text('Online',style: bodyText2(context),)
               ],
             ),

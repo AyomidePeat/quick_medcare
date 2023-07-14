@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:quick_medcare/utils/colors.dart';
 import 'package:quick_medcare/widgets/calendar_widget.dart';
 
 import '../../utils/textstyle.dart';
@@ -38,10 +39,19 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
+          automaticallyImplyLeading: false,
           elevation: 0,
-          backgroundColor: Colors.transparent,
+          backgroundColor: blue,
           centerTitle: true,
-          title: Text('Book an appointment', style: headline2(context)),
+          title: Text('Book an appointment', style: headLine3(black)),
+          leading: IconButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              icon: Icon(
+                Icons.arrow_back_ios,
+                color: white,
+              )),
         ),
         body: Padding(
           padding: const EdgeInsets.all(15.0),

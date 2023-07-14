@@ -1,93 +1,39 @@
 import 'package:flutter/material.dart';
 
-import 'colors.dart';
-
-headline1(context) {
-  final headline1 = Theme.of(context).textTheme.displayLarge;
-  return headline1;
-}
-
-headline2(context) {
-  final headline2 = Theme.of(context).textTheme.displayMedium;
-  return headline2;
-}
-
-headline3(context) {
-  final headline3 = Theme.of(context).textTheme.displaySmall;
-  return headline3;
-}
-
-headline4() {
-  return TextStyle(
-      fontFamily: 'Poppins-Regular',
-      fontSize: 12,
-      fontWeight: FontWeight.bold,
-      color: black);
-}
-
-
-headline8() {
-  return TextStyle(
-      fontFamily: 'Poppins-Regular',
-      fontSize: 14,
-      fontWeight: FontWeight.bold,
-      color: white);
-}
-headline7() {
+headLine1(color) {
   return TextStyle(
       fontFamily: 'Poppins-Regular',
       fontSize: 18,
       fontWeight: FontWeight.bold,
-      color: white);
+      color: color);
 }
-headline5() {
+
+headLine2(color) {
   return TextStyle(
       fontFamily: 'Poppins-Regular',
-      fontSize: 12,
+      fontSize: 16,
       fontWeight: FontWeight.bold,
-      color: black);
+      color: color);
 }
 
-bodyText1(context) {
-  final bodyText1 = Theme.of(context).textTheme.bodyLarge;
-  return bodyText1;
+headLine3(color) {
+  return TextStyle(fontFamily: 'Poppins-Regular',fontWeight: FontWeight.bold, fontSize: 14, color: color);
+}
+headLine4(color) {
+  return TextStyle(fontFamily: 'Poppins-Regular', fontWeight: FontWeight.bold,fontSize: 12, color: color);
 }
 
-bodyText2(context) {
-  final bodyText2 = Theme.of(context).textTheme.bodyMedium;
-  return bodyText2;
+bodyText1(color) {
+  return TextStyle(fontFamily: 'Poppins-Regular', fontSize: 18, color: color);
 }
 
-bodyText3(context) {
-  final bodyText3 = Theme.of(context).textTheme.bodySmall;
-  return bodyText3;
+bodyText2(color) {
+  return TextStyle(fontFamily: 'Poppins-Regular', fontSize: 16, color: color);
+}
+bodyText3(color) {
+  return TextStyle(fontFamily: 'Poppins-Regular', fontSize: 14, color: color);
 }
 
-bodyText4(context) {
-  final bodyText4 = Theme.of(context).textTheme.titleMedium;
-  return bodyText4;
+bodyText4(color) {
+  return TextStyle(fontFamily: 'Poppins-Regular', fontSize: 12, color: color);
 }
-
-bodyText5(context) {
-  final bodyText5 = Theme.of(context).textTheme.titleSmall;
-  return bodyText5;
-}
-
-bodyText6() {
-  return TextStyle(
-      fontFamily: 'Poppins-Regular',
-      fontSize: 12,
-      color: Color.fromARGB(255, 167, 164, 164));
-}
-bodyText7() {
-  return TextStyle(
-      fontFamily: 'Poppins-Regular',
-      fontSize: 12,
-      color: Colors.black);
-}
-bodyText8() {
-  return TextStyle(
-      fontFamily: 'Poppins-Regular',
-      fontSize: 12,
-      
-      color: Colors.black45);}

@@ -11,18 +11,14 @@ class DoctorContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     return Container(
-        //width: size.width * 0.4,
-        //height: size.width * 0.7,
+        
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(6),
             color: Colors.transparent,
-            // border: Border.all(
-            //   color: black,
-            //   width: 0.4,
-            // )
+           
             ),
         child: Column(
-          // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          
           children: [
             Container(
               height: 200,

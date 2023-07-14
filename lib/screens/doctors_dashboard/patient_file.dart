@@ -32,7 +32,7 @@ class _PatientFileState extends State<PatientFile> {
             )),
         title: Text(
           'Bio Data',
-          style: headline4(),
+          style: headLine4(black),
         ),
       ),
       body: Padding(
@@ -52,7 +52,7 @@ class _PatientFileState extends State<PatientFile> {
                   children: [
                     Text(
                       'Jane Doe',
-                      style: headline4(),
+                      style: headLine4(black),
                     ),
                     Text(
                       'Reg No: $idNo',
@@ -89,12 +89,12 @@ class _PatientFileState extends State<PatientFile> {
                 height: 35,
                 width: double.infinity,
                 onpressed: () {
-                  Navigator.push(
-                      context, MaterialPageRoute(builder: (context)=>ChatScreen()));
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => ChatScreen()));
                 },
                 child: Text(
                   'Continue to Chat',
-                  style: bodyText4(context),
+                  style: bodyText3(black),
                 )),
           ]),
         ),
@@ -128,7 +128,7 @@ class ContactInfo extends StatelessWidget {
                     ),
                     Text(
                       'Contact Info',
-                      style: headline3(context),
+                      style: headLine3(black),
                     ),
                   ],
                 ),
@@ -142,9 +142,9 @@ class ContactInfo extends StatelessWidget {
               children: [
                 Text(
                   'Age:',
-                  style: bodyText7(),
+                  style: bodyText3(black),
                 ),
-                Text(' 42', style: headline4()),
+                Text(' 42', style: headLine4(black)),
               ],
             ),
             const Padding(
@@ -155,9 +155,9 @@ class ContactInfo extends StatelessWidget {
               children: [
                 Text(
                   'DOB:',
-                  style: bodyText7(),
+                  style: bodyText3(black),
                 ),
-                Text(' dd/mm/yyyy', style: headline4()),
+                Text(' dd/mm/yyyy', style: headLine4(black)),
               ],
             ),
             const Padding(
@@ -166,8 +166,8 @@ class ContactInfo extends StatelessWidget {
             ),
             Row(
               children: [
-                Text('Gender:', style: bodyText7()),
-                Text(' Female', style: headline4()),
+                Text('Gender:', style: bodyText3(black)),
+                Text(' Female', style: headLine4(black)),
               ],
             ),
             const Padding(
@@ -176,8 +176,8 @@ class ContactInfo extends StatelessWidget {
             ),
             Row(
               children: [
-                Text('Father\'s Name:', style: bodyText7()),
-                Text(' John Doe', style: headline4()),
+                Text('Father\'s Name:', style: bodyText3(black)),
+                Text(' John Doe', style: headLine4(black)),
               ],
             ),
             const Padding(
@@ -186,8 +186,8 @@ class ContactInfo extends StatelessWidget {
             ),
             Row(
               children: [
-                Text('Mother\'s Name:', style: bodyText7()),
-                Text(' Janet Doe', style: headline4()),
+                Text('Mother\'s Name:', style: bodyText3(black)),
+                Text(' Janet Doe', style: headLine4(black)),
               ],
             ),
             const Padding(
@@ -196,8 +196,8 @@ class ContactInfo extends StatelessWidget {
             ),
             Row(
               children: [
-                Text('Phone Number:', style: bodyText7()),
-                Text(' +234123456789', style: headline4()),
+                Text('Phone Number:', style: bodyText3(black)),
+                Text(' +234123456789', style: headLine4(black)),
               ],
             ),
             const Padding(
@@ -206,8 +206,8 @@ class ContactInfo extends StatelessWidget {
             ),
             Row(
               children: [
-                Text('Email Address:', style: bodyText7()),
-                Text(' example@gmail.com', style: headline4()),
+                Text('Email Address:', style: bodyText3(black)),
+                Text(' example@gmail.com', style: headLine4(black)),
               ],
             ),
             const Padding(
@@ -216,11 +216,11 @@ class ContactInfo extends StatelessWidget {
             ),
             Row(
               children: [
-                Text('Home Address:', style: bodyText7()),
+                Text('Home Address:', style: bodyText3(black)),
                 SizedBox(
                     width: 150,
                     child: Text(' 12, XYZ street, LA',
-                        overflow: TextOverflow.fade, style: headline4())),
+                        overflow: TextOverflow.fade, style: headLine4(black))),
               ],
             ),
           ]),
@@ -253,7 +253,7 @@ class NextOfKinContainer extends StatelessWidget {
                     ),
                     Text(
                       'Next of Kin',
-                      style: headline3(context),
+                      style: headLine3(black),
                     ),
                   ],
                 ),
@@ -265,8 +265,8 @@ class NextOfKinContainer extends StatelessWidget {
             ),
             Row(
               children: [
-                Text('Name of Next of Kin:', style: bodyText7()),
-                Text(' John Doe', style: headline4()),
+                Text('Name of Next of Kin:', style: bodyText3(black)),
+                Text(' John Doe', style: headLine4(black)),
               ],
             ),
             const Padding(
@@ -275,8 +275,8 @@ class NextOfKinContainer extends StatelessWidget {
             ),
             Row(
               children: [
-                Text('DOB:', style: bodyText7()),
-                Text(' dd/mm/yyyy', style: headline4()),
+                Text('DOB:', style: bodyText3(black)),
+                Text(' dd/mm/yyyy', style: headLine4(black)),
               ],
             ),
             const Padding(
@@ -285,8 +285,8 @@ class NextOfKinContainer extends StatelessWidget {
             ),
             Row(
               children: [
-                Text('Gender:', style: bodyText7()),
-                Text(' Male', style: headline4()),
+                Text('Gender:', style: bodyText3(black)),
+                Text(' Male', style: headLine4(black)),
               ],
             ),
             const Padding(
@@ -295,8 +295,8 @@ class NextOfKinContainer extends StatelessWidget {
             ),
             Row(
               children: [
-                Text('Relationship:', style: bodyText7()),
-                Text(' Father', style: headline4()),
+                Text('Relationship:', style: bodyText3(black)),
+                Text(' Father', style: headLine4(black)),
               ],
             ),
             const Padding(
@@ -305,11 +305,11 @@ class NextOfKinContainer extends StatelessWidget {
             ),
             Row(
               children: [
-                Text('Home Address:', style: bodyText7()),
+                Text('Home Address:', style: bodyText3(black)),
                 SizedBox(
                     width: 150,
                     child: Text(' 12, XYZ street, LA',
-                        overflow: TextOverflow.fade, style: headline4())),
+                        overflow: TextOverflow.fade, style: headLine4(black))),
               ],
             ),
             const Padding(
@@ -318,8 +318,8 @@ class NextOfKinContainer extends StatelessWidget {
             ),
             Row(
               children: [
-                Text('Phone Number:', style: bodyText7()),
-                Text(' +234123456789', style: headline4()),
+                Text('Phone Number:', style: bodyText3(black)),
+                Text(' +234123456789', style: headLine4(black)),
               ],
             ),
             const Padding(
@@ -328,8 +328,8 @@ class NextOfKinContainer extends StatelessWidget {
             ),
             Row(
               children: [
-                Text('Email Address:', style: bodyText7()),
-                Text(' example@gmail.com', style: headline4()),
+                Text('Email Address:', style: bodyText3(black)),
+                Text(' example@gmail.com', style: headLine4(black)),
               ],
             ),
           ]),
@@ -362,7 +362,7 @@ class OtherInfo extends StatelessWidget {
                     ),
                     Text(
                       'Other Info',
-                      style: headline3(context),
+                      style: headLine3(black),
                     ),
                   ],
                 ),
@@ -374,8 +374,8 @@ class OtherInfo extends StatelessWidget {
             ),
             Row(
               children: [
-                Text('Blood Type:', style: bodyText7()),
-                Text(' O Positive', style: headline4()),
+                Text('Blood Type:', style: bodyText3(black)),
+                Text(' O Positive', style: headLine4(black)),
               ],
             ),
             const Padding(
@@ -384,8 +384,8 @@ class OtherInfo extends StatelessWidget {
             ),
             Row(
               children: [
-                Text('Genetotype', style: bodyText7()),
-                Text(' AA', style: headline4()),
+                Text('Genetotype', style: bodyText3(black)),
+                Text(' AA', style: headLine4(black)),
               ],
             ),
             const Padding(
@@ -394,8 +394,8 @@ class OtherInfo extends StatelessWidget {
             ),
             Row(
               children: [
-                Text('Health Insurance Agency', style: bodyText7()),
-                Text(' NHIS', style: headline4()),
+                Text('Health Insurance Agency', style: bodyText3(black)),
+                Text(' NHIS', style: headLine4(black)),
               ],
             ),
             const Padding(
@@ -404,8 +404,8 @@ class OtherInfo extends StatelessWidget {
             ),
             Row(
               children: [
-                Text('Religion:', style: bodyText7()),
-                Text(' Christainity', style: headline4()),
+                Text('Religion:', style: bodyText3(black)),
+                Text(' Christainity', style: headLine4(black)),
               ],
             ),
             const Padding(
@@ -414,11 +414,11 @@ class OtherInfo extends StatelessWidget {
             ),
             Row(
               children: [
-                Text('Occupation:', style: bodyText7()),
+                Text('Occupation:', style: bodyText3(black)),
                 SizedBox(
                     width: 200,
                     child: Text('Fashion designer',
-                        overflow: TextOverflow.fade, style: headline4())),
+                        overflow: TextOverflow.fade, style: headLine4(black))),
               ],
             ),
             const Padding(

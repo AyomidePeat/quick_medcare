@@ -28,7 +28,7 @@ class PatientMessageContainer extends StatelessWidget {
                   )),
               child: Text(
                 message,
-                style: bodyText4(context),
+                style: bodyText3(white),
               ),
             ),
             Row(

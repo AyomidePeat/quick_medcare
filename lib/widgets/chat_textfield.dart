@@ -19,7 +19,7 @@ class ChatTextField extends StatelessWidget {
           focusedBorder: const OutlineInputBorder(
               borderSide: BorderSide(color: Colors.transparent), borderRadius: BorderRadius.all(Radius.circular(10))),
           hintText: 'Write a reply...',
-          hintStyle: bodyText2(context),
+          hintStyle: bodyText3(black),
           fillColor: grey,
           filled: true,
         ),

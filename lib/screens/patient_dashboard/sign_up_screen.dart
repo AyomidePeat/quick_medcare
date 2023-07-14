@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
@@ -100,7 +98,7 @@ var gender = 'Male';
                  const SizedBox(height: 20),
                 Text(
                   'By Clicking Sign Up, you agree to our Terms and Conditions',
-                    style: const TextStyle(fontSize: 12, color:Colors.red, fontWeight: FontWeight.bold),
+                    style:headLine4(red),
                   textAlign: TextAlign.center,
                   overflow: TextOverflow.fade,
                 ),
@@ -121,7 +119,7 @@ var gender = 'Male';
                           content: Text('Sign Up Successful',
                           
                               textAlign: TextAlign.center,
-                              style: const TextStyle(fontSize: 16)),
+                              style: bodyText2(white)),
                               backgroundColor: blue,));
                       Navigator.pushReplacement(
                           context,

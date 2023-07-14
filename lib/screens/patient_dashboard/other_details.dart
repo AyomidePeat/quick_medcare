@@ -27,7 +27,7 @@ class _OtherDetailsScreenState extends State<OtherDetailsScreen> {
 
   FirestoreClass fireStore = FirestoreClass();
   bool isLoading = false;
-
+   bool isUploaded=false;
   @override
   void dispose() {
     ageController.dispose();
@@ -67,7 +67,7 @@ class _OtherDetailsScreenState extends State<OtherDetailsScreen> {
               )),
           title: Text(
             'Medical Info',
-            style: headline7(),
+            style: headLine4(white),
           )),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
@@ -121,15 +121,26 @@ class _OtherDetailsScreenState extends State<OtherDetailsScreen> {
               const SizedBox(height: 20),
               MainButton(
                   onpressed: () async {
-                    fireStore.addUserDetails(otherDetails: otherDetails);
+                    setState(() {
+                      isLoading = true;
+                    });
+                    bool uploadSuccess = await fireStore.addUserDetails(
+                        otherDetails: otherDetails);
+                    if (uploadSuccess) {
+                      setState(() {
+                        isUploaded = true;
+                                              isLoading = false;
+
+                      });
+                    }
                   },
                   height: 50,
                   width: double.maxFinite,
                   child: isLoading
                       ? LoadingAnimationWidget.inkDrop(color: white, size: 25)
                       : Text(
-                          'Submit',
-                          style: headline8(),
+                         isUploaded? 'Thank you' :'Submit',
+                          style: headLine4(white),
                         ))
             ],
           ),

@@ -26,7 +26,7 @@ class CustomTextField extends StatelessWidget {
         focusedBorder: const OutlineInputBorder(
             borderSide: BorderSide(color: Colors.transparent)),
         hintText: hint,
-        hintStyle: bodyText2(context),
+        hintStyle: bodyText3(black),
         prefixIcon: icon,
         fillColor: white,
         filled: true,
