@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:quick_medcare/utils/colors.dart';
 import 'package:quick_medcare/widgets/chat_list.dart';
 import 'package:quick_medcare/widgets/chat_textfield.dart';
 
-import '../../utils/textstyle.dart';
+import '../utils/textstyle.dart';
 
-class ChatScreen extends StatelessWidget {
-  const ChatScreen({super.key});
-
+class ChatScreen extends ConsumerWidget {
+  
+  const ChatScreen({super.key,});
+ 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, ref,) {
     return Scaffold(
       appBar: AppBar(
         elevation: 0,

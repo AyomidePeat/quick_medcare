@@ -2,11 +2,13 @@ class PatientDetailsModel {
   final String firstName;
   final String lastName;
   final String gender;
+  final String email;
 
-  PatientDetailsModel({
+  PatientDetailsModel( {
     required this.firstName,
     required this.lastName,
     required this.gender,
+    required this.email,
 
     //  this.id,
   });
@@ -15,12 +17,14 @@ class PatientDetailsModel {
         'firstName': firstName,
         'lastName': lastName,
         'gender': gender,
+        'email' : email,
       };
 
   factory PatientDetailsModel.getModelFromJson({Map<String, dynamic>? json}) {
     return PatientDetailsModel(
         firstName: json!['firstName'],
         gender: json['gender'],
+        email: json['email'],
         lastName: json['lastName']);
   }
 }
@@ -30,7 +34,6 @@ class OtherInfoModel {
   final String weight;
   final String height;
   final String cholesterol;
-
   final String healthAgency;
   final String bloodType;
   final String genotype;

@@ -61,6 +61,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     String firstName = '';
     String gender = '';
     String lastName = '';
+    String email = '';
     return SafeArea(
       top: false,
       child: Scaffold(
@@ -94,6 +95,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                               firstName = getPatientDetails.firstName;
                               gender = getPatientDetails.gender;
                               lastName = getPatientDetails.lastName;
+                              email = getPatientDetails.email;
                               return Text(
                                 'Hello $firstName👋',
                                 style: headLine3(black),
@@ -117,20 +119,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     const Icon(Icons.notifications_none_sharp),
                     const SizedBox(width: 5),
                     FutureBuilder<String?>(
-                     future: cloudStoreRef.getDpWithListener((newImageUrl) {
-    setState(() {
-      imageUrl = newImageUrl;
-    });
-  }),
+                      future: cloudStoreRef.getDpWithListener((newImageUrl) {
+                        setState(() {
+                          imageUrl = newImageUrl;
+                        });
+                      }),
                       builder: (context, snapshot) {
-                        if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return const CircleAvatar(
-                            backgroundColor: Colors.grey,
-                            radius: 50,
-                            child: CircularProgressIndicator(),
-                          );
-                        } else if (snapshot.hasError || snapshot.data == null) {
+                        if (snapshot.hasError || snapshot.data == null) {
                           return CircleAvatar(
                             backgroundColor: Colors.grey,
                             radius: 50,
@@ -138,10 +133,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                 Image.asset('images/userIcon.png').image,
                           );
                         } else {
-                          
-                            imageUrl = snapshot.data!                           ;
+                          imageUrl = snapshot.data;
 
-                        
                           return GestureDetector(
                             child: CircleAvatar(
                               backgroundImage: NetworkImage(imageUrl!),
@@ -149,7 +142,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                             onTap: () => Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => ProfileScreen(image:imageUrl,
+                                    builder: (context) => ProfileScreen(
+                                        email: email,
+                                        image: imageUrl,
                                         name: '$firstName $lastName',
                                         gender: gender,
                                         id: '001'))),

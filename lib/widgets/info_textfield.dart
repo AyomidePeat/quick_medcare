@@ -25,7 +25,7 @@ class InfoTextField extends StatelessWidget {
         focusedBorder: const OutlineInputBorder(
             borderSide: BorderSide(color: Colors.black)),
         hintText: hint,
-        hintStyle: bodyText3(grey),
+        hintStyle: bodyText3(black),
     
         fillColor: white,
         filled: true,

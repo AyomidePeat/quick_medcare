@@ -105,12 +105,12 @@ class _OtherDetailsScreenState extends State<OtherDetailsScreen> {
               ),
               const SizedBox(height: 20),
               InfoTextField(
-                controller: weightController,
+                controller: cholesterolController,
                 hint: 'Cholesterol',
               ),
               const SizedBox(height: 20),
               InfoTextField(
-                controller: cholesterolController,
+                controller: bloodPressureController,
                 hint: 'Blood Pressure',
               ),
               const SizedBox(height: 20),
@@ -129,7 +129,7 @@ class _OtherDetailsScreenState extends State<OtherDetailsScreen> {
                     if (uploadSuccess) {
                       setState(() {
                         isUploaded = true;
-                                              isLoading = false;
+                         isLoading = false;
 
                       });
                     }

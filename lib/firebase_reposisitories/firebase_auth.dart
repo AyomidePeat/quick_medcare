@@ -24,7 +24,8 @@ class AuthenticationMethod {
         PatientDetailsModel user = PatientDetailsModel(
           firstName: firstName,
           gender: gender,
-          lastName: lastName
+          lastName: lastName,
+          email: email
         );
         await firestoreClass.addUser(user: user);
         message = "Success";

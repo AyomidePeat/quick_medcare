@@ -4,6 +4,7 @@ import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:quick_medcare/models/chat_model.dart';
 import 'package:quick_medcare/models/patient_model.dart';
 import 'package:path/path.dart' as path;
 
@@ -89,26 +90,28 @@ class FirestoreClass {
     }
   }
 
- Future<String?> getDp() async {
-  String? image;
+  Future<String?> getDp() async {
+    String? image;
 
-  DocumentSnapshot snapshot = await FirebaseFirestore.instance
-      .collection('users')
-      .doc(auth.currentUser!.uid)
-      .get();
-  if (snapshot.exists) {
-    var data = snapshot.data() as Map<String, dynamic>; 
-    image = data['imageURL'] ?? '';
-    return image;
-  } else {
-    return null;
+    DocumentSnapshot snapshot = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(auth.currentUser!.uid)
+        .get();
+    if (snapshot.exists) {
+      var data = snapshot.data() as Map<String, dynamic>;
+      image = data['imageURL'] ?? '';
+      return image;
+    } else {
+      return null;
+    }
   }
-}
- StreamSubscription<DocumentSnapshot>? profileListener;
- 
-String? currentImageUrl;
 
-  Future<String?> getDpWithListener(Function(String?) onProfilePictureChanged) async {
+  StreamSubscription<DocumentSnapshot>? profileListener;
+
+  String? currentImageUrl;
+
+  Future<String?> getDpWithListener(
+      Function(String?) onProfilePictureChanged) async {
     String? initialImageUrl = await getDp();
 
     currentImageUrl = initialImageUrl;
@@ -133,10 +136,44 @@ String? currentImageUrl;
       }
     });
 
-   
     return initialImageUrl;
   }
 
+   _sendMessage(messageContent, recipientId) async {
+    var message = 'sent';
+    var currentUserId = auth.currentUser!.uid;
+    if (messageContent.isNotEmpty) {
+      try {
+        await firebaseFirestore.collection('messages').add({
+          'senderId': currentUserId,
+          'recipientId': recipientId,
+          'content': messageContent,
+          'timestamp': Timestamp.now(),
+        });
+      } catch (e) {
+        message = 'not sent';
+        return message;
+      }
+    }
   }
+  Future<List<ChatModel>> getMessages() async {
+  try {
+    QuerySnapshot<Map<String, dynamic>> querySnapshot =
+        await FirebaseFirestore.instance.collection('messages').get();
 
+    List<ChatModel> messages = [];
 
+    for (QueryDocumentSnapshot<Map<String, dynamic>> documentSnapshot
+        in querySnapshot.docs) {
+      Map<String, dynamic> data = documentSnapshot.data();
+
+      ChatModel message = ChatModel.fromJson(data);
+      messages.add(message);
+    }
+
+    return messages;
+  } catch (e) {
+    return [];
+  }
+}
+}
