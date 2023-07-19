@@ -3,21 +3,27 @@ class PatientDetailsModel {
   final String lastName;
   final String gender;
   final String email;
+  final String uid;
+  final String role;
 
-  PatientDetailsModel( {
-    required this.firstName,
-    required this.lastName,
-    required this.gender,
-    required this.email,
+  PatientDetailsModel(
+      {required this.firstName,
+      required this.lastName,
+      required this.gender,
+      required this.email,
+      required this.uid,
+      required this.role, 
 
-    //  this.id,
-  });
+      //  this.id,
+      });
 
   Map<String, dynamic> toJson() => {
         'firstName': firstName,
         'lastName': lastName,
         'gender': gender,
-        'email' : email,
+        'email': email,
+        'uid': uid,
+        'role':role,
       };
 
   factory PatientDetailsModel.getModelFromJson({Map<String, dynamic>? json}) {
@@ -25,6 +31,8 @@ class PatientDetailsModel {
         firstName: json!['firstName'],
         gender: json['gender'],
         email: json['email'],
+        uid: json['uid'],
+        role: json['role'],
         lastName: json['lastName']);
   }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:quick_medcare/chat_feature/chat_screen.dart';
+import 'package:quick_medcare/screens/chat_list_screen.dart';
 import 'package:quick_medcare/utils/colors.dart';
 import 'package:quick_medcare/utils/textstyle.dart';
 
@@ -90,7 +91,7 @@ class _PatientFileState extends State<PatientFile> {
                 width: double.infinity,
                 onpressed: () {
                   Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => ChatScreen()));
+                      MaterialPageRoute(builder: (context) => UsersListScreen()));
                 },
                 child: Text(
                   'Continue to Chat',

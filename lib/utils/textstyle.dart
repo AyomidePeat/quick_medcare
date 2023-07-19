@@ -37,3 +37,6 @@ bodyText3(color) {
 bodyText4(color) {
   return TextStyle(fontFamily: 'Poppins-Regular', fontSize: 12, color: color);
 }
+bodyText5(color) {
+  return TextStyle(fontFamily: 'Poppins-Regular', fontSize: 9, color: color);
+}

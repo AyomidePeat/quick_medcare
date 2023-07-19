@@ -63,7 +63,7 @@ class _PatientsState extends State<Patients> {
                       borderSide: BorderSide(color: black),
                       borderRadius: BorderRadius.all(Radius.circular(10))),
                   hintText: 'Search Patient',
-                  hintStyle: bodyText2(context),
+                  hintStyle: bodyText2(grey),
                   fillColor: white,
                   filled: true,
                   prefixIcon: const Icon(Icons.search)),
@@ -71,7 +71,7 @@ class _PatientsState extends State<Patients> {
             const SizedBox(height: 20),
             const AppointmentContainer(),
             const SizedBox(height: 20),
-            Text('Recent patients', style: bodyText1(context)),
+            Text('Recent patients', style: bodyText1(black)),
             Flexible(
               child: ListView.builder(
                   itemCount: 5,

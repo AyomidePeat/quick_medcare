@@ -1,8 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:quick_medcare/models/patient_model.dart';
 
 import 'cloud_firestore.dart';
-
 
 class AuthenticationMethod {
   FirebaseAuth auth = FirebaseAuth.instance;
@@ -19,14 +19,15 @@ class AuthenticationMethod {
     password.trim();
     if (firstName != "" && email != "" && password != "") {
       try {
-        await auth.createUserWithEmailAndPassword(
+        final userCredential = await auth.createUserWithEmailAndPassword(
             email: email, password: password);
         PatientDetailsModel user = PatientDetailsModel(
-          firstName: firstName,
-          gender: gender,
-          lastName: lastName,
-          email: email
-        );
+            firstName: firstName,
+            gender: gender,
+            lastName: lastName,
+            email: email,
+            uid: userCredential.user!.uid,
+            role: 'patient');
         await firestoreClass.addUser(user: user);
         message = "Success";
       } on FirebaseAuthException catch (e) {
@@ -34,13 +35,12 @@ class AuthenticationMethod {
           message = "Password is too weak";
         } else if (e.code == 'email-already-in-use') {
           message = 'Email already registered';
-        }
-         else if (e.code == 'user not found') {
+        } else if (e.code == 'user not found') {
           message = 'Email or Password is incorrect';
         }
         return message;
       } catch (e) {
-        print(e);
+        return e.toString();
       }
     } else {
       message = "Please fill up all the fields.";
@@ -62,7 +62,7 @@ class AuthenticationMethod {
           message = 'Username or password is incorrect';
         }
       } catch (e) {
-        print(e);
+        return e.toString();
       }
     } else {
       message = "Please fill up all the fields.";

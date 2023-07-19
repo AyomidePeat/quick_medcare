@@ -3,12 +3,20 @@ import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:quick_medcare/models/chat_model.dart';
 import 'package:quick_medcare/models/patient_model.dart';
 import 'package:path/path.dart' as path;
+//import 'package:uuid/uuid.dart';
+
+import 'firebase_storage.dart';
 
 final cloudStoreProvider = Provider<FirestoreClass>((ref) => FirestoreClass());
+final userDataAuthProvider = FutureProvider((ref) {
+  final authController = ref.watch(cloudStoreProvider);
+  return authController.getUser();
+});
 
 class FirestoreClass {
   FirebaseAuth auth = FirebaseAuth.instance;
@@ -18,6 +26,8 @@ class FirestoreClass {
         .collection('users')
         .doc(auth.currentUser!.uid)
         .set(user!.toJson());
+
+        
   }
 
   Future<PatientDetailsModel?> getUser() async {
@@ -139,41 +149,127 @@ class FirestoreClass {
     return initialImageUrl;
   }
 
-   _sendMessage(messageContent, recipientId) async {
-    var message = 'sent';
-    var currentUserId = auth.currentUser!.uid;
-    if (messageContent.isNotEmpty) {
-      try {
-        await firebaseFirestore.collection('messages').add({
-          'senderId': currentUserId,
-          'recipientId': recipientId,
-          'content': messageContent,
-          'timestamp': Timestamp.now(),
-        });
-      } catch (e) {
-        message = 'not sent';
-        return message;
-      }
-    }
-  }
-  Future<List<ChatModel>> getMessages() async {
-  try {
-    QuerySnapshot<Map<String, dynamic>> querySnapshot =
-        await FirebaseFirestore.instance.collection('messages').get();
+//    sendMessage(messageContent, recipientId) async {
+//     var message = 'sent';
+//     var currentUserId = auth.currentUser!.uid;
+//     if (messageContent.isNotEmpty) {
+//       try {
+//         await firebaseFirestore.collection('users')
+//         .doc(auth.currentUser!.uid).collection('messages').add({
+//           'senderId': currentUserId,
+//           'recipientId': recipientId,
+//           'content': messageContent,
+//           'timestamp': Timestamp.now(),
+//         });
+//           await firebaseFirestore
+//           .collection('users')
+//           .doc(recipientId)
+//           .collection('messages')
+//           .add({
+//         'senderId': currentUserId,
+//         'recipientId': recipientId,
+//         'content': messageContent,
+//         'timestamp': Timestamp.now(),
+//       });
+//       } catch (e) {
+//         message = 'not sent';
+//         return message;
+//       }
+//     }
+//   }
+//   Future<List<ChatModel>> getMessages() async {
+//   try {
+//     QuerySnapshot<Map<String, dynamic>> querySnapshot =
+//         await FirebaseFirestore.instance.collection('messages').get();
 
-    List<ChatModel> messages = [];
+//     List<ChatModel> messages = [];
 
-    for (QueryDocumentSnapshot<Map<String, dynamic>> documentSnapshot
-        in querySnapshot.docs) {
-      Map<String, dynamic> data = documentSnapshot.data();
+//     for (QueryDocumentSnapshot<Map<String, dynamic>> documentSnapshot
+//         in querySnapshot.docs) {
+//       Map<String, dynamic> data = documentSnapshot.data();
 
-      ChatModel message = ChatModel.fromJson(data);
-      messages.add(message);
-    }
+//       ChatModel message = ChatModel.fromJson(data);
+//       messages.add(message);
+//     }
 
-    return messages;
-  } catch (e) {
-    return [];
-  }
+//     return messages;
+//   } catch (e) {
+//     return [];
+//   }
+// }
+
+
+
+  //  void sendFileMessage({
+  //   required BuildContext context,
+  //   required File file,
+  //   required String recieverUserId,
+  //   required ChatModel senderUserData,
+  //   required ProviderRef ref,
+  //   required MessageEnum messageEnum,
+  //   required MessageReply? messageReply,
+  //   required bool isGroupChat,
+  // }) async {
+  //   try {
+  //     var timeSent = DateTime.now();
+  //     var messageId = const Uuid().v1();
+
+  //     String imageUrl = await ref
+  //         .read(firebaseStorageRepositoryProvider)
+  //         .storeFileToFirebase(
+  //           'chat/${messageEnum.type}/${senderUserData.uid}/$recieverUserId/$messageId',
+  //           file,
+  //         );
+
+  //     ChatModel? recieverUserData;
+     
+  //       var userDataMap =
+  //           await firebaseFirestore.collection('users').doc(recieverUserId).get();
+  //       recieverUserData = ChatModel.fromJson(userDataMap.data()!);
+      
+
+  //     String contactMsg;
+
+  //     switch (messageEnum) {
+  //       case MessageEnum.image:
+  //         contactMsg = '📷 Photo';
+  //         break;
+  //       case MessageEnum.video:
+  //         contactMsg = '📸 Video';
+  //         break;
+  //       case MessageEnum.audio:
+  //         contactMsg = '🎵 Audio';
+  //         break;
+  //       case MessageEnum.gif:
+  //         contactMsg = 'GIF';
+  //         break;
+  //       default:
+  //         contactMsg = 'GIF';
+  //     }
+     
+
+  //   } catch (e) {
+  //     showSnackBar(context: context, content: e.toString());
+  //   }
+  // }
+  
+  
+void showSnackBar({required BuildContext context, required String content}) {
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      content: Text(content),
+    ),
+  );
 }
-}
+
+
+  Stream<PatientDetailsModel> userData(String userId) {
+    return firebaseFirestore.collection('users').doc(userId).snapshots().map(
+          (event) => PatientDetailsModel.getModelFromJson (
+            
+          ),
+        );
+  }
+ 
+  }
+

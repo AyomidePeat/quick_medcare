@@ -2,26 +2,34 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_expandable_text/flutter_expandable_text.dart';
 import 'package:quick_medcare/screens/patient_dashboard/appointment_screen.dart';
-import 'package:quick_medcare/chat_feature/chat_screen.dart';
+
 import 'package:quick_medcare/utils/colors.dart';
 import 'package:quick_medcare/utils/textstyle.dart';
-import 'package:quick_medcare/widgets/main_button.dart';
 
+import '../../chatting/chat_screen.dart';
+import '../../widgets/main_button.dart';
 import '../../widgets/text_button_widget.dart';
 
 class DoctorDetailsScreen extends StatefulWidget {
   final String image;
   final String name;
   final String department;
-  final List time;
   final String specialization;
+  final String info;
+  final String experience;
+  final String numberOfPatients;
+  final String email;
+  final String uid;
+
   const DoctorDetailsScreen(
       {super.key,
       required this.image,
       required this.name,
       required this.department,
       required this.specialization,
-      required this.time});
+      required this.info,
+      required this.experience,
+      required this.numberOfPatients, required this.email, required this.uid});
 
   @override
   State<DoctorDetailsScreen> createState() => _DoctorDetailsScreenState();
@@ -51,7 +59,7 @@ class _DoctorDetailsScreenState extends State<DoctorDetailsScreen> {
                     height: 130,
                     width: size.width * 0.35,
                     decoration: BoxDecoration(
-                      image: DecorationImage(image: AssetImage(widget.image)),
+                      image: DecorationImage(image: NetworkImage(widget.image)),
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
@@ -78,14 +86,14 @@ class _DoctorDetailsScreenState extends State<DoctorDetailsScreen> {
                                 const SizedBox(width: 4),
                                 Text(
                                   '(24)',
-                                  style: bodyText2(context),
+                                  style: bodyText2(black),
                                 )
                               ],
                             ),
                           ),
                           Text(
                             widget.department,
-                            style: bodyText2(context),
+                            style: bodyText2(black),
                           ),
                         ],
                       ).animate().fadeIn(duration: 500.ms),
@@ -101,7 +109,7 @@ class _DoctorDetailsScreenState extends State<DoctorDetailsScreen> {
                     DetailsContainer(
                             aspect: 'patients',
                             color: Colors.red,
-                            details: '1000+',
+                            details: widget.numberOfPatients,
                             icon: Icons.people,
                             size: size)
                         .animate()
@@ -110,7 +118,7 @@ class _DoctorDetailsScreenState extends State<DoctorDetailsScreen> {
                     DetailsContainer(
                             aspect: 'Experience',
                             color: const Color.fromARGB(255, 255, 204, 65),
-                            details: '10 years',
+                            details: '${widget.experience} years',
                             icon: Icons.shopping_bag_sharp,
                             size: size)
                         .animate()
@@ -130,9 +138,8 @@ class _DoctorDetailsScreenState extends State<DoctorDetailsScreen> {
               ),
               Text('About doctor:', style: headLine4(black)),
               const SizedBox(height: 15),
-              ExpandableText(
-                  "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ac odio tempor orci dapibus ultrices in iaculis nunc sed. Sed ullamcorper morbi tincidunt ornare massa eget egestas. Pharetra sit amet aliquam id diam maecenas ultricies mi eget. Fermentum leo vel orci porta non pulvinar neque. Risus quis varius quam quisque id. Fringilla phasellus faucibus scelerisque eleifend donec pretium vulputate sapien nec. Ut sem nulla pharetra diam sit amet nisl. Enim tortor at auctor urna nunc id cursus metus aliquam. Sit amet est placerat in egestas erat. Est ante in nibh mauris. Viverra nibh cras pulvinar mattis nunc. Orci porta non pulvinar neque laoreet suspendisse interdum consectetur. Nulla facilisi etiam dignissim diam quis enim lobortis scelerisque. Mi eget mauris pharetra et ultrices neque ornare aenean..",
-                  readMoreText: 'Read more', onLinkPressed: (readMore) {
+              ExpandableText(widget.info, readMoreText: 'Read more',
+                  onLinkPressed: (readMore) {
                 setState(() {
                   textRead = readMore;
                 });
@@ -141,7 +148,7 @@ class _DoctorDetailsScreenState extends State<DoctorDetailsScreen> {
                   linkTextStyle: headLine4(black),
                   trimType: TrimType.lines,
                   trim: textRead ? 29 : 4,
-                  style: bodyText2(context)),
+                  style: bodyText2(black)),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 20.0),
                 child: Text('Specialization:', style: headLine4(black)),
@@ -167,7 +174,7 @@ class _DoctorDetailsScreenState extends State<DoctorDetailsScreen> {
               SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Row(children: [
-                  for (int i = 0; i < widget.time.length; i++)
+                  for (int i = 0; i < 3; i++)
                     Container(
                       margin: const EdgeInsets.only(right: 20),
                       padding: const EdgeInsets.all(10.0),
@@ -179,7 +186,7 @@ class _DoctorDetailsScreenState extends State<DoctorDetailsScreen> {
                           borderRadius: BorderRadius.circular(5)),
                       child: Text(
                         '07:30 PM',
-                        style: bodyText3(context),
+                        style: bodyText3(black),
                       ),
                     ),
                 ]),
@@ -193,7 +200,7 @@ class _DoctorDetailsScreenState extends State<DoctorDetailsScreen> {
               SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Row(children: [
-                  for (int i = 0; i <= widget.time.length; i++)
+                  for (int i = 0; i <= 3; i++)
                     Container(
                       margin: const EdgeInsets.only(right: 20),
                       padding: const EdgeInsets.all(8.0),
@@ -203,34 +210,21 @@ class _DoctorDetailsScreenState extends State<DoctorDetailsScreen> {
                             width: 0.4,
                           )),
                       child: Text(
-                        widget.time[0],
-                        style: bodyText3(context),
+                        '1',
+                        style: bodyText3(black),
                       ),
                     ),
                 ]),
               ),
               const SizedBox(height: 15),
-              Center(
-                child: CustomTextButton(
-                  onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const AppointmentScreen()));
-                  },
-                  text: 'Book Appointment',
-                )
-                    .animate()
-                    .then(duration: 300.ms)
-                    .fadeIn(duration: 500.ms)
-                    .slideY(duration: 500.ms, begin: 3),
-              ),
               MainButton(
                       onpressed: () {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => const ChatScreen()));
+                                builder: (context) => ChatScreen(name: widget.name, image: widget.image,
+                                      receiverUserEmail: widget.email,receiverUserId: widget.uid,
+                                    )));
                       },
                       height: 40,
                       width: double.infinity,
@@ -279,11 +273,11 @@ class DetailsContainer extends StatelessWidget {
               children: [
                 Text(
                   details,
-                  style: headLine4(grey),
+                  style: headLine4(black),
                 ),
                 Text(
                   aspect,
-                  style: bodyText3(context),
+                  style: bodyText3(black),
                 )
               ],
             ),

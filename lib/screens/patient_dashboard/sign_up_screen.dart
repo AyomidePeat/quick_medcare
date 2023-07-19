@@ -96,11 +96,13 @@ var gender = 'Male';
                 const SizedBox(height: 30),
                 selectGender(),
                  const SizedBox(height: 20),
-                Text(
-                  'By Clicking Sign Up, you agree to our Terms and Conditions',
-                    style:headLine4(red),
-                  textAlign: TextAlign.center,
-                  overflow: TextOverflow.fade,
+                Center(
+                  child: Text(
+                    'By Clicking Sign Up, you agree to our Terms and Conditions',
+                      style:headLine4(red),
+                    textAlign: TextAlign.center,
+                    overflow: TextOverflow.fade,
+                  ),
                 ),
                 const SizedBox(height: 40),
                 MainButton(

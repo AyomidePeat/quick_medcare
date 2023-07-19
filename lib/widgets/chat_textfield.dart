@@ -4,21 +4,27 @@ import '../utils/colors.dart';
 import '../utils/textstyle.dart';
 
 class ChatTextField extends StatelessWidget {
-  const ChatTextField({super.key});
+  final TextEditingController controller;
+  const ChatTextField({super.key, required this.controller});
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-    return SizedBox(width:size.width*0.6,
-    height:40,
-      child: TextField(
+    return Expanded(
+      child: TextField(textInputAction: TextInputAction.done,
+        controller: controller,
         cursorColor: black,
-        decoration: InputDecoration(contentPadding: EdgeInsets.all(10),
+        autocorrect: true,
+         maxLines: null,
+         enableSuggestions: true,
+        decoration: InputDecoration(
+          contentPadding: const EdgeInsets.all(10),
           enabledBorder: const OutlineInputBorder(
-              borderSide: BorderSide(color: Colors.transparent), borderRadius: BorderRadius.all(Radius.circular(10))),
+              borderSide: BorderSide(color: Colors.transparent),
+              borderRadius: BorderRadius.all(Radius.circular(10))),
           focusedBorder: const OutlineInputBorder(
-              borderSide: BorderSide(color: Colors.transparent), borderRadius: BorderRadius.all(Radius.circular(10))),
-          hintText: 'Write a reply...',
+              borderSide: BorderSide(color: Colors.transparent),
+              borderRadius: BorderRadius.all(Radius.circular(10))),
+          hintText: 'Send a message',
           hintStyle: bodyText3(black),
           fillColor: grey,
           filled: true,
