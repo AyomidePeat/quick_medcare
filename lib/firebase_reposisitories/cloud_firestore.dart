@@ -6,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:quick_medcare/models/chat_model.dart';
+import 'package:quick_medcare/models/illness_model.dart';
 import 'package:quick_medcare/models/patient_model.dart';
 import 'package:path/path.dart' as path;
 //import 'package:uuid/uuid.dart';
@@ -26,8 +27,6 @@ class FirestoreClass {
         .collection('users')
         .doc(auth.currentUser!.uid)
         .set(user!.toJson());
-
-        
   }
 
   Future<PatientDetailsModel?> getUser() async {
@@ -44,6 +43,21 @@ class FirestoreClass {
       return null;
     }
   }
+  
+    Stream<String?> getDp() {
+      return FirebaseFirestore.instance
+          .collection('users')
+          .doc(auth.currentUser!.uid)
+          .snapshots()
+          .map((snapshot) {
+        if (snapshot.exists) {
+          var data = snapshot.data() as Map<String, dynamic>;
+          return data['imageURL'] ?? '';
+        } else {
+          return null;
+        }
+      });
+    }
 
   Future addUserDetails({required OtherInfoModel otherDetails}) async {
     await firebaseFirestore
@@ -63,6 +77,19 @@ class FirestoreClass {
         .map((querySnapshot) {
       return querySnapshot.docs
           .map((doc) => OtherInfoModel.getModelFromJson(doc.data()))
+          .toList();
+    });
+  }
+
+  Stream<List<IllnessHistoryModel>> getIllnessHistory() {
+    return firebaseFirestore
+        .collection('users')
+        .doc(auth.currentUser?.uid)
+        .collection('illness-history')
+        .snapshots()
+        .map((querySnapshot) {
+      return querySnapshot.docs
+          .map((doc) => IllnessHistoryModel.getModelFromJson(doc.data()))
           .toList();
     });
   }
@@ -94,60 +121,43 @@ class FirestoreClass {
           .collection('users')
           .doc(auth.currentUser!.uid)
           .update({'imageURL': imageUrl});
-      print('Successsssssssssssssssss');
     } catch (error) {
-      print('Image upload failed: $error');
+//    }
     }
-  }
 
-  Future<String?> getDp() async {
-    String? image;
 
-    DocumentSnapshot snapshot = await FirebaseFirestore.instance
-        .collection('users')
-        .doc(auth.currentUser!.uid)
-        .get();
-    if (snapshot.exists) {
-      var data = snapshot.data() as Map<String, dynamic>;
-      image = data['imageURL'] ?? '';
-      return image;
-    } else {
-      return null;
-    }
-  }
+    // StreamSubscription<DocumentSnapshot>? profileListener;
 
-  StreamSubscription<DocumentSnapshot>? profileListener;
+    // String? currentImageUrl;
 
-  String? currentImageUrl;
+    // Future<String?> getDpWithListener(
+    //     Function(String?) onProfilePictureChanged) async {
+    //   String? initialImageUrl = await getDp();
 
-  Future<String?> getDpWithListener(
-      Function(String?) onProfilePictureChanged) async {
-    String? initialImageUrl = await getDp();
+    //   currentImageUrl = initialImageUrl;
 
-    currentImageUrl = initialImageUrl;
+    //   profileListener?.cancel();
 
-    profileListener?.cancel();
+    //   profileListener = firebaseFirestore
+    //       .collection('users')
+    //       .doc(auth.currentUser!.uid)
+    //       .snapshots()
+    //       .listen((DocumentSnapshot snapshot) {
+    //     if (snapshot.exists) {
+    //       Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
 
-    profileListener = firebaseFirestore
-        .collection('users')
-        .doc(auth.currentUser!.uid)
-        .snapshots()
-        .listen((DocumentSnapshot snapshot) {
-      if (snapshot.exists) {
-        Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
+    //       String? newImageUrl = data['imageURL'] as String?;
 
-        String? newImageUrl = data['imageURL'] as String?;
+    //       if (newImageUrl != currentImageUrl) {
+    //         currentImageUrl = newImageUrl;
 
-        if (newImageUrl != currentImageUrl) {
-          currentImageUrl = newImageUrl;
+    //         onProfilePictureChanged(newImageUrl);
+    //       }
+    //     }
+    //   });
 
-          onProfilePictureChanged(newImageUrl);
-        }
-      }
-    });
-
-    return initialImageUrl;
-  }
+    //   return initialImageUrl;
+    // }
 
 //    sendMessage(messageContent, recipientId) async {
 //     var message = 'sent';
@@ -198,78 +208,70 @@ class FirestoreClass {
 //   }
 // }
 
+    //  void sendFileMessage({
+    //   required BuildContext context,
+    //   required File file,
+    //   required String recieverUserId,
+    //   required ChatModel senderUserData,
+    //   required ProviderRef ref,
+    //   required MessageEnum messageEnum,
+    //   required MessageReply? messageReply,
+    //   required bool isGroupChat,
+    // }) async {
+    //   try {
+    //     var timeSent = DateTime.now();
+    //     var messageId = const Uuid().v1();
 
+    //     String imageUrl = await ref
+    //         .read(firebaseStorageRepositoryProvider)
+    //         .storeFileToFirebase(
+    //           'chat/${messageEnum.type}/${senderUserData.uid}/$recieverUserId/$messageId',
+    //           file,
+    //         );
 
-  //  void sendFileMessage({
-  //   required BuildContext context,
-  //   required File file,
-  //   required String recieverUserId,
-  //   required ChatModel senderUserData,
-  //   required ProviderRef ref,
-  //   required MessageEnum messageEnum,
-  //   required MessageReply? messageReply,
-  //   required bool isGroupChat,
-  // }) async {
-  //   try {
-  //     var timeSent = DateTime.now();
-  //     var messageId = const Uuid().v1();
+    //     ChatModel? recieverUserData;
 
-  //     String imageUrl = await ref
-  //         .read(firebaseStorageRepositoryProvider)
-  //         .storeFileToFirebase(
-  //           'chat/${messageEnum.type}/${senderUserData.uid}/$recieverUserId/$messageId',
-  //           file,
-  //         );
+    //       var userDataMap =
+    //           await firebaseFirestore.collection('users').doc(recieverUserId).get();
+    //       recieverUserData = ChatModel.fromJson(userDataMap.data()!);
 
-  //     ChatModel? recieverUserData;
-     
-  //       var userDataMap =
-  //           await firebaseFirestore.collection('users').doc(recieverUserId).get();
-  //       recieverUserData = ChatModel.fromJson(userDataMap.data()!);
-      
+    //     String contactMsg;
 
-  //     String contactMsg;
+    //     switch (messageEnum) {
+    //       case MessageEnum.image:
+    //         contactMsg = '📷 Photo';
+    //         break;
+    //       case MessageEnum.video:
+    //         contactMsg = '📸 Video';
+    //         break;
+    //       case MessageEnum.audio:
+    //         contactMsg = '🎵 Audio';
+    //         break;
+    //       case MessageEnum.gif:
+    //         contactMsg = 'GIF';
+    //         break;
+    //       default:
+    //         contactMsg = 'GIF';
+    //     }
 
-  //     switch (messageEnum) {
-  //       case MessageEnum.image:
-  //         contactMsg = '📷 Photo';
-  //         break;
-  //       case MessageEnum.video:
-  //         contactMsg = '📸 Video';
-  //         break;
-  //       case MessageEnum.audio:
-  //         contactMsg = '🎵 Audio';
-  //         break;
-  //       case MessageEnum.gif:
-  //         contactMsg = 'GIF';
-  //         break;
-  //       default:
-  //         contactMsg = 'GIF';
-  //     }
-     
+    //   } catch (e) {
+    //     showSnackBar(context: context, content: e.toString());
+    //   }
+    // }
 
-  //   } catch (e) {
-  //     showSnackBar(context: context, content: e.toString());
-  //   }
-  // }
-  
-  
-void showSnackBar({required BuildContext context, required String content}) {
-  ScaffoldMessenger.of(context).showSnackBar(
-    SnackBar(
-      content: Text(content),
-    ),
-  );
+    void showSnackBar(
+        {required BuildContext context, required String content}) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(content),
+        ),
+      );
+    }
+
+    Stream<PatientDetailsModel> userData(String userId) {
+      return firebaseFirestore.collection('users').doc(userId).snapshots().map(
+            (event) => PatientDetailsModel.getModelFromJson(),
+          );
+    }
+  }
 }
-
-
-  Stream<PatientDetailsModel> userData(String userId) {
-    return firebaseFirestore.collection('users').doc(userId).snapshots().map(
-          (event) => PatientDetailsModel.getModelFromJson (
-            
-          ),
-        );
-  }
- 
-  }
-

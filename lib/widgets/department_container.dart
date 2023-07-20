@@ -25,8 +25,9 @@ class DepartmentContainer extends StatelessWidget {
         ),
         child: Align(
             alignment: Alignment.center,
-            child: Row(mainAxisAlignment: MainAxisAlignment.spaceAround,
+            child: Row(mainAxisAlignment: MainAxisAlignment.center,
               children: [ SizedBox(height: 20, child: Image.asset(icon)),
+              SizedBox(width:5),
                 Text(
                   text,
                 ),

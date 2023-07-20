@@ -48,7 +48,7 @@ class IllnessContainer extends StatelessWidget {
                 ),
                 Text(
                   date,
-                  style: bodyText3(grey),
+                  style: bodyText3(black),
                 )
               ],
             )

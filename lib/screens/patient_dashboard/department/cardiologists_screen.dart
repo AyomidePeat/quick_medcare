@@ -3,23 +3,26 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import 'package:quick_medcare/screens/patient_dashboard/doctor_details.dart';
+import 'package:quick_medcare/utils/colors.dart';
+import 'package:quick_medcare/utils/textstyle.dart';
 
 import 'package:quick_medcare/widgets/doctor_container.dart';
 
-class DermatologistsScreen extends StatefulWidget {
-  const DermatologistsScreen({super.key});
+class CardiologistsScreen extends StatefulWidget {
+  const CardiologistsScreen({super.key});
 
   @override
-  State<DermatologistsScreen> createState() => _DermatologistsScreenState();
+  State<CardiologistsScreen> createState() => _CardiologistsScreenState();
 }
 
-class _DermatologistsScreenState extends State<DermatologistsScreen> {
+class _CardiologistsScreenState extends State<CardiologistsScreen> {
   final auth = FirebaseAuth.instance;
   final firebaseFirestore = FirebaseFirestore.instance;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar( leading: IconButton(
+        appBar: AppBar(
+           leading: IconButton(
               onPressed: () {
                 Navigator.pop(context);
               },
@@ -27,7 +30,7 @@ class _DermatologistsScreenState extends State<DermatologistsScreen> {
                 Icons.arrow_back_ios,
                 
               )),
-          title: const Text("Meet our Dermatologists"),
+          title: const Text("Meet our Cardiologists"),
         ),
         body: buildUserList());
   }
@@ -35,9 +38,7 @@ class _DermatologistsScreenState extends State<DermatologistsScreen> {
   Widget buildUserList() {
     return StreamBuilder<QuerySnapshot>(
         stream: firebaseFirestore
-            .collection('dentists')
-            .doc()
-            .collection('')
+            .collection('cardiologists')
             .snapshots(),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
@@ -49,7 +50,7 @@ class _DermatologistsScreenState extends State<DermatologistsScreen> {
             );
           }
           if (!snapshot.hasData) {
-            return const Text('No dernatologist added yet');
+            return Center(child:  Text('Coming soon...', style: headLine2(black),));
           }
           return ListView(
             children: snapshot.data!.docs
@@ -81,7 +82,7 @@ class _DermatologistsScreenState extends State<DermatologistsScreen> {
                     builder: ((context) => DoctorDetailsScreen(
                         image: image,
                         name: name,
-                        department: 'Dematology',
+                        department: 'Cardiology',
                         specialization: specialization,
                         info: info,
                         experience: experience,
@@ -90,7 +91,7 @@ class _DermatologistsScreenState extends State<DermatologistsScreen> {
                         numberOfPatients: numberOfPatients))));
           });
     } else {
-      return Container();
+       return Center(child:  Text('Coming soon...', style: headLine2(black),));
     }
   }
 }

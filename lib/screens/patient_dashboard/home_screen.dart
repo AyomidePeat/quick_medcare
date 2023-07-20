@@ -4,9 +4,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:quick_medcare/firebase_reposisitories/cloud_firestore.dart';
 import 'package:quick_medcare/models/patient_model.dart';
-import 'package:quick_medcare/screens/patient_dashboard/appointment_screen.dart';
 import 'package:quick_medcare/screens/patient_dashboard/department/dentists_screen.dart';
 import 'package:quick_medcare/screens/patient_dashboard/department/dermatologists_screen.dart';
+import 'package:quick_medcare/screens/patient_dashboard/department/general_screen.dart';
 import 'package:quick_medcare/screens/patient_dashboard/department/gynaecologists_screen.dart';
 import 'package:quick_medcare/screens/patient_dashboard/department/neurologists_screen.dart';
 import 'package:quick_medcare/screens/patient_dashboard/department/ophthalmologists_screen.dart';
@@ -16,6 +16,8 @@ import 'package:quick_medcare/utils/textstyle.dart';
 import 'package:quick_medcare/widgets/department_container.dart';
 import 'package:quick_medcare/widgets/illness_container.dart';
 
+import '../../utils/health_tips.dart';
+import 'department/cardiologists_screen.dart';
 import 'other_details.dart';
 
 final cloudStoreDocsProvider = FutureProvider((ref) async {
@@ -30,30 +32,25 @@ class HomeScreen extends ConsumerStatefulWidget {
 }
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
-  List icon = [
-    'icons/tooth.png',
-    'icons/skin.png',
-    'icons/maternity.png',
-    'icons/neurologist.png',
-    'icons/eyes.png',
-  ];
-  List illness = ['Toothache', 'Rashes', 'Antenatal', 'Migrain', 'Eye pain'];
-  List date = [
-    '21.05.2023',
-    '10.04.2023',
-    '09.02.2023',
-    '04.02.2023',
-    '06.01.2023'
-  ];
-  List treatmentMode = [
-    'physical treatment',
-    'online prescription',
-    'hospital visit',
-    'online prescription',
-    'online diagnosis'
-  ];
+  int currentIndex = 0;
+  @override
+  void initState() {
+    super.initState();
+    startTimer();
+  }
+
+  void startTimer() async {
+    await Future.delayed(const Duration(seconds: 20));
+    setState(() {
+      currentIndex = (currentIndex + 1) % healthTips.length;
+      startTimer();
+    });
+  }
+
+  
   @override
   Widget build(BuildContext context) {
+    final healthTip = healthTips[currentIndex];
     final cloudStoreRef = ref.watch(cloudStoreProvider);
     final size = MediaQuery.of(context).size;
     String currentDate = DateFormat('EEEE').format(DateTime.now());
@@ -116,14 +113,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 ),
                 Row(
                   children: [
-                    const Icon(Icons.notifications_none_sharp),
                     const SizedBox(width: 5),
-                    FutureBuilder<String?>(
-                      future: cloudStoreRef.getDpWithListener((newImageUrl) {
-                        setState(() {
-                          imageUrl = newImageUrl;
-                        });
-                      }),
+                    StreamBuilder<String?>(
+                      stream: cloudStoreRef.getDp(),
                       builder: (context, snapshot) {
                         if (snapshot.hasError || snapshot.data == null) {
                           return CircleAvatar(
@@ -133,6 +125,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                 Image.asset('images/userIcon.png').image,
                           );
                         } else {
+                          
                           imageUrl = snapshot.data;
 
                           return GestureDetector(
@@ -165,16 +158,26 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 scrollDirection: Axis.horizontal,
                 child: Row(
                   children: [
+                    SizedBox(width: 20),
                     DepartmentContainer(
                         screen: DentistsScreen(),
                         icon: 'icons/tooth.png',
                         text: 'Dentistry'),
                     SizedBox(width: 20),
                     DepartmentContainer(
+                        screen: CardiologistsScreen(),
+                        icon: 'icons/heart.png',
+                        text: 'Cardiology'),
+                    SizedBox(width: 20),
+                    DepartmentContainer(
                         screen: DermatologistsScreen(),
                         icon: 'icons/skin.png',
                         text: 'Dermatology'),
                     SizedBox(width: 20),
+                    DepartmentContainer(
+                        screen: GeneralDoctorsScreen(),
+                        icon: 'icons/stethoscope.png',
+                        text: 'General Doctors'),
                     DepartmentContainer(
                         screen: GynaecologistsScreen(),
                         icon: 'icons/maternity.png',
@@ -225,11 +228,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     }
                   }),
               Text(
-                'Upcoming appointment',
+                'Health Tips for You',
                 style: headLine3(black),
               ),
               const SizedBox(height: 15),
-              AppointmentContainer(size: size),
+              HealthTipContainer(size: size, healthTip: healthTip),
               const SizedBox(
                 height: 25,
               ),
@@ -237,94 +240,87 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 'My illness history',
                 style: headLine3(black),
               ),
-              Flexible(
-                  child: ListView.builder(
-                itemBuilder: (BuildContext context, int index) {
-                  return IllnessContainer(
-                          icon: icon[index],
-                          illness: illness[index],
-                          treatmentMode: treatmentMode[index],
-                          date: date[index])
-                      .animate()
-                      .slideY(
-                          begin: 3,
-                          duration: Duration(milliseconds: index * 300));
-                },
-                itemCount: icon.length,
-              )),
+              StreamBuilder(
+                  stream: cloudStoreRef.getIllnessHistory(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return CircularProgressIndicator(color: blue);
+                    } else {
+                      final illnessDetails = snapshot.data!;
+                      if (illnessDetails.isNotEmpty) {
+                        int index = 0;
+                        String date = illnessDetails[index].date;
+                        String treatmentMode =
+                            illnessDetails[index].treatmentMode;
+                        String illness = illnessDetails[index].illness;
+                        return Flexible(
+                            child: ListView.builder(
+                          itemBuilder: (BuildContext context, int index) {
+                            return IllnessContainer(
+                                    icon: 'icons/sick.png',
+                                    illness: illness[index],
+                                    treatmentMode: treatmentMode[index],
+                                    date: date[index])
+                                .animate()
+                                .slideY(
+                                    begin: 3,
+                                    duration:
+                                        Duration(milliseconds: index * 300));
+                          },
+                          itemCount: illnessDetails.length,
+                        ));
+                      } else {
+                        return Center(
+                          child: Column(mainAxisAlignment:MainAxisAlignment.center,
+                            children: [
+                              SizedBox(height:70),
+                              Image.asset('images/record.png'),
+                              const Text('You have no sickness history'),
+                            ],
+                          ),
+                        );
+                      }
+                    }
+                  }),
             ],
           ),
-        ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const AppointmentScreen()));
-          },
-          backgroundColor: blue,
-          tooltip: 'Book Appointment',
-          child: const Icon(Icons.add),
         ),
       ),
     );
   }
 }
 
-class AppointmentContainer extends StatelessWidget {
-  const AppointmentContainer({
+class HealthTipContainer extends StatelessWidget {
+  const HealthTipContainer({
     super.key,
+    required this.healthTip,
     required this.size,
   });
 
   final Size size;
+  final healthTip;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: size.height * 0.15,
+      padding: const EdgeInsets.all(20.0),
+      height: size.height * 0.16,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
         color: blue,
       ),
-      child: Padding(
-        padding: const EdgeInsets.all(15.0),
+      child: Center(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Row(
-              children: [
-                const CircleAvatar(
-                  backgroundImage: AssetImage('images/marian.jpg'),
-                  minRadius: 25,
-                ),
-                const SizedBox(width: 10),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Dr. Joeph Marian Adewole ',
-                      style: bodyText2(white),
-                    ),
-                    Text('10:30AM. General Consultation',
-                        style: bodyText4(white))
-                  ],
-                )
-              ],
+            SizedBox(height: 10),
+            Text(
+              healthTip['title'].toString(),
+              style: headLine1(white),
             ),
-            Container(
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: const Color.fromARGB(255, 41, 86, 233)),
-              child: Padding(
-                padding: const EdgeInsets.all(5.0),
-                child: Text(
-                  'Starts in 2 mins',
-                  style: bodyText3(white),
-                ),
-              ),
-            )
+                        SizedBox(height: 5),
+
+            Text(healthTip['content'].toString(), style: bodyText4(white)),
           ],
         ),
       ),

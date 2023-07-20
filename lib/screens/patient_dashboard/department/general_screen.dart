@@ -6,14 +6,14 @@ import 'package:quick_medcare/screens/patient_dashboard/doctor_details.dart';
 
 import 'package:quick_medcare/widgets/doctor_container.dart';
 
-class DermatologistsScreen extends StatefulWidget {
-  const DermatologistsScreen({super.key});
+class GeneralDoctorsScreen extends StatefulWidget {
+  const GeneralDoctorsScreen({super.key});
 
   @override
-  State<DermatologistsScreen> createState() => _DermatologistsScreenState();
+  State<GeneralDoctorsScreen> createState() => _GeneralDoctorsScreenState();
 }
 
-class _DermatologistsScreenState extends State<DermatologistsScreen> {
+class _GeneralDoctorsScreenState extends State<GeneralDoctorsScreen> {
   final auth = FirebaseAuth.instance;
   final firebaseFirestore = FirebaseFirestore.instance;
   @override
@@ -27,7 +27,7 @@ class _DermatologistsScreenState extends State<DermatologistsScreen> {
                 Icons.arrow_back_ios,
                 
               )),
-          title: const Text("Meet our Dermatologists"),
+          title: const Text("Meet our General Doctors"),
         ),
         body: buildUserList());
   }
@@ -35,9 +35,7 @@ class _DermatologistsScreenState extends State<DermatologistsScreen> {
   Widget buildUserList() {
     return StreamBuilder<QuerySnapshot>(
         stream: firebaseFirestore
-            .collection('dentists')
-            .doc()
-            .collection('')
+            .collection('general-doctors')
             .snapshots(),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
@@ -49,7 +47,7 @@ class _DermatologistsScreenState extends State<DermatologistsScreen> {
             );
           }
           if (!snapshot.hasData) {
-            return const Text('No dernatologist added yet');
+            return const Text('Coming soon...');
           }
           return ListView(
             children: snapshot.data!.docs
@@ -81,7 +79,7 @@ class _DermatologistsScreenState extends State<DermatologistsScreen> {
                     builder: ((context) => DoctorDetailsScreen(
                         image: image,
                         name: name,
-                        department: 'Dematology',
+                        department: 'General',
                         specialization: specialization,
                         info: info,
                         experience: experience,

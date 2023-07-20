@@ -19,7 +19,14 @@ class _GynaecologistsScreenState extends State<GynaecologistsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
+        appBar: AppBar( leading: IconButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              icon: const Icon(
+                Icons.arrow_back_ios,
+                
+              )),
           title: const Text("Meet our Gynaecologists"),
         ),
         body: buildUserList());

@@ -4,10 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:quick_medcare/firebase_reposisitories/cloud_firestore.dart';
+import 'package:quick_medcare/widgets/main_button.dart';
 
 import '../../utils/colors.dart';
 import '../../utils/textstyle.dart';
 import '../../utils/upload_image.dart';
+import 'other_details.dart';
 
 class ProfileScreen extends ConsumerStatefulWidget {
   final image;
@@ -122,10 +124,10 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                           ),
                         ],
                       ),
-                        Text(
-                            widget.email,
-                            style: bodyText4(grey),
-                          ),
+                      Text(
+                        widget.email,
+                        style: bodyText4(grey),
+                      ),
                     ],
                   ),
                 ),
@@ -147,21 +149,43 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return CircularProgressIndicator(color: blue);
-                  } else if (snapshot.hasData && snapshot.data != null) {
+                  } 
+                  else {
                     final userDetails = snapshot.data!;
-                    int i = 0;
-                    age = userDetails[i].age;
-                    weight = userDetails[i].weight;
-                    bloodPressure = userDetails[i].bloodPressure;
-                    bloodType = userDetails[i].bloodType;
-                    height = userDetails[i].height;
-                    healthAgency = userDetails[i].healthAgency;
-                    cholesterol = userDetails[i].cholesterol;
-                    genotype = userDetails[i].genotype;
+                    if (userDetails.isNotEmpty) {
+                      int i = 0;
+                      age = userDetails[i].age;
+                      weight = userDetails[i].weight;
+                      bloodPressure = userDetails[i].bloodPressure;
+                      bloodType = userDetails[i].bloodType;
+                      height = userDetails[i].height;
+                      healthAgency = userDetails[i].healthAgency;
+                      cholesterol = userDetails[i].cholesterol;
+                      genotype = userDetails[i].genotype;
+                    }else{  return Center(
+                      child: Column(mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [const SizedBox(height:100),
+                        Image.asset('images/record.png'),
+                         const SizedBox(height:10),
+                          const Text('You have not completed your registration'),
+                          const SizedBox(height:10),
+                          MainButton(
+                              onpressed: () { Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      const OtherDetailsScreen()));},
+                              height: 40,
+                              width: 160,
+                              child:  Text('Complete Now', style: headLine4(white),))
+                        ],
+                      ),
+                    );}
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        SizedBox(
+                        const SizedBox(
                           height: 20,
                         ),
                         Text(
@@ -225,12 +249,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                         ),
                         const DividerWidget(),
                       ],
-                    );
-                  } else {
-                    final error = snapshot.error.toString();
-                    print(error);
-                    return Center(
-                      child: Text(error),
                     );
                   }
                 })

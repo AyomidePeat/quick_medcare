@@ -8,6 +8,7 @@ import 'package:quick_medcare/screens/doctors_dashboard/home_screen.dart';
 import 'package:quick_medcare/screens/patient_dashboard/home_screen.dart';
 import 'package:quick_medcare/screens/patient_dashboard/sign_up_screen.dart';
 import 'package:quick_medcare/utils/colors.dart';
+import 'package:quick_medcare/utils/health_tips.dart';
 import 'package:quick_medcare/utils/textstyle.dart';
 import 'package:quick_medcare/widgets/main_button.dart';
 import 'package:quick_medcare/widgets/text_button_widget.dart';
@@ -87,7 +88,9 @@ class _SignInScreenState extends State<SignInScreen> {
                   ),
                   CustomTextButton(
                     text: 'Forgot Password',
-                    onPressed: () {},
+                    onPressed: () {
+
+                    },
                   )
                 ],
               ),
@@ -121,8 +124,7 @@ class _SignInScreenState extends State<SignInScreen> {
                           context,
                           MaterialPageRoute(
                               builder: (context) => const HomeScreen()));
-                  }
-
+                    }
                   } else {
                     setState(() {
                       isLoading = false;
