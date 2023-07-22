@@ -36,8 +36,7 @@ class _GynaecologistsScreenState extends State<GynaecologistsScreen> {
     return StreamBuilder<QuerySnapshot>(
         stream: firebaseFirestore
             .collection('gynaecologists')
-            .doc()
-            .collection('')
+            
             .snapshots(),
         builder: (context, snapshot) {
           if (snapshot.hasError) {

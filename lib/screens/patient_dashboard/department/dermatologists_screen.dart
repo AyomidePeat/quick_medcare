@@ -19,13 +19,13 @@ class _DermatologistsScreenState extends State<DermatologistsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar( leading: IconButton(
+        appBar: AppBar(
+          leading: IconButton(
               onPressed: () {
                 Navigator.pop(context);
               },
               icon: const Icon(
                 Icons.arrow_back_ios,
-                
               )),
           title: const Text("Meet our Dermatologists"),
         ),
@@ -34,11 +34,7 @@ class _DermatologistsScreenState extends State<DermatologistsScreen> {
 
   Widget buildUserList() {
     return StreamBuilder<QuerySnapshot>(
-        stream: firebaseFirestore
-            .collection('dentists')
-            .doc()
-            .collection('')
-            .snapshots(),
+        stream: firebaseFirestore.collection('dermatologists').snapshots(),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
             return Text('Error ${snapshot.error.toString()}');

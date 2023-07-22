@@ -36,8 +36,7 @@ class _OphthalmologistsScreenState extends State<OphthalmologistsScreen> {
     return StreamBuilder<QuerySnapshot>(
         stream: firebaseFirestore
             .collection('ophthalmologists')
-            .doc()
-            .collection('')
+          
             .snapshots(),
         builder: (context, snapshot) {
           if (snapshot.hasError) {

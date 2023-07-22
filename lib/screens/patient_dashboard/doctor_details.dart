@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_expandable_text/flutter_expandable_text.dart';
-import 'package:quick_medcare/screens/patient_dashboard/appointment_screen.dart';
 
 import 'package:quick_medcare/utils/colors.dart';
 import 'package:quick_medcare/utils/textstyle.dart';
 
 import '../../chatting/chat_screen.dart';
 import '../../widgets/main_button.dart';
-import '../../widgets/text_button_widget.dart';
 
 class DoctorDetailsScreen extends StatefulWidget {
   final String image;

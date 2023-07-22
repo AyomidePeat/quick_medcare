@@ -40,7 +40,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   void startTimer() async {
-    await Future.delayed(const Duration(seconds: 20));
+    await Future.delayed(const Duration(seconds: 10));
     setState(() {
       currentIndex = (currentIndex + 1) % healthTips.length;
       startTimer();

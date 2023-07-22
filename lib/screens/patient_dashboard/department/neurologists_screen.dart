@@ -36,8 +36,7 @@ class _NeurologistsScreenState extends State<NeurologistsScreen> {
     return StreamBuilder<QuerySnapshot>(
         stream: firebaseFirestore
             .collection('neurologists')
-            .doc()
-            .collection('')
+            
             .snapshots(),
         builder: (context, snapshot) {
           if (snapshot.hasError) {

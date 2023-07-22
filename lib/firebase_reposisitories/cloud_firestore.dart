@@ -43,29 +43,36 @@ class FirestoreClass {
       return null;
     }
   }
-  
-    Stream<String?> getDp() {
-      return FirebaseFirestore.instance
-          .collection('users')
-          .doc(auth.currentUser!.uid)
-          .snapshots()
-          .map((snapshot) {
-        if (snapshot.exists) {
-          var data = snapshot.data() as Map<String, dynamic>;
-          return data['imageURL'] ?? '';
-        } else {
-          return null;
-        }
-      });
-    }
+
+  Stream<String?> getDp() {
+    return FirebaseFirestore.instance
+        .collection('users')
+        .doc(auth.currentUser!.uid)
+        .snapshots()
+        .map((snapshot) {
+      if (snapshot.exists) {
+        var data = snapshot.data() as Map<String, dynamic>;
+        return data['imageURL'] ?? '';
+      } else {
+        return null;
+      }
+    });
+  }
 
   Future addUserDetails({required OtherInfoModel otherDetails}) async {
-    await firebaseFirestore
-        .collection('users')
-        .doc(auth.currentUser?.uid)
-        .collection("user-details")
-        .doc()
-        .set(otherDetails.toJson());
+    String message = 'Something went wrong';
+    try {
+      await firebaseFirestore
+          .collection('users')
+          .doc(auth.currentUser?.uid)
+          .collection("user-details")
+          .doc()
+          .set(otherDetails.toJson());
+      message = 'Uploaded';
+    } catch (e) {
+      return e.toString();
+    }
+    return message;
   }
 
   Stream<List<OtherInfoModel>> getUserDetails() {
@@ -124,7 +131,6 @@ class FirestoreClass {
     } catch (error) {
 //    }
     }
-
 
     // StreamSubscription<DocumentSnapshot>? profileListener;
 

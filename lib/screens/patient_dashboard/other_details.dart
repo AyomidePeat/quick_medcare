@@ -124,16 +124,28 @@ class _OtherDetailsScreenState extends State<OtherDetailsScreen> {
                     setState(() {
                       isLoading = true;
                     });
-                    bool uploadSuccess = await fireStore.addUserDetails(
+                    final uploadSuccess = await fireStore.addUserDetails(
                         otherDetails: otherDetails);
-                    if (uploadSuccess) {
+                    if (uploadSuccess=='Uploaded') {
                       setState(() {
                         isUploaded = true;
                          isLoading = false;
 
                       });
-                    }
-                  },
+                    }else{
+                        setState(() {
+                    
+                         isLoading = false;
+
+                      });
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        backgroundColor: blue,
+                        content: Text(uploadSuccess,
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(fontSize: 16))));
+                  } 
+                    },
+                  
                   height: 50,
                   width: double.maxFinite,
                   child: isLoading
