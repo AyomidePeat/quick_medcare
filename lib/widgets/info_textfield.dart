@@ -17,6 +17,7 @@ class InfoTextField extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextField(
       cursorColor: black,
+       maxLines: null,
       controller: controller,
       decoration: InputDecoration(
       

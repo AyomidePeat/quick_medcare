@@ -37,15 +37,15 @@ bool isImageGood() {
   return _imageFile != null;
 }
 
-String email = '';
-String age = '';
-String cholesterol = '';
-String healthAgency = '';
-String bloodType = '';
-String bloodPressure = '';
-String genotype = '';
-String height = '';
-String weight = '';
+late String email;
+late String age ;
+late String cholesterol;
+late String healthAgency;
+late String bloodType;
+late String bloodPressure;
+late String genotype;
+late String height;
+late String weight;
 
 class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   @override

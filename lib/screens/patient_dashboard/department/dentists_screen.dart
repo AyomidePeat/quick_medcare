@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:quick_medcare/screens/patient_dashboard/doctor_details.dart';
 
 import 'package:quick_medcare/widgets/doctor_container.dart';
+import 'package:quick_medcare/widgets/main_button.dart';
 
 class DentistsScreen extends StatefulWidget {
   const DentistsScreen({super.key});
@@ -71,9 +72,10 @@ class _DentistsScreenState extends State<DentistsScreen> {
 
     if (auth.currentUser!.email != data['email']) {
       return ListTile(
-          title: DoctorContainer(image: image, name: name, role: role),
-          onTap: () {
-            Navigator.push(
+          title: Column(
+            children: [
+              DoctorContainer(image: image, name: name, role: role),
+              MainButton(onpressed: (){ Navigator.push(
                 context,
                 MaterialPageRoute(
                     builder: ((context) => DoctorDetailsScreen(
@@ -85,8 +87,10 @@ class _DentistsScreenState extends State<DentistsScreen> {
                         experience: experience,
                         email: email,
                         uid: uid,
-                        numberOfPatients: numberOfPatients))));
-          });
+                        numberOfPatients: numberOfPatients))));}, height: 40, width: 150, child: const Text('View Profile'))
+            ],
+          ),
+         );
     } else {
       return Container();
     }

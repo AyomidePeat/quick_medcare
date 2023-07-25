@@ -6,6 +6,8 @@ import 'package:quick_medcare/screens/patient_dashboard/doctor_details.dart';
 
 import 'package:quick_medcare/widgets/doctor_container.dart';
 
+import '../../../widgets/main_button.dart';
+
 class GeneralDoctorsScreen extends StatefulWidget {
   const GeneralDoctorsScreen({super.key});
 
@@ -71,9 +73,10 @@ class _GeneralDoctorsScreenState extends State<GeneralDoctorsScreen> {
 
     if (auth.currentUser!.email != data['email']) {
       return ListTile(
-          title: DoctorContainer(image: image, name: name, role: role),
-          onTap: () {
-            Navigator.push(
+           title: Column(
+            children: [
+              DoctorContainer(image: image, name: name, role: role),
+              MainButton(onpressed: (){ Navigator.push(
                 context,
                 MaterialPageRoute(
                     builder: ((context) => DoctorDetailsScreen(
@@ -85,8 +88,9 @@ class _GeneralDoctorsScreenState extends State<GeneralDoctorsScreen> {
                         experience: experience,
                         email: email,
                         uid: uid,
-                        numberOfPatients: numberOfPatients))));
-          });
+                        numberOfPatients: numberOfPatients))));}, height: 40, width: 150, child: const Text('View Profile'))
+            ],
+          ),);
     } else {
       return Container();
     }

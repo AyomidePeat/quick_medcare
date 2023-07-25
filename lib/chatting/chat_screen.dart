@@ -1,12 +1,17 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:quick_medcare/chatting/chat_service.dart';
 import 'package:quick_medcare/utils/colors.dart';
 import 'package:quick_medcare/utils/textstyle.dart';
 import 'package:quick_medcare/widgets/chat_textfield.dart';
 import 'package:quick_medcare/widgets/my_message_container.dart';
 import 'package:quick_medcare/widgets/sender_message_container.dart';
+
+import '../utils/upload_image.dart';
 
 class ChatScreen extends StatefulWidget {
   final String receiverUserEmail;
@@ -27,12 +32,37 @@ class _ChatScreenState extends State<ChatScreen> {
   final TextEditingController messageController = TextEditingController();
   final ChatService chatService = ChatService();
   final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
-
+    XFile? _imageFile;
   void sendMessage() async {
     if (messageController.text.isNotEmpty) {
       await chatService.sendMessage(
           widget.receiverUserId, messageController.text);
       messageController.clear();
+    }
+  }
+  ImageUpload imageUpload = ImageUpload();
+// Future<void> _pickImage() async {
+//     final ImagePicker _picker = ImagePicker();
+//     final XFile? pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+//     setState(() {
+//       _imageFile = pickedFile;
+//     });
+//   }
+  File convertXFileToFile(XFile xFile) {
+    final filePath = xFile.path;
+    return File(filePath);
+  }
+
+  Future<void> _sendMessageWithImage() async {
+    if (_imageFile != null) {
+      File image = File(_imageFile!.path); 
+      await chatService.sendImageMessage(
+        widget.receiverUserId,
+        image,
+      );
+      setState(() {
+        _imageFile = null;
+      });
     }
   }
 
@@ -59,7 +89,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 CircleAvatar(
                   backgroundImage: NetworkImage(widget.image),
                 ),
-                SizedBox(width: 10,),
+                const SizedBox(width: 10,),
                 Text(
                   'Dr. ${widget.name}',
                   style: headLine2(white),
@@ -78,7 +108,19 @@ class _ChatScreenState extends State<ChatScreen> {
     return Row(
       children: [
         ChatTextField(controller: messageController),
-        IconButton(onPressed: sendMessage, icon: Icon(Icons.send))
+        IconButton(onPressed: sendMessage, icon: const Icon(Icons.send)),
+         IconButton(onPressed: (){
+                                    imageUpload.uploadImage(context, (pickedImg) {
+                            setState(() {
+                              _imageFile = pickedImg;
+                            });
+                            final pickedImageFile =
+                                convertXFileToFile(pickedImg);
+                            chatService
+                                .sendImageMessage(  widget.receiverUserId,  pickedImageFile);
+                          });
+
+         }, icon: const Icon(Icons.attach_file_outlined)),
       ],
     );
   }

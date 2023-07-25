@@ -1,112 +1,225 @@
+import 'dart:js_interop';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:quick_medcare/chat_feature/chat_screen.dart';
+import 'package:quick_medcare/chatting/chat_screen.dart';
+import 'package:quick_medcare/models/patient_model.dart';
 import 'package:quick_medcare/screens/chat_list_screen.dart';
 import 'package:quick_medcare/utils/colors.dart';
 import 'package:quick_medcare/utils/textstyle.dart';
 
+import '../../firebase_reposisitories/cloud_firestore.dart';
 import '../../widgets/custom_container.dart';
 import '../../widgets/main_button.dart';
 
-class PatientFile extends StatefulWidget {
+class PatientFile extends ConsumerStatefulWidget {
   const PatientFile({super.key});
 
   @override
-  State<PatientFile> createState() => _PatientFileState();
+  ConsumerState<PatientFile> createState() => _PatientFileState();
 }
 
-class _PatientFileState extends State<PatientFile> {
-  int idNo = 09755;
+class _PatientFileState extends ConsumerState<PatientFile> {
+  late int idNo;
+  late String uid;
+  late final String fullName;
+  late final String dob;
+  late final String gender;
+  late final String email;
+  late final String address;
+  late final String pastConditions;
+  late final String allergies;
+  late final String previousSurgeries;
+  late final String symptoms;
+  late final String symptomDuration;
+  late final String symptomSeverity;
+  var testResults;
+  var imageReports;
+  late final String diagnosis;
+  late final String prescription;
+  late final String surgicalProcedure;
   @override
   Widget build(BuildContext context) {
+    final firestoreRef = ref.watch(cloudStoreProvider);
     //final size = MediaQuery.of(context).size;
+
     return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        centerTitle: true,
-        backgroundColor: Colors.transparent,
-        leading: IconButton(
-            onPressed: () => Navigator.pop(context),
-            icon: const Icon(
-              Icons.arrow_back_ios,
-              color: Colors.black,
-            )),
-        title: Text(
-          'Bio Data',
-          style: headLine4(black),
+        appBar: AppBar(
+          elevation: 0,
+          centerTitle: true,
+          backgroundColor: Colors.transparent,
+          leading: IconButton(
+              onPressed: () => Navigator.pop(context),
+              icon: const Icon(
+                Icons.arrow_back_ios,
+                color: Colors.black,
+              )),
+          title: Text(
+            'Medical Data',
+            style: headLine4(black),
+          ),
         ),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: SingleChildScrollView(
-          child:
-              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Row(
-              children: [
-                const CircleAvatar(
-                  minRadius: 30,
-                  backgroundImage: AssetImage('images/patient.jpg'),
-                ),
-                const SizedBox(width: 10),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Jane Doe',
-                      style: headLine4(black),
-                    ),
-                    Text(
-                      'Reg No: $idNo',
-                      style: const TextStyle(
-                          fontFamily: 'Poppins-Regular',
-                          fontSize: 12,
-                          color: Colors.black),
-                    ),
-                    const Text(
-                      'Registered February 25, 2019',
-                      style: TextStyle(
-                          fontFamily: 'Poppins-Regular',
-                          fontSize: 9,
-                          color: Colors.black),
-                    ),
-                  ],
-                )
-              ],
-            ),
-            const SizedBox(
-              height: 30,
-            ),
-            const ContactInfo(),
-            const SizedBox(height: 30),
-            const NextOfKinContainer(),
-            const SizedBox(
-              height: 30,
-            ),
-            const OtherInfo(),
-            const SizedBox(
-              height: 30,
-            ),
-            MainButton(
-                height: 35,
-                width: double.infinity,
-                onpressed: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => UsersListScreen()));
-                },
-                child: Text(
-                  'Continue to Chat',
-                  style: bodyText3(black),
-                )),
-          ]),
-        ),
-      ),
+        body: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: SingleChildScrollView(
+            child:
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              StreamBuilder(
+                  stream: firestoreRef.getPatientDetails(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Center(
+                          child: CircularProgressIndicator(color: blue));
+                    } else {
+                      final patientDetails = snapshot.data!;
+                      if (patientDetails.isNotEmpty) {
+                        int i = 0;
+
+                        fullName = patientDetails[i].fullName;
+                        dob = patientDetails[i].dob;
+                        gender = patientDetails[i].gender;
+                        email = patientDetails[i].email;
+                        address = patientDetails[i].address;
+                        pastConditions = patientDetails[i].pastConditions;
+                        allergies = patientDetails[i].allergies;
+                        previousSurgeries = patientDetails[i].previousSurgeries;
+                        symptoms = patientDetails[i].symptoms;
+                        symptomDuration = patientDetails[i].symptomDuration;
+                        symptomSeverity = patientDetails[i].symptomSeverity;
+                        diagnosis = patientDetails[i].diagnosis;
+                        prescription = patientDetails[i].prescription;
+                        surgicalProcedure = patientDetails[i].surgicalProcedure;
+                      } else {}
+                      return Column(
+                        children: [
+                          Row(
+                            children: [
+                              const CircleAvatar(
+                                minRadius: 30,
+                                backgroundImage:
+                                    AssetImage('images/patient.jpg'),
+                              ),
+                              const SizedBox(width: 10),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Jane Doe',
+                                    style: headLine4(black),
+                                  ),
+                                  Text(
+                                    'Reg No: $idNo',
+                                    style: const TextStyle(
+                                        fontFamily: 'Poppins-Regular',
+                                        fontSize: 12,
+                                        color: Colors.black),
+                                  ),
+                                  const Text(
+                                    'Registered February 25, 2019',
+                                    style: TextStyle(
+                                        fontFamily: 'Poppins-Regular',
+                                        fontSize: 9,
+                                        color: Colors.black),
+                                  ),
+                                ],
+                              )
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 30,
+                          ),
+                          PersonalInformation(
+                            address: address,
+                            dob: dob,
+                            email: email,
+                            fullName: fullName,
+                            gender: gender,
+                          ),
+                          const SizedBox(height: 30),
+                          MedicalHistory(
+                            allergies: allergies,
+                            pastConditions: pastConditions,
+                            previousSurgeries: previousSurgeries,
+                          ),
+                          const SizedBox(
+                            height: 30,
+                          ),
+                          CurrentExamination(
+                            diagnosis: diagnosis,
+                            prescription: prescription,
+                            surgicalProcedure: surgicalProcedure,
+                            symptomDuration: symptomDuration,
+                            symptomSeverity: symptomSeverity,
+                            symptoms: symptoms,
+                          ),
+                          const SizedBox(
+                            height: 30,
+                          ),
+                          MainButton(
+                              height: 35,
+                              width: double.infinity,
+                              onpressed: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => ChatScreen(
+                                            receiverUserEmail: email,
+                                            name: fullName,
+                                            receiverUserId: uid,
+                                            image: 'images/patient.jpg')));
+                              },
+                              child: Text(
+                                'Continue to Chat',
+                                style: bodyText3(black),
+                              )),
+                        ],
+                      );
+                    }
+                  })
+            ]),
+          ),
+        ));
+  }
+
+  Widget getUid(ref) {
+    return StreamBuilder<PatientDetailsModel>(
+      stream: ref.getUser(),
+      builder: (context, snapshot) {
+        final patientData = snapshot.data!;
+        if (patientData != null) {
+          final uid = patientData.uid;
+          getUidString(uid);
+          return Text(uid ?? ''); // Use the uid value in the Text widget
+        } else {
+          return Text(
+              ''); // Return an empty Text widget if data is not available
+        }
+      },
     );
+  }
+
+  String? getUidString(userUid) {
+    setState(() {
+      uid = userUid;
+    });
   }
 }
 
-class ContactInfo extends StatelessWidget {
-  const ContactInfo({
+class PersonalInformation extends StatelessWidget {
+  final String fullName;
+  final String dob;
+  final String gender;
+  final String email;
+  final String address;
+  const PersonalInformation({
     super.key,
+    required this.fullName,
+    required this.dob,
+    required this.gender,
+    required this.email,
+    required this.address,
   });
 
   @override
@@ -128,12 +241,11 @@ class ContactInfo extends StatelessWidget {
                       width: 5,
                     ),
                     Text(
-                      'Contact Info',
+                      'Personal Information',
                       style: headLine3(black),
                     ),
                   ],
                 ),
-                SvgPicture.asset('images/edit.svg'),
               ],
             ),
             const SizedBox(
@@ -142,10 +254,10 @@ class ContactInfo extends StatelessWidget {
             Row(
               children: [
                 Text(
-                  'Age:',
+                  'Full Name: ',
                   style: bodyText3(black),
                 ),
-                Text(' 42', style: headLine4(black)),
+                Text(fullName, style: headLine4(black)),
               ],
             ),
             const Padding(
@@ -158,7 +270,7 @@ class ContactInfo extends StatelessWidget {
                   'DOB:',
                   style: bodyText3(black),
                 ),
-                Text(' dd/mm/yyyy', style: headLine4(black)),
+                Text(dob, style: headLine4(black)),
               ],
             ),
             const Padding(
@@ -168,7 +280,7 @@ class ContactInfo extends StatelessWidget {
             Row(
               children: [
                 Text('Gender:', style: bodyText3(black)),
-                Text(' Female', style: headLine4(black)),
+                Text(gender, style: headLine4(black)),
               ],
             ),
             const Padding(
@@ -177,38 +289,8 @@ class ContactInfo extends StatelessWidget {
             ),
             Row(
               children: [
-                Text('Father\'s Name:', style: bodyText3(black)),
-                Text(' John Doe', style: headLine4(black)),
-              ],
-            ),
-            const Padding(
-              padding: EdgeInsets.symmetric(vertical: 10.0),
-              child: CustomDivider(),
-            ),
-            Row(
-              children: [
-                Text('Mother\'s Name:', style: bodyText3(black)),
-                Text(' Janet Doe', style: headLine4(black)),
-              ],
-            ),
-            const Padding(
-              padding: EdgeInsets.symmetric(vertical: 10.0),
-              child: CustomDivider(),
-            ),
-            Row(
-              children: [
-                Text('Phone Number:', style: bodyText3(black)),
-                Text(' +234123456789', style: headLine4(black)),
-              ],
-            ),
-            const Padding(
-              padding: EdgeInsets.symmetric(vertical: 10.0),
-              child: CustomDivider(),
-            ),
-            Row(
-              children: [
-                Text('Email Address:', style: bodyText3(black)),
-                Text(' example@gmail.com', style: headLine4(black)),
+                Text('Email:', style: bodyText3(black)),
+                Text(email, style: headLine4(black)),
               ],
             ),
             const Padding(
@@ -229,16 +311,23 @@ class ContactInfo extends StatelessWidget {
   }
 }
 
-class NextOfKinContainer extends StatelessWidget {
-  const NextOfKinContainer({
+class MedicalHistory extends StatelessWidget {
+  final String pastConditions;
+  final String allergies;
+  final String previousSurgeries;
+
+  const MedicalHistory({
     super.key,
+    required this.pastConditions,
+    required this.allergies,
+    required this.previousSurgeries,
   });
 
   @override
   Widget build(BuildContext context) {
     return CustomContainer(
         color: lightBlue,
-        height: 500,
+        height: 300,
         width: double.infinity,
         child: Padding(
           padding: const EdgeInsets.all(10.0),
@@ -253,12 +342,11 @@ class NextOfKinContainer extends StatelessWidget {
                       width: 5,
                     ),
                     Text(
-                      'Next of Kin',
+                      'Past Medical Conditions',
                       style: headLine3(black),
                     ),
                   ],
                 ),
-                SvgPicture.asset('images/edit.svg'),
               ],
             ),
             const SizedBox(
@@ -266,8 +354,8 @@ class NextOfKinContainer extends StatelessWidget {
             ),
             Row(
               children: [
-                Text('Name of Next of Kin:', style: bodyText3(black)),
-                Text(' John Doe', style: headLine4(black)),
+                Text('Known Allergies: ', style: bodyText3(black)),
+                Text(allergies, style: headLine4(black)),
               ],
             ),
             const Padding(
@@ -276,8 +364,8 @@ class NextOfKinContainer extends StatelessWidget {
             ),
             Row(
               children: [
-                Text('DOB:', style: bodyText3(black)),
-                Text(' dd/mm/yyyy', style: headLine4(black)),
+                Text('Past conditions: ', style: bodyText3(black)),
+                Text(pastConditions, style: headLine4(black)),
               ],
             ),
             const Padding(
@@ -286,51 +374,8 @@ class NextOfKinContainer extends StatelessWidget {
             ),
             Row(
               children: [
-                Text('Gender:', style: bodyText3(black)),
-                Text(' Male', style: headLine4(black)),
-              ],
-            ),
-            const Padding(
-              padding: EdgeInsets.symmetric(vertical: 10.0),
-              child: CustomDivider(),
-            ),
-            Row(
-              children: [
-                Text('Relationship:', style: bodyText3(black)),
-                Text(' Father', style: headLine4(black)),
-              ],
-            ),
-            const Padding(
-              padding: EdgeInsets.symmetric(vertical: 10.0),
-              child: CustomDivider(),
-            ),
-            Row(
-              children: [
-                Text('Home Address:', style: bodyText3(black)),
-                SizedBox(
-                    width: 150,
-                    child: Text(' 12, XYZ street, LA',
-                        overflow: TextOverflow.fade, style: headLine4(black))),
-              ],
-            ),
-            const Padding(
-              padding: EdgeInsets.symmetric(vertical: 10.0),
-              child: CustomDivider(),
-            ),
-            Row(
-              children: [
-                Text('Phone Number:', style: bodyText3(black)),
-                Text(' +234123456789', style: headLine4(black)),
-              ],
-            ),
-            const Padding(
-              padding: EdgeInsets.symmetric(vertical: 10.0),
-              child: CustomDivider(),
-            ),
-            Row(
-              children: [
-                Text('Email Address:', style: bodyText3(black)),
-                Text(' example@gmail.com', style: headLine4(black)),
+                Text('Previous Surgeries: ', style: bodyText3(black)),
+                Text(previousSurgeries, style: headLine4(black)),
               ],
             ),
           ]),
@@ -338,9 +383,21 @@ class NextOfKinContainer extends StatelessWidget {
   }
 }
 
-class OtherInfo extends StatelessWidget {
-  const OtherInfo({
+class CurrentExamination extends StatelessWidget {
+  final String symptoms;
+  final String symptomDuration;
+  final String symptomSeverity;
+  final String diagnosis;
+  final String prescription;
+  final String surgicalProcedure;
+  const CurrentExamination({
     super.key,
+    required this.symptoms,
+    required this.symptomDuration,
+    required this.symptomSeverity,
+    required this.diagnosis,
+    required this.prescription,
+    required this.surgicalProcedure,
   });
 
   @override
@@ -362,12 +419,11 @@ class OtherInfo extends StatelessWidget {
                       width: 5,
                     ),
                     Text(
-                      'Other Info',
+                      'Current Examination and Treatment',
                       style: headLine3(black),
                     ),
                   ],
                 ),
-                SvgPicture.asset('images/edit.svg'),
               ],
             ),
             const SizedBox(
@@ -375,8 +431,8 @@ class OtherInfo extends StatelessWidget {
             ),
             Row(
               children: [
-                Text('Blood Type:', style: bodyText3(black)),
-                Text(' O Positive', style: headLine4(black)),
+                Text('Symptoms: ', style: bodyText3(black)),
+                Text(symptoms, style: headLine4(black)),
               ],
             ),
             const Padding(
@@ -385,8 +441,8 @@ class OtherInfo extends StatelessWidget {
             ),
             Row(
               children: [
-                Text('Genetotype', style: bodyText3(black)),
-                Text(' AA', style: headLine4(black)),
+                Text('Symptom Duration: ', style: bodyText3(black)),
+                Text(symptomDuration, style: headLine4(black)),
               ],
             ),
             const Padding(
@@ -395,8 +451,8 @@ class OtherInfo extends StatelessWidget {
             ),
             Row(
               children: [
-                Text('Health Insurance Agency', style: bodyText3(black)),
-                Text(' NHIS', style: headLine4(black)),
+                Text('Symptom Severity: ', style: bodyText3(black)),
+                Text(symptomSeverity, style: headLine4(black)),
               ],
             ),
             const Padding(
@@ -405,8 +461,8 @@ class OtherInfo extends StatelessWidget {
             ),
             Row(
               children: [
-                Text('Religion:', style: bodyText3(black)),
-                Text(' Christainity', style: headLine4(black)),
+                Text('Diagnosis: ', style: bodyText3(black)),
+                Text(diagnosis, style: headLine4(black)),
               ],
             ),
             const Padding(
@@ -415,10 +471,23 @@ class OtherInfo extends StatelessWidget {
             ),
             Row(
               children: [
-                Text('Occupation:', style: bodyText3(black)),
+                Text('Prescription: ', style: bodyText3(black)),
                 SizedBox(
                     width: 200,
-                    child: Text('Fashion designer',
+                    child: Text(prescription,
+                        overflow: TextOverflow.fade, style: headLine4(black))),
+              ],
+            ),
+            const Padding(
+              padding: EdgeInsets.symmetric(vertical: 10.0),
+              child: CustomDivider(),
+            ),
+            Row(
+              children: [
+                Text('Surgical Prrocedure: ', style: bodyText3(black)),
+                SizedBox(
+                    width: 200,
+                    child: Text(surgicalProcedure,
                         overflow: TextOverflow.fade, style: headLine4(black))),
               ],
             ),
