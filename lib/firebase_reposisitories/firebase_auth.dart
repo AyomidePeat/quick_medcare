@@ -37,6 +37,8 @@ class AuthenticationMethod {
           message = 'Email already registered';
         } else if (e.code == 'user not found') {
           message = 'Email or Password is incorrect';
+        } else if (e.code == '') {
+          message = 'No internet connection';
         }
         return message;
       } catch (e) {
@@ -60,7 +62,9 @@ class AuthenticationMethod {
           message = 'No account was found for this email';
         } else if (e.code == 'wrong-password') {
           message = 'Username or password is incorrect';
-        }
+        }else if (e.code == 'network-request-failed') {
+      message = 'No internet connection';
+    } 
       } catch (e) {
         return e.toString();
       }

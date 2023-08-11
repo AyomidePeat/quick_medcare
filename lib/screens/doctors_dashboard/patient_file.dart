@@ -1,21 +1,16 @@
-import 'dart:js_interop';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:quick_medcare/chat_feature/chat_screen.dart';
 import 'package:quick_medcare/chatting/chat_screen.dart';
-import 'package:quick_medcare/models/patient_model.dart';
-import 'package:quick_medcare/screens/chat_list_screen.dart';
 import 'package:quick_medcare/utils/colors.dart';
 import 'package:quick_medcare/utils/textstyle.dart';
-
 import '../../firebase_reposisitories/cloud_firestore.dart';
 import '../../widgets/custom_container.dart';
 import '../../widgets/main_button.dart';
 
 class PatientFile extends ConsumerStatefulWidget {
-  const PatientFile({super.key});
+  final String uid;
+  const PatientFile({required this.uid, super.key});
 
   @override
   ConsumerState<PatientFile> createState() => _PatientFileState();
@@ -23,11 +18,11 @@ class PatientFile extends ConsumerStatefulWidget {
 
 class _PatientFileState extends ConsumerState<PatientFile> {
   late int idNo;
-  late String uid;
+
   late final String fullName;
   late final String dob;
   late final String gender;
-  late final String email;
+  late final String receiverEmail;
   late final String address;
   late final String pastConditions;
   late final String allergies;
@@ -80,7 +75,7 @@ class _PatientFileState extends ConsumerState<PatientFile> {
                         fullName = patientDetails[i].fullName;
                         dob = patientDetails[i].dob;
                         gender = patientDetails[i].gender;
-                        email = patientDetails[i].email;
+                        receiverEmail = patientDetails[i].email;
                         address = patientDetails[i].address;
                         pastConditions = patientDetails[i].pastConditions;
                         allergies = patientDetails[i].allergies;
@@ -133,7 +128,7 @@ class _PatientFileState extends ConsumerState<PatientFile> {
                           PersonalInformation(
                             address: address,
                             dob: dob,
-                            email: email,
+                            email: receiverEmail,
                             fullName: fullName,
                             gender: gender,
                           ),
@@ -161,14 +156,19 @@ class _PatientFileState extends ConsumerState<PatientFile> {
                               height: 35,
                               width: double.infinity,
                               onpressed: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => ChatScreen(
-                                            receiverUserEmail: email,
-                                            name: fullName,
-                                            receiverUserId: uid,
-                                            image: 'images/patient.jpg')));
+                                // Navigator.push(
+                                //     context,
+                                  //  MaterialPageRoute(
+                                        // builder: (context) => ChatScreen(
+                                        //     receiverUserEmail: receiverEmail,
+                                        //     userType: 'doctor',
+                                        //     receiverUserId: receiverId,
+                                        //     image: widget.image,
+                                        //     receiverName: widget.receiverName,
+                                        //     senderName: widget.senderName,
+                                        //     senderEmail: widget.senderEmail)
+                                        //)
+                                       // );
                               },
                               child: Text(
                                 'Continue to Chat',
@@ -181,29 +181,6 @@ class _PatientFileState extends ConsumerState<PatientFile> {
             ]),
           ),
         ));
-  }
-
-  Widget getUid(ref) {
-    return StreamBuilder<PatientDetailsModel>(
-      stream: ref.getUser(),
-      builder: (context, snapshot) {
-        final patientData = snapshot.data!;
-        if (patientData != null) {
-          final uid = patientData.uid;
-          getUidString(uid);
-          return Text(uid ?? ''); // Use the uid value in the Text widget
-        } else {
-          return Text(
-              ''); // Return an empty Text widget if data is not available
-        }
-      },
-    );
-  }
-
-  String? getUidString(userUid) {
-    setState(() {
-      uid = userUid;
-    });
   }
 }
 

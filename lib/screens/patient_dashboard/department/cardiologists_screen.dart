@@ -11,7 +11,19 @@ import 'package:quick_medcare/widgets/doctor_container.dart';
 import '../../../widgets/main_button.dart';
 
 class CardiologistsScreen extends StatefulWidget {
-  const CardiologistsScreen({super.key});
+  final String patientAge;
+  final String patientEmail;
+  final String patientName;
+  final String patientUid;
+  final String patientImage;
+  final String gender;
+  const CardiologistsScreen(
+      {super.key,
+      required this.patientAge,
+      required this.patientEmail,
+      required this.patientName,
+      required this.patientUid,
+      required this.patientImage, required this.gender});
 
   @override
   State<CardiologistsScreen> createState() => _CardiologistsScreenState();
@@ -24,13 +36,12 @@ class _CardiologistsScreenState extends State<CardiologistsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-           leading: IconButton(
+          leading: IconButton(
               onPressed: () {
                 Navigator.pop(context);
               },
               icon: const Icon(
                 Icons.arrow_back_ios,
-                
               )),
           title: const Text("Meet our Cardiologists"),
         ),
@@ -39,9 +50,7 @@ class _CardiologistsScreenState extends State<CardiologistsScreen> {
 
   Widget buildUserList() {
     return StreamBuilder<QuerySnapshot>(
-        stream: firebaseFirestore
-            .collection('cardiologists')
-            .snapshots(),
+        stream: firebaseFirestore.collection('Cardiology').snapshots(),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
             return Text('Error ${snapshot.error.toString()}');
@@ -52,7 +61,11 @@ class _CardiologistsScreenState extends State<CardiologistsScreen> {
             );
           }
           if (!snapshot.hasData) {
-            return Center(child:  Text('Coming soon...', style: headLine2(black),));
+            return Center(
+                child: Text(
+              'Coming soon...',
+              style: headLine2(black),
+            ));
           }
           return ListView(
             children: snapshot.data!.docs
@@ -76,26 +89,40 @@ class _CardiologistsScreenState extends State<CardiologistsScreen> {
 
     if (auth.currentUser!.email != data['email']) {
       return ListTile(
-           title: Column(
-            children: [
-              DoctorContainer(image: image, name: name, role: role),
-              MainButton(onpressed: (){ Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: ((context) => DoctorDetailsScreen(
-                        image: image,
-                        name: name,
-                        department: 'Cardiology',
-                        specialization: specialization,
-                        info: info,
-                        experience: experience,
-                        email: email,
-                        uid: uid,
-                        numberOfPatients: numberOfPatients))));}, height: 40, width: 150, child: const Text('View Profile'))
-            ],
-          ),);
+        title: Column(
+          children: [
+            DoctorContainer(image: image, name: name, role: role),
+            MainButton(
+                onpressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: ((context) => DoctorDetailsScreen(gender: widget.gender, senderUid: widget.patientUid,
+                              senderName: widget.patientName,
+                              receiverEmail: widget.patientEmail,
+                              senderImage: widget.patientImage,
+                              receiverName: name,
+                              image: image,
+                              department: 'Cardiology',
+                              specialization: specialization,
+                              info: info,
+                              experience: experience,
+                              senderEmail: email,
+                              uid: uid,
+                              numberOfPatients: numberOfPatients))));
+                },
+                height: 40,
+                width: 150,
+                child: const Text('View Profile'))
+          ],
+        ),
+      );
     } else {
-       return Center(child:  Text('Coming soon...', style: headLine2(black),));
+      return Center(
+          child: Text(
+        'Coming soon...',
+        style: headLine2(black),
+      ));
     }
   }
 }

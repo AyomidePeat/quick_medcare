@@ -16,13 +16,27 @@ import '../utils/upload_image.dart';
 class ChatScreen extends StatefulWidget {
   final String receiverUserEmail;
   final String receiverUserId;
-  final String name;
-  final String image;
+  final String receiverName;
+  final String senderName;
+  final String senderEmail;
+  final String senderUid;
+  final String receiverImage;
+  final String senderImage;
+  final String userType;
+
+  final String gender;
+
   const ChatScreen(
       {super.key,
       required this.receiverUserEmail,
-      required this.name,
-      required this.receiverUserId, required this.image});
+      required this.receiverUserId,
+      required this.receiverName,
+      required this.senderName,
+      required this.senderEmail,
+      required this.receiverImage,
+      required this.senderImage,
+      required this.userType,
+      required this.gender, required this.senderUid});
 
   @override
   State<ChatScreen> createState() => _ChatScreenState();
@@ -32,14 +46,25 @@ class _ChatScreenState extends State<ChatScreen> {
   final TextEditingController messageController = TextEditingController();
   final ChatService chatService = ChatService();
   final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
-    XFile? _imageFile;
+  XFile? _imageFile;
   void sendMessage() async {
     if (messageController.text.isNotEmpty) {
       await chatService.sendMessage(
-          widget.receiverUserId, messageController.text);
+          widget.receiverUserId, messageController.text.trim());
       messageController.clear();
     }
+
+    if (widget.userType == 'patient') {
+      chatService.addPatientToPatientList(
+          widget.receiverUserId,
+          widget.senderName,
+          widget.senderEmail,
+          widget.gender,
+          widget.senderImage,
+          widget.senderUid);
+    }
   }
+
   ImageUpload imageUpload = ImageUpload();
 // Future<void> _pickImage() async {
 //     final ImagePicker _picker = ImagePicker();
@@ -55,7 +80,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
   Future<void> _sendMessageWithImage() async {
     if (_imageFile != null) {
-      File image = File(_imageFile!.path); 
+      File image = File(_imageFile!.path);
       await chatService.sendImageMessage(
         widget.receiverUserId,
         image,
@@ -87,11 +112,13 @@ class _ChatScreenState extends State<ChatScreen> {
             title: Row(
               children: [
                 CircleAvatar(
-                  backgroundImage: NetworkImage(widget.image),
+                  backgroundImage: NetworkImage(widget.receiverImage),
                 ),
-                const SizedBox(width: 10,),
+                const SizedBox(
+                  width: 10,
+                ),
                 Text(
-                  'Dr. ${widget.name}',
+                  'Dr. ${widget.receiverName}',
                   style: headLine2(white),
                 ),
               ],
@@ -109,18 +136,18 @@ class _ChatScreenState extends State<ChatScreen> {
       children: [
         ChatTextField(controller: messageController),
         IconButton(onPressed: sendMessage, icon: const Icon(Icons.send)),
-         IconButton(onPressed: (){
-                                    imageUpload.uploadImage(context, (pickedImg) {
-                            setState(() {
-                              _imageFile = pickedImg;
-                            });
-                            final pickedImageFile =
-                                convertXFileToFile(pickedImg);
-                            chatService
-                                .sendImageMessage(  widget.receiverUserId,  pickedImageFile);
-                          });
-
-         }, icon: const Icon(Icons.attach_file_outlined)),
+        IconButton(
+            onPressed: () {
+              imageUpload.uploadImage(context, (pickedImg) {
+                setState(() {
+                  _imageFile = pickedImg;
+                });
+                final pickedImageFile = convertXFileToFile(pickedImg);
+                chatService.sendImageMessage(
+                    widget.receiverUserId, pickedImageFile);
+              });
+            },
+            icon: const Icon(Icons.attach_file_outlined)),
       ],
     );
   }

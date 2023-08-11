@@ -17,7 +17,10 @@ import 'package:flutter/foundation.dart'
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
-      return web;
+      throw UnsupportedError(
+        'DefaultFirebaseOptions have not been configured for web - '
+        'you can reconfigure this by running the FlutterFire CLI again.',
+      );
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
@@ -46,30 +49,21 @@ class DefaultFirebaseOptions {
     }
   }
 
-  static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyA4_m1DsijaUU9YMIYopAMuTAfzw6JwOBo',
-    appId: '1:1091936495961:web:6bba3aa9d73466383e4448',
-    messagingSenderId: '1091936495961',
-    projectId: 'quick-medcare1234',
-    authDomain: 'quick-medcare1234.firebaseapp.com',
-    storageBucket: 'quick-medcare1234.appspot.com',
-  );
-
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyCvGkEy_rn9BMtOuJKJICKuZxR2k8QEeKE',
-    appId: '1:1091936495961:android:66f5d4e1df571e903e4448',
-    messagingSenderId: '1091936495961',
-    projectId: 'quick-medcare1234',
-    storageBucket: 'quick-medcare1234.appspot.com',
+    apiKey: 'AIzaSyBlQ3JayrbZCfjP8pRzvzzQfeAPhXf7GiI',
+    appId: '1:1098344001384:android:2d2e3d9bbced7c3f98f0dd',
+    messagingSenderId: '1098344001384',
+    projectId: 'quick-med-ef517',
+    storageBucket: 'quick-med-ef517.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyAjI0yRa8TB7TY-seV7rxdxfrZ-MMv2PiY',
-    appId: '1:1091936495961:ios:428e6f290977a5aa3e4448',
-    messagingSenderId: '1091936495961',
-    projectId: 'quick-medcare1234',
-    storageBucket: 'quick-medcare1234.appspot.com',
-    iosClientId: '1091936495961-l5ars9mo393qomttbdufcqu4jpjfmhm9.apps.googleusercontent.com',
+    apiKey: 'AIzaSyDDKRsORTj43RFjfRGC3mJ8Js17z4GVgzU',
+    appId: '1:1098344001384:ios:5d9613306117a8af98f0dd',
+    messagingSenderId: '1098344001384',
+    projectId: 'quick-med-ef517',
+    storageBucket: 'quick-med-ef517.appspot.com',
+    iosClientId: '1098344001384-vt32csjlqo130git1ejb45sn65rnirfh.apps.googleusercontent.com',
     iosBundleId: 'com.example.quickMedcare',
   );
 }

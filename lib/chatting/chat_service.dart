@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -36,8 +35,11 @@ class ChatService extends ChangeNotifier {
         .add(newMessage.toMap());
   }
 
-  Stream<QuerySnapshot> getMessages(String userId, String otherUserId) {
-    List<String> ids = [userId, otherUserId];
+  Stream<QuerySnapshot> getMessages(
+    String receiverId,
+    String senderId,
+  ) {
+    List<String> ids = [receiverId, senderId];
     ids.sort();
     String chatRoomId = ids.join("_");
     return firebaseFirestore
@@ -57,13 +59,14 @@ class ChatService extends ChangeNotifier {
   }
 
   Future<void> sendImageMessage(String receiverId, File imageFile) async {
-        final String currentUserId = firebaseAuth.currentUser!.uid;
+    final String currentUserId = firebaseAuth.currentUser!.uid;
 
     String imageUrl = await _uploadImageToStorage(imageFile);
-   final String currentUserEmail = firebaseAuth.currentUser!.email.toString();
+    final String currentUserEmail = firebaseAuth.currentUser!.email.toString();
     final Timestamp timestamp = Timestamp.now();
     DateTime dateTime = timestamp.toDate();
-    final time = DateFormat.Hm().format(dateTime); List<String> ids = [currentUserId, receiverId];
+    final time = DateFormat.Hm().format(dateTime);
+    List<String> ids = [currentUserId, receiverId];
     ids.sort();
     String chatRoomId = ids.join("_");
     final newMessage = Message(
@@ -73,10 +76,33 @@ class ChatService extends ChangeNotifier {
         message: imageUrl,
         timestamp: timestamp,
         time: time);
-        await firebaseFirestore
+    await firebaseFirestore
         .collection('chat_rooms')
         .doc(chatRoomId)
         .collection('messages')
         .add(newMessage.toMap());
+  }
+
+  Future<void> addPatientToPatientList(
+      String doctorId, String name, String email, String gender, String patientDp, String uid) async {
+    try {
+      final patientDocRef = FirebaseFirestore.instance
+          .collection('${doctorId}patientList')
+          .doc('$name $email');
+      final patientDocSnapshot = await patientDocRef.get();
+
+      if (!patientDocSnapshot.exists) {
+        await patientDocRef.set({
+          'patientName': name,
+          'patientEmail': email,
+          'gender' : gender,
+          'patientDp': patientDp,
+          'uid' :uid,
+          'createdAt': FieldValue.serverTimestamp(),
+        });
+      }
+    } catch (e) {
+      // Handle errors
+    }
   }
 }

@@ -8,7 +8,19 @@ import 'package:quick_medcare/widgets/doctor_container.dart';
 import 'package:quick_medcare/widgets/main_button.dart';
 
 class DentistsScreen extends StatefulWidget {
-  const DentistsScreen({super.key});
+  final String patientAge;
+  final String patientEmail;
+  final String patientName;
+  final String patientUid;
+  final String patientImage;
+  final String gender;
+  const DentistsScreen(
+      {super.key,
+      required this.patientAge,
+      required this.patientEmail,
+      required this.patientName,
+      required this.patientUid,
+      required this.patientImage, required this.gender});
 
   @override
   State<DentistsScreen> createState() => _DentistsScreenState();
@@ -20,13 +32,13 @@ class _DentistsScreenState extends State<DentistsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar( leading: IconButton(
+        appBar: AppBar(
+          leading: IconButton(
               onPressed: () {
                 Navigator.pop(context);
               },
               icon: const Icon(
                 Icons.arrow_back_ios,
-                
               )),
           title: const Text("Meet our Dentists"),
         ),
@@ -35,9 +47,7 @@ class _DentistsScreenState extends State<DentistsScreen> {
 
   Widget buildUserList() {
     return StreamBuilder<QuerySnapshot>(
-        stream: firebaseFirestore
-            .collection('dentists')
-            .snapshots(),
+        stream: firebaseFirestore.collection('Dentistry').snapshots(),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
             return Text('Error ${snapshot.error.toString()}');
@@ -72,25 +82,35 @@ class _DentistsScreenState extends State<DentistsScreen> {
 
     if (auth.currentUser!.email != data['email']) {
       return ListTile(
-          title: Column(
-            children: [
-              DoctorContainer(image: image, name: name, role: role),
-              MainButton(onpressed: (){ Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: ((context) => DoctorDetailsScreen(
-                        image: image,
-                        name: name,
-                        department: 'Dentistry',
-                        specialization: specialization,
-                        info: info,
-                        experience: experience,
-                        email: email,
-                        uid: uid,
-                        numberOfPatients: numberOfPatients))));}, height: 40, width: 150, child: const Text('View Profile'))
-            ],
-          ),
-         );
+        title: Column(
+          children: [
+            DoctorContainer(image: image, name: name, role: role),
+            MainButton(
+                onpressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: ((context) => DoctorDetailsScreen( senderUid: widget.patientUid,
+                              senderName: widget.patientName,
+                              receiverEmail: widget.patientEmail,
+                              senderImage: widget.patientImage,
+                              gender: widget.gender,
+                              receiverName: name,
+                              image: image,
+                              department: 'Dentistry',
+                              specialization: specialization,
+                              info: info,
+                              experience: experience,
+                              senderEmail: email,
+                              uid: uid,
+                              numberOfPatients: numberOfPatients))));
+                },
+                height: 40,
+                width: 150,
+                child: const Text('View Profile'))
+          ],
+        ),
+      );
     } else {
       return Container();
     }

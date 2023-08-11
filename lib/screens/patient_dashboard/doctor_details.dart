@@ -10,24 +10,35 @@ import '../../widgets/main_button.dart';
 
 class DoctorDetailsScreen extends StatefulWidget {
   final String image;
-  final String name;
+  final String receiverName;
   final String department;
   final String specialization;
   final String info;
   final String experience;
   final String numberOfPatients;
-  final String email;
+  final String receiverEmail;
   final String uid;
+  final String senderName;
+  final String senderEmail;
+  final String senderImage;
+  final String gender;
+  final String senderUid;
 
   const DoctorDetailsScreen(
       {super.key,
       required this.image,
-      required this.name,
       required this.department,
       required this.specialization,
       required this.info,
       required this.experience,
-      required this.numberOfPatients, required this.email, required this.uid});
+      required this.numberOfPatients,
+      required this.uid,
+      required this.receiverName,
+      required this.receiverEmail,
+      required this.senderName,
+      required this.senderEmail,
+      required this.senderImage,
+      required this.gender, required this.senderUid});
 
   @override
   State<DoctorDetailsScreen> createState() => _DoctorDetailsScreenState();
@@ -69,7 +80,7 @@ class _DoctorDetailsScreenState extends State<DoctorDetailsScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            widget.name,
+                            widget.receiverName,
                             overflow: TextOverflow.fade,
                             style: headLine3(black),
                           ),
@@ -220,9 +231,16 @@ class _DoctorDetailsScreenState extends State<DoctorDetailsScreen> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => ChatScreen(name: widget.name, image: widget.image,
-                                      receiverUserEmail: widget.email,receiverUserId: widget.uid,
-                                    )));
+                                builder: (context) => ChatScreen(senderUid: widget.senderUid,
+                                    gender: widget.gender,
+                                    receiverUserEmail: widget.receiverEmail,
+                                    receiverUserId: widget.uid,
+                                    receiverName: widget.receiverName,
+                                    senderName: widget.senderName,
+                                    senderEmail: widget.senderEmail,
+                                    receiverImage: widget.image,
+                                    senderImage: widget.senderImage,
+                                    userType: 'patient')));
                       },
                       height: 40,
                       width: double.infinity,

@@ -10,6 +10,7 @@ import 'package:quick_medcare/models/patient_model.dart';
 import 'package:path/path.dart' as path;
 //import 'package:uuid/uuid.dart';
 
+import '../models/doctor_model.dart';
 import '../models/patient_file_model.dart';
 import 'firebase_storage.dart';
 
@@ -58,8 +59,10 @@ class FirestoreClass {
       }
     });
   }
-Future addPatientDetails({required PatientFileModel patientDetails, patientId}) async{
-  String message = 'Something went wrong';
+
+  Future addPatientDetails(
+      {required PatientFileModel patientDetails, patientId}) async {
+    String message = 'Something went wrong';
     try {
       await firebaseFirestore
           .collection('users')
@@ -73,7 +76,8 @@ Future addPatientDetails({required PatientFileModel patientDetails, patientId}) 
     }
     return message;
   }
-Stream<List<PatientFileModel>> getPatientDetails() {
+
+  Stream<List<PatientFileModel>> getPatientDetails() {
     return firebaseFirestore
         .collection('users')
         .doc(auth.currentUser?.uid)
@@ -86,7 +90,25 @@ Stream<List<PatientFileModel>> getPatientDetails() {
     });
   }
 
-  Future addUserDetails({required OtherInfoModel otherDetails}) async {
+  Future addUserDetails({
+    required String age,
+    required String weight,
+    required String height,
+    required String cholesterol,
+    required String healthAgency,
+    required String bloodType,
+    required String genotype,
+    required String bloodPressure,
+  }) async {
+    OtherInfoModel otherDetails = OtherInfoModel(
+        age: age,
+        weight: weight,
+        height: height,
+        cholesterol: cholesterol,
+        healthAgency: healthAgency,
+        bloodType: bloodType,
+        genotype: genotype,
+        bloodPressure: bloodPressure);
     String message = 'Something went wrong';
     try {
       await firebaseFirestore
@@ -158,6 +180,24 @@ Stream<List<PatientFileModel>> getPatientDetails() {
     } catch (error) {
 //    }
     }
+  }
+
+  Future<void> uploadDoctorsImageToFirestore(File pickedImage, uid) async {
+    try {
+      final fileName = path.basename(pickedImage.path);
+      final firebaseStorageRef =
+          firebase_storage.FirebaseStorage.instance.ref().child(fileName);
+      await firebaseStorageRef.putFile(pickedImage);
+
+      final imageUrl = await firebaseStorageRef.getDownloadURL();
+
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(uid)
+          .update({'image': imageUrl});
+    } catch (error) {
+      // }
+    }
 
     // StreamSubscription<DocumentSnapshot>? profileListener;
 
@@ -191,7 +231,6 @@ Stream<List<PatientFileModel>> getPatientDetails() {
 
     //   return initialImageUrl;
     // }
-
 
     //  void sendFileMessage({
     //   required BuildContext context,
@@ -258,5 +297,42 @@ Stream<List<PatientFileModel>> getPatientDetails() {
             (event) => PatientDetailsModel.getModelFromJson(),
           );
     }
+  }
+
+  Future addDoctor({
+    required String uid,
+    required String firstName,
+    required String lastName,
+    required String email,
+    required String department,
+    required String image,
+    required String info,
+    required String numberOfPatients,
+    required String experience,
+    required String role,
+    required String specialization,
+  }) async {
+    DoctorDetailsModel doctor = DoctorDetailsModel(
+        specialization: specialization,
+        firstName: firstName,
+        lastName: lastName,
+        department: department,
+        email: email,
+        uid: uid,
+        image: image,
+        info: info,
+        numberOfPatients: numberOfPatients,
+        experience: experience,
+        role: role);
+    String message = 'Something went wrong';
+    try {
+      await firebaseFirestore.collection('users').doc(uid).set(doctor.toJson());
+      await firebaseFirestore.collection(department).doc(uid).set(doctor.toJson());
+
+      message = 'Uploaded';
+    } catch (e) {
+      return e.toString();
+    }
+    return message;
   }
 }

@@ -27,7 +27,7 @@ class _OtherDetailsScreenState extends State<OtherDetailsScreen> {
 
   FirestoreClass fireStore = FirestoreClass();
   bool isLoading = false;
-   bool isUploaded=false;
+  bool isUploaded = false;
   @override
   void dispose() {
     ageController.dispose();
@@ -44,15 +44,14 @@ class _OtherDetailsScreenState extends State<OtherDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    OtherInfoModel otherDetails = OtherInfoModel(
-        age: ageController.text,
-        weight: weightController.text,
-        height: heightController.text,
-        cholesterol: cholesterolController.text,
-        healthAgency: healthAgencyController.text,
-        bloodType: bloodTypeController.text,
-        genotype: genotypeController.text,
-        bloodPressure: bloodPressureController.text);
+    final age = ageController.text;
+    final weight = weightController.text;
+    final height = heightController.text;
+    final cholesterol = cholesterolController.text;
+    final healthAgency = healthAgencyController.text;
+    final bloodType = bloodTypeController.text;
+    final genotype = genotypeController.text;
+    final bloodPressure = bloodPressureController.text;
     return Scaffold(
       appBar: AppBar(
           elevation: 0,
@@ -125,33 +124,36 @@ class _OtherDetailsScreenState extends State<OtherDetailsScreen> {
                       isLoading = true;
                     });
                     final uploadSuccess = await fireStore.addUserDetails(
-                        otherDetails: otherDetails);
-                    if (uploadSuccess=='Uploaded') {
+                        age: age,
+                        weight: weight,
+                        height: height,
+                        cholesterol: cholesterol,
+                        healthAgency: healthAgency,
+                        bloodType: bloodType,
+                        genotype: genotype,
+                        bloodPressure: bloodPressure);
+                    if (uploadSuccess == 'Uploaded') {
                       setState(() {
                         isUploaded = true;
-                         isLoading = false;
-
+                        isLoading = false;
                       });
-                    }else{
-                        setState(() {
-                    
-                         isLoading = false;
-
+                    } else {
+                      setState(() {
+                        isLoading = false;
                       });
                       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                        backgroundColor: blue,
-                        content: Text(uploadSuccess,
-                            textAlign: TextAlign.center,
-                            style: const TextStyle(fontSize: 16))));
-                  } 
-                    },
-                  
+                          backgroundColor: blue,
+                          content: Text(uploadSuccess,
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(fontSize: 16))));
+                    }
+                  },
                   height: 50,
                   width: double.maxFinite,
                   child: isLoading
                       ? LoadingAnimationWidget.inkDrop(color: white, size: 25)
                       : Text(
-                         isUploaded? 'Thank you' :'Submit',
+                          isUploaded ? 'Thank you' : 'Submit',
                           style: headLine4(white),
                         ))
             ],

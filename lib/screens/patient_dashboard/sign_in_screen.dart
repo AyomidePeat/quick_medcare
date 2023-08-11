@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:quick_medcare/screens/admin_dashboard/admin.dart';
 import 'package:quick_medcare/screens/doctors_dashboard/home_screen.dart';
 import 'package:quick_medcare/screens/patient_dashboard/home_screen.dart';
 import 'package:quick_medcare/screens/patient_dashboard/sign_up_screen.dart';
@@ -14,6 +15,7 @@ import 'package:quick_medcare/widgets/main_button.dart';
 import 'package:quick_medcare/widgets/text_button_widget.dart';
 import 'package:quick_medcare/widgets/textfield_widget.dart';
 import '../../firebase_reposisitories/firebase_auth.dart';
+import '../doctors_dashboard/add_patient_details.dart';
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({super.key});
@@ -33,6 +35,7 @@ class _SignInScreenState extends State<SignInScreen> {
     emailController.dispose();
     passwordController.dispose();
   }
+  
 
   @override
   Widget build(BuildContext context) {
@@ -113,17 +116,21 @@ class _SignInScreenState extends State<SignInScreen> {
                         snapshot.data() as Map<String, dynamic>;
 
                     String role = data['role'] ?? '';
-                    print(role);
                     if (role == 'doctor') {
                       Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => const Patients()));
+                              builder: (context) =>  DoctorHomeScreen(uid:FirebaseAuth.instance.currentUser!.uid ,)));
                     } else if (role == 'patient') {
                       Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => const HomeScreen()));
+                              builder: (context) =>  HomeScreen(uid:FirebaseAuth.instance.currentUser!.uid ,)));
+                    }else if (role == 'admin'){
+                       Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const AdminDashboard()));
                     }
                   } else {
                     setState(() {

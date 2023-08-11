@@ -1,20 +1,28 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:quick_medcare/screens/doctors_dashboard/patient_file.dart';
 import 'package:quick_medcare/widgets/custom_container.dart';
+import 'package:quick_medcare/widgets/patient_container.dart';
 
+import '../../chatting/chat_screen.dart';
 import '../../utils/colors.dart';
 import '../../utils/textstyle.dart';
 import '../../widgets/main_button.dart';
 
-class Patients extends StatefulWidget {
-  const Patients({super.key});
+class DoctorHomeScreen extends StatefulWidget {
+  final String uid;
+  const DoctorHomeScreen({super.key, required this.uid});
 
   @override
-  State<Patients> createState() => _PatientsState();
+  State<DoctorHomeScreen> createState() => _DoctorHomeScreenState();
 }
 
-class _PatientsState extends State<Patients> {
+class _DoctorHomeScreenState extends State<DoctorHomeScreen> {
   int regNo = 09457;
+  String doctorImage = '';
+  final auth = FirebaseAuth.instance;
+  final firebaseFirestore = FirebaseFirestore.instance;
   String category = 'Online';
   @override
   Widget build(BuildContext context) {
@@ -51,163 +59,95 @@ class _PatientsState extends State<Patients> {
         padding: const EdgeInsets.all(20.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            TextField(
-              cursorColor: black,
-              decoration: InputDecoration(
-                  contentPadding: const EdgeInsets.all(10),
-                  enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: black),
-                      borderRadius: BorderRadius.all(Radius.circular(10))),
-                  focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: black),
-                      borderRadius: BorderRadius.all(Radius.circular(10))),
-                  hintText: 'Search Patient',
-                  hintStyle: bodyText2(grey),
-                  fillColor: white,
-                  filled: true,
-                  prefixIcon: const Icon(Icons.search)),
-            ),
-            const SizedBox(height: 20),
-            const AppointmentContainer(),
-            const SizedBox(height: 20),
-            Text('Recent patients', style: bodyText1(black)),
-            Flexible(
-              child: ListView.builder(
-                  itemCount: 5,
-                  itemBuilder: (context, index) {
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 10.0),
-                      child: CustomContainer(
-                        color: Colors.transparent,
-                        height: 130,
-                        width: double.infinity,
-                        border: Border.all(width: 0.4, color: Colors.lightBlue),
-                        child: Row(
-                          children: [
-                            CustomContainer(
-                                color: Colors.transparent,
-                                height: 100,
-                                width: 100,
-                                child: Padding(
-                                  padding: const EdgeInsets.only(left: 10.0),
-                                  child: Image.asset('images/patient.jpg'),
-                                )),
-                            Padding(
-                              padding: const EdgeInsets.all(15.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    'Jane Doe',
-                                    style: headLine4(black),
-                                  ),
-                                  Text(
-                                    '$category',
-                                    style: const TextStyle(
-                                        fontFamily: 'Poppins-Regular',
-                                        fontSize: 10,
-                                        color: Colors.black),
-                                  ),
-                                  Text(
-                                    'ID No: $regNo',
-                                    style: const TextStyle(
-                                        fontFamily: 'Poppins-Regular',
-                                        fontSize: 10,
-                                        color: Colors.black),
-                                  ),
-                                  const SizedBox(
-                                    height: 10,
-                                  ),
-                                  MainButton(
-                                      height: 30,
-                                      width: 120,
-                                      onpressed: () {
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    const PatientFile()));
-                                      },
-                                      child: const Text(
-                                        'View Profile',
-                                        style: TextStyle(
-                                            fontFamily: 'Poppins-Regular',
-                                            fontSize: 10,
-                                            color: Colors.white),
-                                      ))
-                                ],
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                    );
-                  }),
-            )
-          ],
+          children: [buildPatientList()],
         ),
       ),
     );
   }
-}
 
-class AppointmentContainer extends StatelessWidget {
-  const AppointmentContainer({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-
-    return Container(
-      height: size.height * 0.2,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
-        color: blue,
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(15.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Row(
-              children: [
-                const CircleAvatar(
-                  backgroundImage: AssetImage('images/patient.jpg'),
-                  minRadius: 25,
-                ),
-                const SizedBox(width: 10),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'John Doe',
-                      style: bodyText3(black),
-                    ),
-                    Text('10:30AM. General Consultation',
-                        style: bodyText3(black))
-                  ],
-                )
-              ],
-            ),
-            Container(
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: const Color.fromARGB(255, 41, 86, 233)),
-              child: Padding(
-                padding: const EdgeInsets.all(5.0),
-                child: Text(
-                  'Starts in 2 mins',
-                  style: bodyText3(black),
-                ),
-              ),
-            )
-          ],
-        ),
-      ),
+  Widget buildPatientList() {
+    return StreamBuilder<QuerySnapshot>(
+      stream:
+          firebaseFirestore.collection('${widget.uid}patientList').snapshots(),
+      builder: (context, snapshot) {
+        if (snapshot.hasError) {
+          return Text('Error ${snapshot.error.toString()}');
+        }
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+        if (!snapshot.hasData) {
+          return Column(
+            children: [
+              Image.asset('icons/record.png'),
+              const SizedBox(height: 25),
+              const Text('You have no patient yet'),
+            ],
+          );
+        }
+        return Flexible(
+          child: ListView(
+            children: snapshot.data!.docs
+                .map<Widget>((doc) => buildPatientListItem(doc))
+                .toList(),
+          ),
+        );
+      },
     );
+  }
+
+  // Widget getDoctorDetails(DocumentSnapshot document) {
+  //   Map<String, dynamic> data = document.data()! as Map<String, dynamic>;
+  //   doctorImage = data['image'];
+  //   return const SizedBox();
+  // }
+
+  // Widget getDoctorDp() {
+  //   return StreamBuilder<QuerySnapshot>(
+  //       stream: firebaseFirestore.collection('Opthalmology').snapshots(),
+  //       builder: (context, snapshot) {
+  //         return ListView(
+  //           children: snapshot.data!.docs
+  //               .map<Widget>((doc) => getDoctorDetails(doc))
+  //               .toList(),
+  //         );
+  //       });
+  // }
+
+  Widget buildPatientListItem(DocumentSnapshot document) {
+    Map<String, dynamic> data = document.data()! as Map<String, dynamic>;
+    final patientEmail = data['patientEmail'];
+    final patientName = data['patientName'];
+    final gender = data['gender'];
+    final image = data['patientDp'];
+    final patientUid = data['uid'];
+
+    if (auth.currentUser!.email != data['email']) {
+      return ListTile(
+          title: PatientContainer(
+              name: patientName,
+              email: patientEmail,
+              gender: gender,
+              image: image),
+          onTap: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: ((context) => ChatScreen(senderUid: patientUid,
+                        receiverName: patientName,
+                        senderEmail: patientEmail,
+                        gender: gender,
+                        senderName: patientName,
+                        userType: 'doctor',
+                        senderImage: image,
+                        receiverUserEmail: patientEmail,
+                        receiverImage: image,
+                        receiverUserId: data['uid']))));
+          });
+    } else {
+      return Container();
+    }
   }
 }

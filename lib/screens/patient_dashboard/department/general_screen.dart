@@ -9,7 +9,19 @@ import 'package:quick_medcare/widgets/doctor_container.dart';
 import '../../../widgets/main_button.dart';
 
 class GeneralDoctorsScreen extends StatefulWidget {
-  const GeneralDoctorsScreen({super.key});
+  final String patientAge;
+  final String patientEmail;
+  final String patientName;
+  final String patientUid;
+  final String patientImage;
+  final String gender;
+  const GeneralDoctorsScreen(
+      {super.key,
+      required this.patientAge,
+      required this.patientEmail,
+      required this.patientName,
+      required this.patientUid,
+      required this.patientImage, required this.gender});
 
   @override
   State<GeneralDoctorsScreen> createState() => _GeneralDoctorsScreenState();
@@ -21,13 +33,13 @@ class _GeneralDoctorsScreenState extends State<GeneralDoctorsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar( leading: IconButton(
+        appBar: AppBar(
+          leading: IconButton(
               onPressed: () {
                 Navigator.pop(context);
               },
               icon: const Icon(
                 Icons.arrow_back_ios,
-                
               )),
           title: const Text("Meet our General Doctors"),
         ),
@@ -36,9 +48,7 @@ class _GeneralDoctorsScreenState extends State<GeneralDoctorsScreen> {
 
   Widget buildUserList() {
     return StreamBuilder<QuerySnapshot>(
-        stream: firebaseFirestore
-            .collection('general-doctors')
-            .snapshots(),
+        stream: firebaseFirestore.collection('General').snapshots(),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
             return Text('Error ${snapshot.error.toString()}');
@@ -73,24 +83,35 @@ class _GeneralDoctorsScreenState extends State<GeneralDoctorsScreen> {
 
     if (auth.currentUser!.email != data['email']) {
       return ListTile(
-           title: Column(
-            children: [
-              DoctorContainer(image: image, name: name, role: role),
-              MainButton(onpressed: (){ Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: ((context) => DoctorDetailsScreen(
-                        image: image,
-                        name: name,
-                        department: 'General',
-                        specialization: specialization,
-                        info: info,
-                        experience: experience,
-                        email: email,
-                        uid: uid,
-                        numberOfPatients: numberOfPatients))));}, height: 40, width: 150, child: const Text('View Profile'))
-            ],
-          ),);
+        title: Column(
+          children: [
+            DoctorContainer(image: image, name: name, role: role),
+            MainButton(
+                onpressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: ((context) => DoctorDetailsScreen( senderUid: widget.patientUid,
+                              senderName: widget.patientName,
+                              receiverEmail: widget.patientEmail,
+                              senderImage: widget.patientImage,
+                              receiverName: name,
+                              image: image,
+                              gender: widget.gender,
+                              department: 'General',
+                              specialization: specialization,
+                              info: info,
+                              experience: experience,
+                              senderEmail: email,
+                              uid: uid,
+                              numberOfPatients: numberOfPatients))));
+                },
+                height: 40,
+                width: 150,
+                child: const Text('View Profile'))
+          ],
+        ),
+      );
     } else {
       return Container();
     }

@@ -9,6 +9,7 @@ class DoctorDetailsModel {
   final String numberOfPatients;
   final String experience;
   final String role;
+  final String specialization;
 
   DoctorDetailsModel(
       {required this.firstName,
@@ -20,7 +21,7 @@ class DoctorDetailsModel {
       required this.info,
       required this.numberOfPatients,
       required this.experience,
-      required this.role
+      required this.role, required this.specialization, 
 
       //  this.id,
       });
@@ -35,7 +36,8 @@ class DoctorDetailsModel {
         'info': info,
         'experience': experience,
         'numberOfPatients': numberOfPatients,
-        'role': role
+        'role': role,
+        'specialization' : specialization,
       };
 
   factory DoctorDetailsModel.getModelFromJson({Map<String, dynamic>? json}) {
@@ -48,7 +50,8 @@ class DoctorDetailsModel {
         info: json['info'],
         numberOfPatients: json['numberOfPatients'],
         experience: json['experience'],
-        role : json['role'],
+        role: json['role'],
+        specialization: json['specialization'],
         lastName: json['lastName']);
   }
 }

@@ -9,7 +9,19 @@ import 'package:quick_medcare/widgets/doctor_container.dart';
 import '../../../widgets/main_button.dart';
 
 class NeurologistsScreen extends StatefulWidget {
-  const NeurologistsScreen({super.key});
+  final String patientAge;
+  final String patientEmail;
+  final String patientName;
+  final String patientUid;
+  final String patientImage;
+  final String gender;
+  const NeurologistsScreen(
+      {super.key,
+      required this.patientAge,
+      required this.patientEmail,
+      required this.patientName,
+      required this.patientUid,
+      required this.patientImage, required this.gender});
 
   @override
   State<NeurologistsScreen> createState() => _NeurologistsScreenState();
@@ -21,13 +33,13 @@ class _NeurologistsScreenState extends State<NeurologistsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar( leading: IconButton(
+        appBar: AppBar(
+          leading: IconButton(
               onPressed: () {
                 Navigator.pop(context);
               },
               icon: const Icon(
                 Icons.arrow_back_ios,
-                
               )),
           title: const Text("Meet our Neurologists"),
         ),
@@ -36,10 +48,7 @@ class _NeurologistsScreenState extends State<NeurologistsScreen> {
 
   Widget buildUserList() {
     return StreamBuilder<QuerySnapshot>(
-        stream: firebaseFirestore
-            .collection('neurologists')
-            
-            .snapshots(),
+        stream: firebaseFirestore.collection('Neurology').snapshots(),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
             return Text('Error ${snapshot.error.toString()}');
@@ -62,36 +71,46 @@ class _NeurologistsScreenState extends State<NeurologistsScreen> {
 
   Widget buildUserListItem(DocumentSnapshot document) {
     Map<String, dynamic> data = document.data()! as Map<String, dynamic>;
-    final name = '${data['firstName']} ${data['lastName']}';
+    final doctorName = '${data['firstName']} ${data['lastName']}';
     final role = data['department'];
-    final image = data['image'];
+    final doctorImage = data['image'];
     final specialization = data['specialization'];
     final info = data['info'];
     final numberOfPatients = data['numberOfPatients'];
     final experience = data['experience'];
-    final email = data['email'];
-    final uid = data['uid'];
+    final doctorEmail = data['email'];
+    final doctorUid = data['uid'];
 
     if (auth.currentUser!.email != data['email']) {
       return ListTile(
-          title: Column(
-            children: [
-              DoctorContainer(image: image, name: name, role: role),
-              MainButton(onpressed: (){ Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: ((context) => DoctorDetailsScreen(
-                        image: image,
-                        name: name,
-                        department: 'Neurology',
-                        specialization: specialization,
-                        info: info,
-                        experience: experience,
-                        email: email,
-                        uid: uid,
-                        numberOfPatients: numberOfPatients))));}, height: 40, width: 150, child: const Text('View Profile'))
-            ],
-          ),);
+        title: Column(
+          children: [
+            DoctorContainer(image: doctorImage, name: doctorName, role: role),
+            MainButton(
+                onpressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: ((context) => DoctorDetailsScreen(gender: widget.gender, senderUid: widget.patientUid,
+                              senderName: widget.patientName,
+                              receiverEmail: doctorEmail,
+                              senderImage: widget.patientImage,
+                              receiverName: doctorName,
+                              image: doctorImage,
+                              department: 'Neurology',
+                              specialization: specialization,
+                              info: info,
+                              experience: experience,
+                              senderEmail: widget.patientEmail,
+                              uid: doctorUid,
+                              numberOfPatients: numberOfPatients))));
+                },
+                height: 40,
+                width: 150,
+                child: const Text('View Profile'))
+          ],
+        ),
+      );
     } else {
       return Container();
     }

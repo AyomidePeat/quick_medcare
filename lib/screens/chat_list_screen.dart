@@ -51,12 +51,13 @@ class _UsersListScreenState extends State<UsersListScreen> {
       return ListTile(
           title: Text(data['email']),
           onTap: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: ((context) => ChatScreen(name: data['firstName'],
-                        receiverUserEmail: data['email'], image: data['image'],
-                        receiverUserId: data['uid']))));
+            // Navigator.push(
+            //     context,
+            //     MaterialPageRoute(
+            //         builder: ((context) => ChatScreen(name: data['firstName'],userType: 'patient',//patientId: '',
+            //         // receiverUserEmail: data['email'],
+            //          image: data['image'],
+            //             receiverUserId: data['uid']))));
           });
     } else {
       return Container();

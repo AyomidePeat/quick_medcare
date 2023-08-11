@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -15,17 +17,30 @@ import 'package:quick_medcare/utils/colors.dart';
 import 'package:quick_medcare/utils/textstyle.dart';
 import 'package:quick_medcare/widgets/department_container.dart';
 import 'package:quick_medcare/widgets/illness_container.dart';
-
 import '../../utils/health_tips.dart';
 import 'department/cardiologists_screen.dart';
 import 'other_details.dart';
 
-final cloudStoreDocsProvider = FutureProvider((ref) async {
-  cloudStoreProvider;
+final patientDetailsProvider =
+    FutureProvider<PatientDetailsModel?>((ref) async {
+  final cloudStoreRef = ref.read(cloudStoreProvider);
+  return cloudStoreRef.getUser();
+});
+final patientDpProvider = StreamProvider<String?>((ref) async* {
+  final cloudStoreRef = ref.read(cloudStoreProvider);
+  yield* cloudStoreRef.getDp();
+});
+final userImageStreamProvider = StreamProvider<String?>((ref) {
+  final cloudStoreRef = ref.watch(cloudStoreProvider);
+  return cloudStoreRef.getDp();
 });
 
 class HomeScreen extends ConsumerStatefulWidget {
-  const HomeScreen({super.key});
+  final String uid;
+  const HomeScreen({
+    super.key,
+    required this.uid,
+  });
 
   @override
   ConsumerState<HomeScreen> createState() => _HomeScreenState();
@@ -33,32 +48,48 @@ class HomeScreen extends ConsumerStatefulWidget {
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
   int currentIndex = 0;
+
   @override
   void initState() {
     super.initState();
-    startTimer();
+    ;
   }
 
+  final currentIndexNotifier = ValueNotifier<int>(0);
+
+//   void startTimer() async {
+//     await Future.delayed(const Duration(seconds: 2));
+// setState(() {
+//       currentIndex = (currentIndex + 1) % healthTips.length;
+
+// });
+
+//   }
   void startTimer() async {
-    await Future.delayed(const Duration(seconds: 10));
-    setState(() {
-      currentIndex = (currentIndex + 1) % healthTips.length;
-      startTimer();
-    });
+    await Future.delayed(const Duration(seconds: 2));
+
+    currentIndex = (currentIndex + 1) % healthTips.length;
+    currentIndexNotifier.value = currentIndex;
   }
 
-  
   @override
   Widget build(BuildContext context) {
     final healthTip = healthTips[currentIndex];
-    final cloudStoreRef = ref.watch(cloudStoreProvider);
+    final patientDetailsAsyncValue = ref.watch(patientDetailsProvider);
+    final patientDp = ref.watch(patientDpProvider);
     final size = MediaQuery.of(context).size;
+    final cloudStoreRef = ref.watch(cloudStoreProvider);
     String currentDate = DateFormat('EEEE').format(DateTime.now());
-    String? imageUrl = 'images/userIcon.png';
+   // String imageUrl = '';
     String firstName = '';
     String gender = '';
     String lastName = '';
-    String email = '';
+    String patientEmail = '';
+    String patientName = '';
+    String patientUid = widget.uid;
+    String patientImage = '';
+    String patientAge = '20';
+
     return SafeArea(
       top: false,
       child: Scaffold(
@@ -73,35 +104,24 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    FutureBuilder<PatientDetailsModel?>(
-                        future: cloudStoreRef.getUser(),
-                        builder: (context, snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.waiting) {
-                            return const Text('Hello',
-                                style: TextStyle(
-                                  fontFamily: 'Poppins',
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 17,
-                                ));
-                          } else {
-                            if (snapshot.hasData && snapshot.data != null) {
-                              PatientDetailsModel getPatientDetails =
-                                  snapshot.data!;
-                              firstName = getPatientDetails.firstName;
-                              gender = getPatientDetails.gender;
-                              lastName = getPatientDetails.lastName;
-                              email = getPatientDetails.email;
-                              return Text(
-                                'Hello $firstName👋',
-                                style: headLine3(black),
-                              );
-                            } else {
-                              return const Text('Hello👋');
-                            }
-                          }
-                        }),
+                    patientDetailsAsyncValue.when(
+                      data: (patientDetails) {
+                        if (patientDetails != null) {
+                          firstName = patientDetails.firstName;
+                          lastName = patientDetails.lastName;
+                          patientEmail = patientDetails.email;
+                          gender = patientDetails.gender;
+                          return Text(
+                            'Hello $firstName👋',
+                            style: headLine3(black),
+                          );
+                        } else {
+                          return const Text('Hello👋');
+                        }
+                      },
+                      loading: () => const CircularProgressIndicator(),
+                      error: (error, stackTrace) => Text('Error: $error'),
+                    ),
                     const SizedBox(height: 5),
                     Text(
                       'How do you feel this $currentDate?',
@@ -113,38 +133,22 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 ),
                 Row(
                   children: [
+                    patientDp.when(
+                        data: (data) {
+                          if (data != null) {
+                            patientImage = data;
+                          }
+                          return const SizedBox();
+                        },
+                        error:  (error, stackTrace) => Text('Error: $error'),
+                        loading: ()=>const CircularProgressIndicator(),),
                     const SizedBox(width: 5),
-                    StreamBuilder<String?>(
-                      stream: cloudStoreRef.getDp(),
-                      builder: (context, snapshot) {
-                        if (snapshot.hasError || snapshot.data == null) {
-                          return CircleAvatar(
-                            backgroundColor: Colors.grey,
-                            radius: 50,
-                            backgroundImage:
-                                Image.asset('images/userIcon.png').image,
-                          );
-                        } else {
-                          
-                          imageUrl = snapshot.data;
-
-                          return GestureDetector(
-                            child: CircleAvatar(
-                              backgroundImage: NetworkImage(imageUrl!),
-                            ),
-                            onTap: () => Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => ProfileScreen(
-                                        email: email,
-                                        image: imageUrl,
-                                        name: '$firstName $lastName',
-                                        gender: gender,
-                                        id: '001'))),
-                          );
-                        }
-                      },
-                    ),
+                    ProfilePicture(
+                        cloudStoreRef: cloudStoreRef,
+                        email: patientEmail,
+                        firstName: firstName,
+                        lastName: lastName,
+                        gender: gender),
                   ],
                 ),
               ],
@@ -154,42 +158,85 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const SingleChildScrollView(
+              SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Row(
                   children: [
-                    SizedBox(width: 20),
+                    const SizedBox(width: 20),
                     DepartmentContainer(
-                        screen: DentistsScreen(),
+                        screen: DentistsScreen(
+                            
+                            gender: gender,
+                            patientAge: patientAge,
+                            patientEmail: patientEmail,
+                            patientName: '$firstName $lastName',
+                            patientUid: patientUid,
+                            patientImage: patientImage),
                         icon: 'icons/tooth.png',
                         text: 'Dentistry'),
-                    SizedBox(width: 20),
+                    const SizedBox(width: 20),
                     DepartmentContainer(
-                        screen: CardiologistsScreen(),
-                        icon: 'icons/heart.png',
+                        screen: CardiologistsScreen(
+                            gender: gender,
+                            patientAge: patientAge,
+                            patientEmail: patientEmail,
+                            patientName: patientName,
+                            patientUid: patientUid,
+                            patientImage: patientImage),
+                        icon: 'images/heart.png',
                         text: 'Cardiology'),
-                    SizedBox(width: 20),
+                    const SizedBox(width: 20),
                     DepartmentContainer(
-                        screen: DermatologistsScreen(),
+                        screen: DermatologistsScreen(
+                            gender: gender,
+                            patientAge: patientAge,
+                            patientEmail: patientEmail,
+                            patientName: patientName,
+                            patientUid: patientUid,
+                            patientImage: patientImage),
                         icon: 'icons/skin.png',
                         text: 'Dermatology'),
-                    SizedBox(width: 20),
+                    const SizedBox(width: 20),
                     DepartmentContainer(
-                        screen: GeneralDoctorsScreen(),
-                        icon: 'icons/stethoscope.png',
+                        screen: GeneralDoctorsScreen(
+                            gender: gender,
+                            patientAge: patientAge,
+                            patientEmail: patientEmail,
+                            patientName: patientName,
+                            patientUid: patientUid,
+                            patientImage: patientImage),
+                        icon: 'images/stethoscope.png',
                         text: 'General Doctors'),
                     DepartmentContainer(
-                        screen: GynaecologistsScreen(),
-                        icon: 'icons/maternity.png',
+                        icon: 'images/maternity.png',
+                        screen: GynaecologistsScreen(
+                            gender: gender,
+                            patientAge: patientAge,
+                            patientEmail: patientEmail,
+                            patientName: patientName,
+                            patientUid: patientUid,
+                            patientImage: patientImage),
                         text: 'Gynaecology'),
-                    SizedBox(width: 20),
+                    const SizedBox(width: 20),
                     DepartmentContainer(
-                        screen: NeurologistsScreen(),
+                        screen: NeurologistsScreen(
+                            gender: gender,
+                            patientAge: patientAge,
+                            patientEmail: patientEmail,
+                            patientName: '$firstName $lastName',
+                            patientUid: patientUid,
+                            patientImage: patientImage),
                         icon: 'icons/neurologist.png',
                         text: 'Neurology'),
-                    SizedBox(width: 20),
+                    const SizedBox(width: 20),
                     DepartmentContainer(
-                        screen: OphthalmologistsScreen(),
+                        screen: OphthalmologistsScreen(
+                            gender: gender,
+                            patientAge: patientAge,
+                            patientEmail: patientEmail,
+                            patientName: patientName,
+                            patientUid: patientUid,
+                            patientImage: patientImage),
                         icon: 'icons/eyes.png',
                         text: 'Ophthalmology'),
                   ],
@@ -232,7 +279,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 style: headLine3(black),
               ),
               const SizedBox(height: 15),
-              HealthTipContainer(size: size, healthTip: healthTip),
+              ValueListenableBuilder<int>(
+                valueListenable: currentIndexNotifier,
+                builder: (context, currentIndex, child) {
+                  final healthTip = healthTips[currentIndex];
+                  return HealthTipContainer(size: size, healthTip: healthTip);
+                },
+              ),
               const SizedBox(
                 height: 25,
               ),
@@ -240,53 +293,116 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 'My illness history',
                 style: headLine3(black),
               ),
-              StreamBuilder(
-                  stream: cloudStoreRef.getIllnessHistory(),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return CircularProgressIndicator(color: blue);
-                    } else {
-                      final illnessDetails = snapshot.data!;
-                      if (illnessDetails.isNotEmpty) {
-                        int index = 0;
-                        String date = illnessDetails[index].date;
-                        String treatmentMode =
-                            illnessDetails[index].treatmentMode;
-                        String illness = illnessDetails[index].illness;
-                        return Flexible(
-                            child: ListView.builder(
-                          itemBuilder: (BuildContext context, int index) {
-                            return IllnessContainer(
-                                    icon: 'icons/sick.png',
-                                    illness: illness[index],
-                                    treatmentMode: treatmentMode[index],
-                                    date: date[index])
-                                .animate()
-                                .slideY(
-                                    begin: 3,
-                                    duration:
-                                        Duration(milliseconds: index * 300));
-                          },
-                          itemCount: illnessDetails.length,
-                        ));
-                      } else {
-                        return Center(
-                          child: Column(mainAxisAlignment:MainAxisAlignment.center,
-                            children: [
-                              SizedBox(height:70),
-                              Image.asset('images/record.png'),
-                              const Text('You have no sickness history'),
-                            ],
-                          ),
-                        );
-                      }
-                    }
-                  }),
+              IllnessHistory(cloudStoreRef: cloudStoreRef),
             ],
           ),
         ),
       ),
     );
+  }
+}
+
+class ProfilePicture extends StatelessWidget {
+  const ProfilePicture({
+    super.key,
+    required this.cloudStoreRef,
+    required this.email,
+    required this.firstName,
+    required this.lastName,
+    required this.gender,
+  });
+
+  final FirestoreClass cloudStoreRef;
+  final String email;
+  final String firstName;
+  final String lastName;
+  final String gender;
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<String?>(
+      stream: cloudStoreRef.getDp(),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          final imageUrl = snapshot.data;
+
+          return GestureDetector(
+            child: CircleAvatar(
+              backgroundImage: NetworkImage(imageUrl!),
+            ),
+            onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => ProfileScreen(
+                        email: email,
+                        image: imageUrl,
+                        name: '$firstName $lastName',
+                        gender: gender,
+                        id: '001'))),
+          );
+        } else {
+          return CircleAvatar(
+            backgroundColor: Colors.grey,
+            radius: 50,
+            backgroundImage: Image.asset('images/userIcon.png').image,
+          );
+        }
+      },
+    );
+  }
+}
+
+class IllnessHistory extends StatelessWidget {
+  const IllnessHistory({
+    super.key,
+    required this.cloudStoreRef,
+  });
+
+  final FirestoreClass cloudStoreRef;
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder(
+        stream: cloudStoreRef.getIllnessHistory(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return CircularProgressIndicator(color: blue);
+          } else {
+            final illnessDetails = snapshot.data!;
+            if (illnessDetails.isNotEmpty) {
+              int index = 0;
+              String date = illnessDetails[index].date;
+              String treatmentMode = illnessDetails[index].treatmentMode;
+              String illness = illnessDetails[index].illness;
+              return Flexible(
+                  child: ListView.builder(
+                itemBuilder: (BuildContext context, int index) {
+                  return IllnessContainer(
+                          icon: 'icons/sick.png',
+                          illness: illness[index],
+                          treatmentMode: treatmentMode[index],
+                          date: date[index])
+                      .animate()
+                      .slideY(
+                          begin: 3,
+                          duration: Duration(milliseconds: index * 300));
+                },
+                itemCount: illnessDetails.length,
+              ));
+            } else {
+              return Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const SizedBox(height: 70),
+                    Image.asset('icons/record.png'),
+                    const Text('You have no sickness history'),
+                  ],
+                ),
+              );
+            }
+          }
+        });
   }
 }
 
@@ -313,13 +429,12 @@ class HealthTipContainer extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             Text(
               healthTip['title'].toString(),
               style: headLine1(white),
             ),
-                        SizedBox(height: 5),
-
+            const SizedBox(height: 5),
             Text(healthTip['content'].toString(), style: bodyText4(white)),
           ],
         ),
