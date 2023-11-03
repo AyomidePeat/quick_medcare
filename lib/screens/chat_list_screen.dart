@@ -2,62 +2,117 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:quick_medcare/chatting/chat_screen.dart';
+import 'package:quick_medcare/utils/colors.dart';
+import 'package:quick_medcare/utils/textstyle.dart';
 
-class UsersListScreen extends StatefulWidget {
-  const UsersListScreen({super.key});
+class ChatListScreen extends StatefulWidget {
+  
+  final String senderEmail;
+  final String userType;
+  final String senderImage;
+  
+  final String doctorId;
+ 
+  final String senderName;
+  const ChatListScreen(
+      {super.key,
+      required this.doctorId,
+    
+      required this.senderEmail,
+      required this.userType,
+      required this.senderImage,
+  
+     required this.senderName});
 
   @override
-  State<UsersListScreen> createState() => _UsersListScreenState();
+  State<ChatListScreen> createState() => _ChatListScreenState();
 }
 
-class _UsersListScreenState extends State<UsersListScreen> {
+class _ChatListScreenState extends State<ChatListScreen> {
   final auth = FirebaseAuth.instance;
   final firebaseFirestore = FirebaseFirestore.instance;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text("Users"),
+          leading: IconButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              icon: Icon(
+                Icons.arrow_back_ios,
+                color: white,
+                size: 20,
+              )),
+          title: Text(
+            " Chats",
+            style: headLine2(white),
+          ),
+          backgroundColor: blue,
         ),
-        body: buildUserList());
+        body: Padding(
+          padding: const EdgeInsets.symmetric(vertical:15.0),
+          child: buildUserList(),
+        ));
   }
 
   Widget buildUserList() {
     return StreamBuilder<QuerySnapshot>(
-        stream: firebaseFirestore.collection('users').snapshots(),
+        stream: firebaseFirestore
+            .collection('${widget.doctorId}patientList')
+            .snapshots(),
         builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            return Text('Error ${snapshot.error.toString()}');
-          }
-          if (snapshot.connectionState == ConnectionState.waiting) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(
               child: CircularProgressIndicator(),
             );
+          } else {
+            final doctors = snapshot.data!.docs;
+            if (doctors.isNotEmpty) {
+              return ListView(
+                children: doctors
+                    .map<Widget>((doc) => buildUserListItem(doc))
+                    .toList(),
+              );
+            }
           }
-          if (!snapshot.hasData) {
-            return const Text('No users available');
-          }
-          return ListView(
-            children: snapshot.data!.docs
-                .map<Widget>((doc) => buildUserListItem(doc))
-                .toList(),
+          return Center(
+            child: Text('No chat yet!', style: headLine2(blue))
+               
           );
         });
   }
 
   Widget buildUserListItem(DocumentSnapshot document) {
     Map<String, dynamic> data = document.data()! as Map<String, dynamic>;
-    if (auth.currentUser!.email != data['email']) {
+    if (auth.currentUser!.email != data['patientEmail']) {
       return ListTile(
-          title: Text(data['email']),
+          title: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [CircleAvatar(),SizedBox(width:5),
+                  Text(data['patientName']),
+                ],
+              ),
+              Divider(color: grey,)
+            ],
+          ),
           onTap: () {
-            // Navigator.push(
-            //     context,
-            //     MaterialPageRoute(
-            //         builder: ((context) => ChatScreen(name: data['firstName'],userType: 'patient',//patientId: '',
-            //         // receiverUserEmail: data['email'],
-            //          image: data['image'],
-            //             receiverUserId: data['uid']))));
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: ((context) => ChatScreen(
+                        receiverUserEmail: data['patientEmail'],
+                        receiverUserId: data['uid'],
+                        receiverName: data['patientName'],
+                        senderName: widget.senderName,
+                        senderEmail: widget.senderEmail,
+                        receiverImage: data['patientDp'],
+                        senderImage: widget.senderImage,
+                        userType: widget.userType,
+                        gender: '',
+                        senderUid: widget.doctorId))));
           });
     } else {
       return Container();

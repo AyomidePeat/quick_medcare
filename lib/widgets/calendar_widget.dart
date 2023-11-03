@@ -6,10 +6,6 @@ import '../utils/colors.dart';
 class CalenderWidget extends StatefulWidget {
   const CalenderWidget({super.key});
 
-  
-
-  
-
   @override
   State<CalenderWidget> createState() => _CalenderWidgetState();
 }

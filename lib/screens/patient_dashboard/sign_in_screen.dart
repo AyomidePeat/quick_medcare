@@ -35,7 +35,8 @@ class _SignInScreenState extends State<SignInScreen> {
     emailController.dispose();
     passwordController.dispose();
   }
-  
+
+  bool isObscure = true;
 
   @override
   Widget build(BuildContext context) {
@@ -65,7 +66,7 @@ class _SignInScreenState extends State<SignInScreen> {
                       color: Color.fromARGB(255, 136, 133, 133))),
               const SizedBox(height: 20),
               CustomTextField(
-                  obscureText: true,
+                  obscureText: isObscure,
                   controller: passwordController,
                   hint: 'Password',
                   icon: const Icon(
@@ -78,22 +79,21 @@ class _SignInScreenState extends State<SignInScreen> {
                 children: [
                   Row(
                     children: [
-                      Checkbox(
-                          value: true,
-                          onChanged: (value) {
-                            value = true;
-                          }),
-                      Text(
-                        'Remember',
-                        style: bodyText3(black),
+                     
+                      TextButton(
+                        onPressed: () => setState(() {
+                          isObscure = !isObscure;
+                        }),
+                        child: Text(isObscure?
+                          'Show Password':'Hide Password',
+                          style: bodyText3(black),
+                        ),
                       )
                     ],
                   ),
                   CustomTextButton(
                     text: 'Forgot Password',
-                    onPressed: () {
-
-                    },
+                    onPressed: () {},
                   )
                 ],
               ),
@@ -120,14 +120,18 @@ class _SignInScreenState extends State<SignInScreen> {
                       Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
-                              builder: (context) =>  DoctorHomeScreen(uid:FirebaseAuth.instance.currentUser!.uid ,)));
+                              builder: (context) => DoctorHomeScreen(
+                                    uid: FirebaseAuth.instance.currentUser!.uid,
+                                  )));
                     } else if (role == 'patient') {
                       Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
-                              builder: (context) =>  HomeScreen(uid:FirebaseAuth.instance.currentUser!.uid ,)));
-                    }else if (role == 'admin'){
-                       Navigator.pushReplacement(
+                              builder: (context) => HomeScreen(
+                                    uid: FirebaseAuth.instance.currentUser!.uid,
+                                  )));
+                    } else if (role == 'admin') {
+                      Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
                               builder: (context) => const AdminDashboard()));

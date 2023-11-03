@@ -3,15 +3,14 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:quick_medcare/chatting/chat_service.dart';
+import 'package:quick_medcare/models/patient_model.dart';
 import 'package:quick_medcare/utils/colors.dart';
 import 'package:quick_medcare/utils/textstyle.dart';
 import 'package:quick_medcare/widgets/chat_textfield.dart';
 import 'package:quick_medcare/widgets/my_message_container.dart';
 import 'package:quick_medcare/widgets/sender_message_container.dart';
-
-import '../utils/upload_image.dart';
+import 'package:file_picker/file_picker.dart';
 
 class ChatScreen extends StatefulWidget {
   final String receiverUserEmail;
@@ -36,7 +35,8 @@ class ChatScreen extends StatefulWidget {
       required this.receiverImage,
       required this.senderImage,
       required this.userType,
-      required this.gender, required this.senderUid});
+      required this.gender,
+      required this.senderUid});
 
   @override
   State<ChatScreen> createState() => _ChatScreenState();
@@ -46,11 +46,25 @@ class _ChatScreenState extends State<ChatScreen> {
   final TextEditingController messageController = TextEditingController();
   final ChatService chatService = ChatService();
   final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
-  XFile? _imageFile;
+
+  void pickFile() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      type: FileType.custom, // Specify the file types you want to allow
+      allowedExtensions: ['jpg', 'jpeg', 'png', 'gif', 'mp4', 'mp3', 'wav'],
+    );
+
+    if (result != null) {
+      File file = File(result.files.single.path!);
+      await chatService.uploadFile(file, widget.receiverUserId);
+    } else {
+      print('User canceled file selection');
+    }
+  }
+
   void sendMessage() async {
     if (messageController.text.isNotEmpty) {
       await chatService.sendMessage(
-          widget.receiverUserId, messageController.text.trim());
+          widget.receiverUserId, messageController.text.trim(),null);
       messageController.clear();
     }
 
@@ -65,38 +79,19 @@ class _ChatScreenState extends State<ChatScreen> {
     }
   }
 
-  ImageUpload imageUpload = ImageUpload();
-// Future<void> _pickImage() async {
-//     final ImagePicker _picker = ImagePicker();
-//     final XFile? pickedFile = await _picker.pickImage(source: ImageSource.gallery);
-//     setState(() {
-//       _imageFile = pickedFile;
-//     });
-//   }
-  File convertXFileToFile(XFile xFile) {
-    final filePath = xFile.path;
-    return File(filePath);
-  }
-
-  Future<void> _sendMessageWithImage() async {
-    if (_imageFile != null) {
-      File image = File(_imageFile!.path);
-      await chatService.sendImageMessage(
-        widget.receiverUserId,
-        image,
-      );
-      setState(() {
-        _imageFile = null;
-      });
-    }
-  }
-
   @override
   void dispose() {
     messageController.dispose();
     super.dispose();
   }
 
+  PatientDetailsModel patientN = PatientDetailsModel(
+      firstName: 'firstName',
+      lastName: 'lastName',
+      gender: 'gender',
+      email: 'email',
+      uid: 'uid',
+      role: 'role');
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -118,9 +113,34 @@ class _ChatScreenState extends State<ChatScreen> {
                   width: 10,
                 ),
                 Text(
-                  'Dr. ${widget.receiverName}',
+                  widget.userType == 'patient'
+                      ? 'Dr. ${widget.receiverName}'
+                      : '${widget.receiverName}',
                   style: headLine2(white),
                 ),
+                const SizedBox(
+                  width: 30,
+                ),
+                IconButton(
+                    onPressed: () {
+                      // Navigator.push(context,
+                      //     MaterialPageRoute(builder: (context) {
+                      //   return VideoCallScreen(
+                      //       patient: patientN,
+                      //       call: Call(
+                      //           id: null,
+                      //           caller: widget.senderUid,
+                      //           called: widget.receiverUserId,
+                      //           rejected: null,
+                      //           connected: null,
+                      //           accepted: null,
+                      //           channel: 'null',
+                      //           active: null));
+
+                      // })
+                      //  );
+                    },
+                    icon: Icon(Icons.video_call_rounded, color: Colors.white))
               ],
             )),
         body: Padding(
@@ -138,14 +158,7 @@ class _ChatScreenState extends State<ChatScreen> {
         IconButton(onPressed: sendMessage, icon: const Icon(Icons.send)),
         IconButton(
             onPressed: () {
-              imageUpload.uploadImage(context, (pickedImg) {
-                setState(() {
-                  _imageFile = pickedImg;
-                });
-                final pickedImageFile = convertXFileToFile(pickedImg);
-                chatService.sendImageMessage(
-                    widget.receiverUserId, pickedImageFile);
-              });
+            pickFile();
             },
             icon: const Icon(Icons.attach_file_outlined)),
       ],
@@ -158,10 +171,10 @@ class _ChatScreenState extends State<ChatScreen> {
         data.containsKey('message') &&
         data.containsKey('time')) {
       return (data['senderId'] == firebaseAuth.currentUser!.uid)
-          ? MyMessageContainer(message: data['message'], date: data['time'])
+          ? MyMessageContainer(message: data['message'], date: data['time'], url: data['url'],)
           : SenderMessageContainer(
               message: data['message'],
-              date: data['time'],
+              date: data['time'], url: data['url']
             );
     } else {
       return Container();

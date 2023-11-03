@@ -5,13 +5,13 @@ import 'package:quick_medcare/utils/textstyle.dart';
 class PatientContainer extends StatelessWidget {
   final String name;
   final String email;
-  final String image;
+  
   final String gender;
 
   const PatientContainer({
     super.key,
     required this.name,
-    required this.email, required this.image, required this.gender,
+    required this.email, required this.gender,
     //  required this.age, required this.image
   });
 
@@ -25,7 +25,9 @@ class PatientContainer extends StatelessWidget {
           BoxDecoration(color: grey, borderRadius: BorderRadius.circular(10)),
       child: Row(children: [
         CircleAvatar(
-          backgroundImage: NetworkImage(image),
+          backgroundColor: blue,
+          backgroundImage: const AssetImage('images/heritage.png'),
+          //backgroundImage: NetworkImage(image),
           radius: 50,
         ),
         Column(

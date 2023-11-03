@@ -10,8 +10,9 @@ import '../../utils/textstyle.dart';
 import '../../widgets/main_button.dart';
 
 class AddPatientDetails extends StatefulWidget {
-  final String uid;
-  const AddPatientDetails({super.key, required this.uid});
+  const AddPatientDetails({
+    super.key,
+  });
 
   @override
   State<AddPatientDetails> createState() => _AddPatientDetailsState();
@@ -57,23 +58,6 @@ class _AddPatientDetailsState extends State<AddPatientDetails> {
   }
 
   Widget build(BuildContext context) {
-    PatientFileModel patientFile = PatientFileModel(
-        fullName: fullNameController.text,
-        dob: dobController.text,
-        gender: genderController.text,
-        email: emailController.text,
-        address: addressController.text,
-        pastConditions: pastConditionsController.text,
-        allergies: allergiesController.text,
-        previousSurgeries: previousSurgeriesController.text,
-        symptoms: symptomsController.text,
-        symptomDuration: symptomDurationController.text,
-        symptomSeverity: symptomSeverityController.text,
-        testResults: testResultsController.text,
-        imageReports: imageReportsController.text,
-        diagnosis: diagnosisController.text,
-        prescription: prescriptionController.text,
-        surgicalProcedure: surgicalProcedureController.text);
     return Scaffold(
       appBar: AppBar(
           elevation: 0,
@@ -141,16 +125,31 @@ class _AddPatientDetailsState extends State<AddPatientDetails> {
                       isLoading = true;
                     });
                     final uploadSuccess = await fireStore.addPatientDetails(
-                        patientDetails: patientFile);
+                        fullName: fullNameController.text.trim(),
+                        dob: dobController.text.trim(),
+                        gender: genderController.text.trim(),
+                        email: emailController.text.trim(),
+                        address: addressController.text.trim(),
+                        pastConditions: pastConditionsController.text.trim(),
+                        allergies: allergiesController.text.trim(),
+                        previousSurgeries: previousSurgeriesController.text.trim(),
+                        symptoms: symptomsController.text.trim(),
+                        symptomDuration: symptomDurationController.text.trim(),
+                        symptomSeverity: symptomSeverityController.text.trim(),
+                        testResults: testResultsController.text.trim(),
+                        imageReports: imageReportsController.text.trim(),
+                        diagnosis: diagnosisController.text.trim(),
+                        prescription: prescriptionController.text.trim(),
+                        surgicalProcedure: surgicalProcedureController.text.trim());
                     if (uploadSuccess == 'Saved') {
                       setState(() {
                         isUploaded = true;
                         isLoading = false;
                       });
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => PatientFile(uid: widget.uid,)));
+                      // Navigator.push(
+                      //     context,
+                      //     MaterialPageRoute(
+                      //         builder: (context) => PatientFile(uid: widget.uid,)));
                     } else {
                       setState(() {
                         isLoading = false;

@@ -27,7 +27,7 @@ class _SplashScreenState extends State<SplashScreen> {
             ),
             Padding(
               padding: const EdgeInsets.all(20.0),
-              child: Column(
+              child: Column(mainAxisAlignment:MainAxisAlignment.end,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const SizedBox(
@@ -77,14 +77,9 @@ class _SplashScreenState extends State<SplashScreen> {
               ),
             ),
             SizedBox(
-              height: size.height * 0.03,
+              height: size.height*0.2,
             ),
-            SizedBox(
-                height: size.height * 0.5,
-                child: Image.asset(
-                  'images/doctor.png',
-                  fit: BoxFit.fitHeight,
-                )).animate().then(duration: 500.ms).fadeIn(duration: 1300.ms)
+           
           ],
         ));
   }

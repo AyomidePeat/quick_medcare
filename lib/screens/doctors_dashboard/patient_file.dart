@@ -2,42 +2,67 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:quick_medcare/chatting/chat_screen.dart';
+import 'package:quick_medcare/models/patient_file_model.dart';
 import 'package:quick_medcare/utils/colors.dart';
 import 'package:quick_medcare/utils/textstyle.dart';
 import '../../firebase_reposisitories/cloud_firestore.dart';
 import '../../widgets/custom_container.dart';
 import '../../widgets/main_button.dart';
 
+late String email;
+late String fullName;
+final patientDetailsProvider = FutureProvider<PatientFileModel?>((ref) async {
+  final cloudStoreRef = ref.read(cloudStoreProvider);
+  final result = await cloudStoreRef.getPatientFile(fullName, email);
+  return result;
+});
+
 class PatientFile extends ConsumerStatefulWidget {
   final String uid;
-  const PatientFile({required this.uid, super.key});
+  final String email;
+  final String fullName;
+  const PatientFile(
+      {required this.uid,
+      required this.email,
+      required this.fullName,
+      super.key});
 
   @override
   ConsumerState<PatientFile> createState() => _PatientFileState();
 }
 
 class _PatientFileState extends ConsumerState<PatientFile> {
-  late int idNo;
-
-  late final String fullName;
-  late final String dob;
-  late final String gender;
-  late final String receiverEmail;
-  late final String address;
-  late final String pastConditions;
-  late final String allergies;
-  late final String previousSurgeries;
-  late final String symptoms;
-  late final String symptomDuration;
-  late final String symptomSeverity;
-  var testResults;
-  var imageReports;
-  late final String diagnosis;
-  late final String prescription;
-  late final String surgicalProcedure;
+  String dob = '';
+  String gender = '';
+  String receiverEmail = '';
+  String address = '';
+  String pastConditions = '';
+  String allergies = '';
+  String previousSurgeries = '';
+  String symptoms = '';
+  String symptomDuration = '';
+  String symptomSeverity = '';
+  var testResults = '';
+  var imageReports = '';
+  String diagnosis = '';
+  String prescription = '';
+  String surgicalProcedure = '';
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    
+    fullName = widget.fullName;
+    email = widget.email;
+  }
+final patientDetailsProvider = FutureProvider<PatientFileModel?>((ref) async {
+  final cloudStoreRef = ref.read(cloudStoreProvider);
+  final result = await cloudStoreRef.getPatientFile(fullName, email);
+  return result;
+});
   @override
   Widget build(BuildContext context) {
-    final firestoreRef = ref.watch(cloudStoreProvider);
+    final patientFileRef = ref.watch(patientDetailsProvider);
     //final size = MediaQuery.of(context).size;
 
     return Scaffold(
@@ -53,78 +78,35 @@ class _PatientFileState extends ConsumerState<PatientFile> {
               )),
           title: Text(
             'Medical Data',
-            style: headLine4(black),
+            style: headLine1(black),
           ),
         ),
         body: Padding(
           padding: const EdgeInsets.all(20.0),
-          child: SingleChildScrollView(
+          child: SingleChildScrollView(physics: BouncingScrollPhysics(),
             child:
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              StreamBuilder(
-                  stream: firestoreRef.getPatientDetails(),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Center(
-                          child: CircularProgressIndicator(color: blue));
-                    } else {
-                      final patientDetails = snapshot.data!;
-                      if (patientDetails.isNotEmpty) {
-                        int i = 0;
-
-                        fullName = patientDetails[i].fullName;
-                        dob = patientDetails[i].dob;
-                        gender = patientDetails[i].gender;
-                        receiverEmail = patientDetails[i].email;
-                        address = patientDetails[i].address;
-                        pastConditions = patientDetails[i].pastConditions;
-                        allergies = patientDetails[i].allergies;
-                        previousSurgeries = patientDetails[i].previousSurgeries;
-                        symptoms = patientDetails[i].symptoms;
-                        symptomDuration = patientDetails[i].symptomDuration;
-                        symptomSeverity = patientDetails[i].symptomSeverity;
-                        diagnosis = patientDetails[i].diagnosis;
-                        prescription = patientDetails[i].prescription;
-                        surgicalProcedure = patientDetails[i].surgicalProcedure;
-                      } else {}
+              patientFileRef.when(
+                  data: (data) {
+                    if (data != null) {
+                      fullName = data.fullName;
+                      dob = data.dob;
+                      gender = data.gender;
+                      receiverEmail = data.email;
+                      address = data.address;
+                      pastConditions = data.pastConditions;
+                      allergies = data.allergies;
+                      previousSurgeries = data.previousSurgeries;
+                      symptoms = data.symptoms;
+                      symptomDuration = data.symptomDuration;
+                      symptomSeverity = data.symptomSeverity;
+                      var testResults = data.testResults;
+                      var imageReports = data.imageReports;
+                      diagnosis = data.diagnosis;
+                      prescription = data.prescription;
+                      surgicalProcedure = data.surgicalProcedure;
                       return Column(
                         children: [
-                          Row(
-                            children: [
-                              const CircleAvatar(
-                                minRadius: 30,
-                                backgroundImage:
-                                    AssetImage('images/patient.jpg'),
-                              ),
-                              const SizedBox(width: 10),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    'Jane Doe',
-                                    style: headLine4(black),
-                                  ),
-                                  Text(
-                                    'Reg No: $idNo',
-                                    style: const TextStyle(
-                                        fontFamily: 'Poppins-Regular',
-                                        fontSize: 12,
-                                        color: Colors.black),
-                                  ),
-                                  const Text(
-                                    'Registered February 25, 2019',
-                                    style: TextStyle(
-                                        fontFamily: 'Poppins-Regular',
-                                        fontSize: 9,
-                                        color: Colors.black),
-                                  ),
-                                ],
-                              )
-                            ],
-                          ),
-                          const SizedBox(
-                            height: 30,
-                          ),
                           PersonalInformation(
                             address: address,
                             dob: dob,
@@ -149,35 +131,14 @@ class _PatientFileState extends ConsumerState<PatientFile> {
                             symptomSeverity: symptomSeverity,
                             symptoms: symptoms,
                           ),
-                          const SizedBox(
-                            height: 30,
-                          ),
-                          MainButton(
-                              height: 35,
-                              width: double.infinity,
-                              onpressed: () {
-                                // Navigator.push(
-                                //     context,
-                                  //  MaterialPageRoute(
-                                        // builder: (context) => ChatScreen(
-                                        //     receiverUserEmail: receiverEmail,
-                                        //     userType: 'doctor',
-                                        //     receiverUserId: receiverId,
-                                        //     image: widget.image,
-                                        //     receiverName: widget.receiverName,
-                                        //     senderName: widget.senderName,
-                                        //     senderEmail: widget.senderEmail)
-                                        //)
-                                       // );
-                              },
-                              child: Text(
-                                'Continue to Chat',
-                                style: bodyText3(black),
-                              )),
                         ],
                       );
+                    } else {
+                      return Text('No rrecord');
                     }
-                  })
+                  },
+                  error: (error, stackTrace) => Text('$error'),
+                  loading: () => Text('Loading')),
             ]),
           ),
         ));
@@ -202,8 +163,8 @@ class PersonalInformation extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CustomContainer(
-        color: lightBlue,
-        height: 500,
+        color: blue,
+        height: 350,
         width: double.infinity,
         child: Padding(
           padding: const EdgeInsets.all(10.0),
@@ -217,9 +178,11 @@ class PersonalInformation extends StatelessWidget {
                     const SizedBox(
                       width: 5,
                     ),
-                    Text(
-                      'Personal Information',
-                      style: headLine3(black),
+                    Center(
+                      child: Text(
+                        'Personal Information',
+                        style: headLine2(white),
+                      ),
                     ),
                   ],
                 ),
@@ -232,9 +195,9 @@ class PersonalInformation extends StatelessWidget {
               children: [
                 Text(
                   'Full Name: ',
-                  style: bodyText3(black),
+                  style: bodyText3(white),
                 ),
-                Text(fullName, style: headLine4(black)),
+                Text(fullName, style: headLine4(white)),
               ],
             ),
             const Padding(
@@ -245,9 +208,9 @@ class PersonalInformation extends StatelessWidget {
               children: [
                 Text(
                   'DOB:',
-                  style: bodyText3(black),
+                  style: bodyText3(white),
                 ),
-                Text(dob, style: headLine4(black)),
+                Text(dob, style: headLine4(white)),
               ],
             ),
             const Padding(
@@ -256,8 +219,8 @@ class PersonalInformation extends StatelessWidget {
             ),
             Row(
               children: [
-                Text('Gender:', style: bodyText3(black)),
-                Text(gender, style: headLine4(black)),
+                Text('Gender:', style: bodyText3(white)),
+                Text(gender, style: headLine4(white)),
               ],
             ),
             const Padding(
@@ -266,8 +229,8 @@ class PersonalInformation extends StatelessWidget {
             ),
             Row(
               children: [
-                Text('Email:', style: bodyText3(black)),
-                Text(email, style: headLine4(black)),
+                Text('Email:', style: bodyText3(white)),
+                Text(email, style: headLine4(white)),
               ],
             ),
             const Padding(
@@ -276,11 +239,11 @@ class PersonalInformation extends StatelessWidget {
             ),
             Row(
               children: [
-                Text('Home Address:', style: bodyText3(black)),
+                Text('Home Address:', style: bodyText3(white)),
                 SizedBox(
                     width: 150,
                     child: Text(' 12, XYZ street, LA',
-                        overflow: TextOverflow.fade, style: headLine4(black))),
+                        overflow: TextOverflow.fade, style: headLine4(white))),
               ],
             ),
           ]),
@@ -303,8 +266,8 @@ class MedicalHistory extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CustomContainer(
-        color: lightBlue,
-        height: 300,
+        color: blue,
+        height: 250,
         width: double.infinity,
         child: Padding(
           padding: const EdgeInsets.all(10.0),
@@ -320,7 +283,7 @@ class MedicalHistory extends StatelessWidget {
                     ),
                     Text(
                       'Past Medical Conditions',
-                      style: headLine3(black),
+                      style: headLine2(white),
                     ),
                   ],
                 ),
@@ -331,8 +294,8 @@ class MedicalHistory extends StatelessWidget {
             ),
             Row(
               children: [
-                Text('Known Allergies: ', style: bodyText3(black)),
-                Text(allergies, style: headLine4(black)),
+                Text('Known Allergies: ', style: bodyText3(white)),
+                Text(allergies, style: headLine4(white)),
               ],
             ),
             const Padding(
@@ -341,8 +304,8 @@ class MedicalHistory extends StatelessWidget {
             ),
             Row(
               children: [
-                Text('Past conditions: ', style: bodyText3(black)),
-                Text(pastConditions, style: headLine4(black)),
+                Text('Past conditions: ', style: bodyText3(white)),
+                Text(pastConditions, style: headLine4(white)),
               ],
             ),
             const Padding(
@@ -351,8 +314,8 @@ class MedicalHistory extends StatelessWidget {
             ),
             Row(
               children: [
-                Text('Previous Surgeries: ', style: bodyText3(black)),
-                Text(previousSurgeries, style: headLine4(black)),
+                Text('Previous Surgeries: ', style: bodyText3(white)),
+                Text(previousSurgeries, style: headLine4(white)),
               ],
             ),
           ]),
@@ -380,8 +343,8 @@ class CurrentExamination extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CustomContainer(
-        color: lightBlue,
-        height: 350,
+        color: blue,
+        height: 400,
         width: double.infinity,
         child: Padding(
           padding: const EdgeInsets.all(10.0),
@@ -397,7 +360,7 @@ class CurrentExamination extends StatelessWidget {
                     ),
                     Text(
                       'Current Examination and Treatment',
-                      style: headLine3(black),
+                      style: headLine2(white),
                     ),
                   ],
                 ),
@@ -408,8 +371,8 @@ class CurrentExamination extends StatelessWidget {
             ),
             Row(
               children: [
-                Text('Symptoms: ', style: bodyText3(black)),
-                Text(symptoms, style: headLine4(black)),
+                Text('Symptoms: ', style: bodyText3(white)),
+                Text(symptoms, style: headLine4(white)),
               ],
             ),
             const Padding(
@@ -418,8 +381,8 @@ class CurrentExamination extends StatelessWidget {
             ),
             Row(
               children: [
-                Text('Symptom Duration: ', style: bodyText3(black)),
-                Text(symptomDuration, style: headLine4(black)),
+                Text('Symptom Duration: ', style: bodyText3(white)),
+                Text(symptomDuration, style: headLine4(white)),
               ],
             ),
             const Padding(
@@ -428,8 +391,8 @@ class CurrentExamination extends StatelessWidget {
             ),
             Row(
               children: [
-                Text('Symptom Severity: ', style: bodyText3(black)),
-                Text(symptomSeverity, style: headLine4(black)),
+                Text('Symptom Severity: ', style: bodyText3(white)),
+                Text(symptomSeverity, style: headLine4(white)),
               ],
             ),
             const Padding(
@@ -438,8 +401,8 @@ class CurrentExamination extends StatelessWidget {
             ),
             Row(
               children: [
-                Text('Diagnosis: ', style: bodyText3(black)),
-                Text(diagnosis, style: headLine4(black)),
+                Text('Diagnosis: ', style: bodyText3(white)),
+                Text(diagnosis, style: headLine4(white)),
               ],
             ),
             const Padding(
@@ -448,11 +411,11 @@ class CurrentExamination extends StatelessWidget {
             ),
             Row(
               children: [
-                Text('Prescription: ', style: bodyText3(black)),
+                Text('Prescription: ', style: bodyText3(white)),
                 SizedBox(
                     width: 200,
                     child: Text(prescription,
-                        overflow: TextOverflow.fade, style: headLine4(black))),
+                        overflow: TextOverflow.fade, style: headLine4(white))),
               ],
             ),
             const Padding(
@@ -461,11 +424,11 @@ class CurrentExamination extends StatelessWidget {
             ),
             Row(
               children: [
-                Text('Surgical Prrocedure: ', style: bodyText3(black)),
+                Text('Surgical Prrocedure: ', style: bodyText3(white)),
                 SizedBox(
                     width: 200,
                     child: Text(surgicalProcedure,
-                        overflow: TextOverflow.fade, style: headLine4(black))),
+                        overflow: TextOverflow.fade, style: headLine4(white))),
               ],
             ),
             const Padding(

@@ -3,26 +3,33 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:quick_medcare/models/message_model.dart';
+
+final chatServiceProvider = Provider<ChatService>((ref) => ChatService());
 
 class ChatService extends ChangeNotifier {
   final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
   final FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
   final FirebaseStorage storage = FirebaseStorage.instance;
-  sendMessage(String receiverId, String message) async {
+  final Reference storageReference =
+      FirebaseStorage.instance.ref().child('uploads');
+  sendMessage(String receiverId, String message, String? url) async {
     final String currentUserId = firebaseAuth.currentUser!.uid;
     final String currentUserEmail = firebaseAuth.currentUser!.email.toString();
     final Timestamp timestamp = Timestamp.now();
     DateTime dateTime = timestamp.toDate();
     final time = DateFormat.Hm().format(dateTime);
     final newMessage = Message(
-        senderId: currentUserId,
-        senderEmail: currentUserEmail,
-        receiverId: receiverId,
-        message: message,
-        timestamp: timestamp,
-        time: time);
+      senderId: currentUserId,
+      senderEmail: currentUserEmail,
+      receiverId: receiverId,
+      message: message,
+      timestamp: timestamp,
+      time: time,
+      url: url!,
+    );
 
     List<String> ids = [currentUserId, receiverId];
     ids.sort();
@@ -58,33 +65,32 @@ class ChatService extends ChangeNotifier {
     return await snapshot.ref.getDownloadURL();
   }
 
-  Future<void> sendImageMessage(String receiverId, File imageFile) async {
-    final String currentUserId = firebaseAuth.currentUser!.uid;
+  Future<void> uploadFile(File file, receiverId) async {
+    final String fileName = file.path.split('/').last;
+    const String mimeType = 'application/octet-stream';
+    try {
+      final uploadTask = storageReference.child(fileName).putFile(
+            file,
+            SettableMetadata(contentType: mimeType),
+          );
 
-    String imageUrl = await _uploadImageToStorage(imageFile);
-    final String currentUserEmail = firebaseAuth.currentUser!.email.toString();
-    final Timestamp timestamp = Timestamp.now();
-    DateTime dateTime = timestamp.toDate();
-    final time = DateFormat.Hm().format(dateTime);
-    List<String> ids = [currentUserId, receiverId];
-    ids.sort();
-    String chatRoomId = ids.join("_");
-    final newMessage = Message(
-        senderId: currentUserId,
-        senderEmail: currentUserEmail,
-        receiverId: receiverId,
-        message: imageUrl,
-        timestamp: timestamp,
-        time: time);
-    await firebaseFirestore
-        .collection('chat_rooms')
-        .doc(chatRoomId)
-        .collection('messages')
-        .add(newMessage.toMap());
+      await uploadTask;
+      if (uploadTask.snapshot.state == TaskState.success) {
+        String downloadURL =
+            await storageReference.child(fileName).getDownloadURL();
+        sendMessage(receiverId, fileName, downloadURL);
+        print(downloadURL);
+      } else {
+        // Handle the file upload error.
+      }
+    } catch (error) {
+      // Handle exceptions here.
+      print('Error uploading file: $error');
+    }
   }
 
-  Future<void> addPatientToPatientList(
-      String doctorId, String name, String email, String gender, String patientDp, String uid) async {
+  Future<void> addPatientToPatientList(String doctorId, String name,
+      String email, String gender, String patientDp, String uid) async {
     try {
       final patientDocRef = FirebaseFirestore.instance
           .collection('${doctorId}patientList')
@@ -95,9 +101,9 @@ class ChatService extends ChangeNotifier {
         await patientDocRef.set({
           'patientName': name,
           'patientEmail': email,
-          'gender' : gender,
+          'gender': gender,
           'patientDp': patientDp,
-          'uid' :uid,
+          'uid': uid,
           'createdAt': FieldValue.serverTimestamp(),
         });
       }

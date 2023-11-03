@@ -1,8 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 
 import 'package:quick_medcare/screens/patient_dashboard/doctor_details.dart';
+import 'package:quick_medcare/utils/colors.dart';
+import 'package:quick_medcare/utils/textstyle.dart';
 
 import 'package:quick_medcare/widgets/doctor_container.dart';
 
@@ -21,7 +24,8 @@ class GeneralDoctorsScreen extends StatefulWidget {
       required this.patientEmail,
       required this.patientName,
       required this.patientUid,
-      required this.patientImage, required this.gender});
+      required this.patientImage,
+      required this.gender});
 
   @override
   State<GeneralDoctorsScreen> createState() => _GeneralDoctorsScreenState();
@@ -33,15 +37,15 @@ class _GeneralDoctorsScreenState extends State<GeneralDoctorsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
+        appBar: AppBar(backgroundColor: blue,
           leading: IconButton(
               onPressed: () {
                 Navigator.pop(context);
               },
-              icon: const Icon(
-                Icons.arrow_back_ios,
+              icon:  Icon(
+                Icons.arrow_back_ios,color: white,
               )),
-          title: const Text("Meet our General Doctors"),
+          title:  Text("Meet our Doctors", style: headLine2(white),),
         ),
         body: buildUserList());
   }
@@ -50,21 +54,24 @@ class _GeneralDoctorsScreenState extends State<GeneralDoctorsScreen> {
     return StreamBuilder<QuerySnapshot>(
         stream: firebaseFirestore.collection('General').snapshots(),
         builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            return Text('Error ${snapshot.error.toString()}');
-          }
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(
               child: CircularProgressIndicator(),
             );
+          } else {
+            final doctors = snapshot.data!.docs;
+            if (doctors.isNotEmpty) {
+              return ListView(
+                children: doctors
+                    .map<Widget>((doc) => buildUserListItem(doc))
+                    .toList(),
+              );
+            }
           }
-          if (!snapshot.hasData) {
-            return const Text('Coming soon...');
-          }
-          return ListView(
-            children: snapshot.data!.docs
-                .map<Widget>((doc) => buildUserListItem(doc))
-                .toList(),
+          return Center(
+            child: Text('Coming Soon...', style: headLine2(blue))
+                .animate()
+                .scaleXY(duration: 1000.ms),
           );
         });
   }
@@ -91,7 +98,8 @@ class _GeneralDoctorsScreenState extends State<GeneralDoctorsScreen> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: ((context) => DoctorDetailsScreen( senderUid: widget.patientUid,
+                          builder: ((context) => DoctorDetailsScreen(
+                              senderUid: widget.patientUid,
                               senderName: widget.patientName,
                               receiverEmail: widget.patientEmail,
                               senderImage: widget.patientImage,

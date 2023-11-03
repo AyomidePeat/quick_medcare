@@ -1,10 +1,14 @@
 import 'dart:async';
+import 'dart:convert';
 
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:quick_medcare/call_feature/video_call.dart';
 import 'package:quick_medcare/firebase_reposisitories/cloud_firestore.dart';
+import 'package:quick_medcare/models/call_model.dart';
 import 'package:quick_medcare/models/patient_model.dart';
 import 'package:quick_medcare/screens/patient_dashboard/department/dentists_screen.dart';
 import 'package:quick_medcare/screens/patient_dashboard/department/dermatologists_screen.dart';
@@ -36,25 +40,54 @@ final userImageStreamProvider = StreamProvider<String?>((ref) {
 });
 
 class HomeScreen extends ConsumerStatefulWidget {
-  final String uid;
-  const HomeScreen({
-    super.key,
-    required this.uid,
-  });
+  final String? uid;
+  final ReceivedAction? receivedAction;
+  const HomeScreen({super.key, this.uid, this.receivedAction});
 
   @override
   ConsumerState<HomeScreen> createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
-  int currentIndex = 0;
+  handleNotification() {
+    if (widget.receivedAction != null) {
+      Map userMap = widget.receivedAction!.payload!;
+      PatientDetailsModel patient = PatientDetailsModel(
+          firstName: userMap['firstName'],
+          lastName: userMap['lastName'],
+          gender: userMap['gender'],
+          email: userMap['email'],
+          uid: userMap['uid'],
+          role: userMap['role']);
+      Call call = Call(
+          id: userMap['id'],
+          caller: userMap['caller'],
+          called: userMap['called'],
+          rejected: jsonDecode(userMap['rejected']),
+          connected: true,
+          accepted: true,
+          channel: userMap['channel'],
+          active: jsonDecode(userMap['active']));
+      // Navigator.push(context, MaterialPageRoute(builder: (context) {
+      //   return VideoCallScreen(patient: patient, call: call);
+      // }));
+    }
+  }
 
   @override
   void initState() {
     super.initState();
-    ;
+    Future.delayed(const Duration(milliseconds: 1000)).then(
+      (value) => (value) {
+        handleNotification();
+      },
+    );
   }
 
+  int currentIndex = 0;
+
+  @override
+  
   final currentIndexNotifier = ValueNotifier<int>(0);
 
 //   void startTimer() async {
@@ -80,13 +113,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final size = MediaQuery.of(context).size;
     final cloudStoreRef = ref.watch(cloudStoreProvider);
     String currentDate = DateFormat('EEEE').format(DateTime.now());
-   // String imageUrl = '';
+    // String imageUrl = '';
     String firstName = '';
     String gender = '';
     String lastName = '';
     String patientEmail = '';
     String patientName = '';
-    String patientUid = widget.uid;
+    String patientUid = widget.uid!;
     String patientImage = '';
     String patientAge = '20';
 
@@ -134,14 +167,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 Row(
                   children: [
                     patientDp.when(
-                        data: (data) {
-                          if (data != null) {
-                            patientImage = data;
-                          }
-                          return const SizedBox();
-                        },
-                        error:  (error, stackTrace) => Text('Error: $error'),
-                        loading: ()=>const CircularProgressIndicator(),),
+                      data: (data) {
+                        if (data != null) {
+                          patientImage = data;
+                        }
+                        return const SizedBox();
+                      },
+                      error: (error, stackTrace) => Text('Error: $error'),
+                      loading: () => const CircularProgressIndicator(),
+                    ),
                     const SizedBox(width: 5),
                     ProfilePicture(
                         cloudStoreRef: cloudStoreRef,
@@ -165,7 +199,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     const SizedBox(width: 20),
                     DepartmentContainer(
                         screen: DentistsScreen(
-                            
                             gender: gender,
                             patientAge: patientAge,
                             patientEmail: patientEmail,
@@ -208,7 +241,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         icon: 'images/stethoscope.png',
                         text: 'General Doctors'),
                     DepartmentContainer(
-                        icon: 'images/maternity.png',
+                        icon: 'icons/maternity.png',
                         screen: GynaecologistsScreen(
                             gender: gender,
                             patientAge: patientAge,

@@ -7,15 +7,18 @@ class Message {
   final String message;
   final String time;
   final Timestamp timestamp;
+  final String? url;
 
-  Message(
-      {required this.senderId,
-      required this.senderEmail,
-      required this.receiverId,
-      required this.message,
-      required this.timestamp,
-      required this.time, 
-      });
+  Message({
+    required this.senderId,
+    required this.senderEmail,
+    required this.receiverId,
+    required this.message,
+    required this.timestamp,
+    required this.time,
+    this.url
+    
+  });
 
   Map<String, dynamic> toMap() {
     return {
@@ -24,7 +27,8 @@ class Message {
       'receiverId': receiverId,
       'message': message,
       'timestamp': timestamp,
-      'time':time
+      'time': time,
+      'url':url
     };
   }
 }

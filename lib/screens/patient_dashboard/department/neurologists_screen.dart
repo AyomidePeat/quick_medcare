@@ -1,8 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 
 import 'package:quick_medcare/screens/patient_dashboard/doctor_details.dart';
+import 'package:quick_medcare/utils/colors.dart';
+import 'package:quick_medcare/utils/textstyle.dart';
 
 import 'package:quick_medcare/widgets/doctor_container.dart';
 
@@ -33,15 +36,15 @@ class _NeurologistsScreenState extends State<NeurologistsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
+        appBar: AppBar(backgroundColor: blue,
           leading: IconButton(
               onPressed: () {
                 Navigator.pop(context);
               },
-              icon: const Icon(
-                Icons.arrow_back_ios,
+              icon:  Icon(
+                Icons.arrow_back_ios,color: white,
               )),
-          title: const Text("Meet our Neurologists"),
+          title:  Text("Meet our Neurologists", style: headLine2(white),),
         ),
         body: buildUserList());
   }
@@ -50,24 +53,28 @@ class _NeurologistsScreenState extends State<NeurologistsScreen> {
     return StreamBuilder<QuerySnapshot>(
         stream: firebaseFirestore.collection('Neurology').snapshots(),
         builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            return Text('Error ${snapshot.error.toString()}');
-          }
-          if (snapshot.connectionState == ConnectionState.waiting) {
+if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(
               child: CircularProgressIndicator(),
             );
+          } else {
+            final doctors = snapshot.data!.docs;
+            if (doctors.isNotEmpty) {
+              return ListView(
+                children: doctors
+                    .map<Widget>((doc) => buildUserListItem(doc))
+                    .toList(),
+              );
+            }
           }
-          if (!snapshot.hasData) {
-            return const Text('No neurologist added yet');
-          }
-          return ListView(
-            children: snapshot.data!.docs
-                .map<Widget>((doc) => buildUserListItem(doc))
-                .toList(),
+          return Center(
+            child: Text('Coming Soon...', style: headLine2(blue))
+                .animate()
+                .scaleXY(duration: 1000.ms),
           );
         });
   }
+            
 
   Widget buildUserListItem(DocumentSnapshot document) {
     Map<String, dynamic> data = document.data()! as Map<String, dynamic>;
