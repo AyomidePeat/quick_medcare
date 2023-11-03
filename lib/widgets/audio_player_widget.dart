@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:quick_medcare/utils/colors.dart';
+import 'package:quick_medcare/utils/textstyle.dart';
 class AudioPlayerWidgets extends StatefulWidget {
   final String audioUrl;
 
@@ -32,18 +34,18 @@ class _AudioPlayerWidgetsState extends State<AudioPlayerWidgets> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return Column(mainAxisAlignment: MainAxisAlignment.center,
       children: [
         isPlaying
             ? IconButton(
-                icon: Icon(Icons.pause),
+                icon: Icon(Icons.pause, color: black,),
                 onPressed: () => _audioPlayer.pause(),
               )
             : IconButton(
-                icon: Icon(Icons.play_arrow),
+                icon: Icon(Icons.play_circle_filled,color: black, size: 40),
                 onPressed: () => _audioPlayer.play(UrlSource(widget.audioUrl)),
               ),
-        Text('Audio Playback'),
+        Text('Audio Playback',style: bodyText4(black),),
       ],
     );
   }

@@ -172,7 +172,7 @@ class _ChatScreenState extends State<ChatScreen> {
         data.containsKey('time')) {
       return (data['senderId'] == firebaseAuth.currentUser!.uid)
           ? MyMessageContainer(message: data['message'], date: data['time'], url: data['url'],)
-          : SenderMessageContainer(
+          : SenderMessageContainer(senderName: widget.receiverName,
               message: data['message'],
               date: data['time'], url: data['url']
             );

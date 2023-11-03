@@ -1,17 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:quick_medcare/chatting/file_preview.dart';
 import 'package:quick_medcare/utils/colors.dart';
 import 'package:quick_medcare/utils/textstyle.dart';
 import 'package:quick_medcare/widgets/audio_player_widget.dart';
 import 'package:quick_medcare/widgets/video_player_widget.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class MyMessageContainer extends StatelessWidget {
   final String message;
   final String date;
   final String? url;
-  
-  const MyMessageContainer(
-      {super.key, required this.message, required this.date, this.url,});
+  final String user = 'You';
+
+  const MyMessageContainer({
+    super.key,
+    required this.message,
+    required this.date,
+    this.url,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -21,15 +26,28 @@ class MyMessageContainer extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           url != null
-              ? Container(
-                  height: 300,
-                  width: 300,
-                  padding: const EdgeInsets.all(2),
-                  margin: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    color: grey,
-                  ),
-                  child: _buildMediaWidget(url!, message),
+              ? GestureDetector(
+                  onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => FilePreview(user: user,
+                                message: message,
+                                url: url,
+                              ))),
+                  child: Container(
+                      padding: const EdgeInsets.all(10),
+                      margin: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                          color: blue,
+                          borderRadius: const BorderRadius.only(
+                            topLeft: Radius.circular(15),
+                            bottomLeft: Radius.circular(15),
+                            bottomRight: Radius.circular(15),
+                          )),
+                      child: Text(
+                        message,
+                        style: headLine3(white),
+                      )),
                 )
               : Container(
                   padding: const EdgeInsets.all(10),
@@ -59,18 +77,5 @@ class MyMessageContainer extends StatelessWidget {
     );
   }
 
-  Widget _buildMediaWidget(String url, String message) {
-    final uri = Uri.parse(url);
-    if (message.endsWith('.jpg') ||
-        message.endsWith('.png') ||
-        message.endsWith('.jpeg')) {
-      return Image.network(url, fit: BoxFit.cover);
-    } else if (message.endsWith('.mp4')) {
-      return VideoPlayerWidget(uri);
-    } else if (message.endsWith('.mp3')) {
-      return AudioPlayerWidgets(url);
-    } else {
-      return Text('Unsupported media type');
-    }
-  }
+ 
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:quick_medcare/chatting/file_preview.dart';
 import 'package:quick_medcare/utils/colors.dart';
 import 'package:quick_medcare/utils/textstyle.dart';
 import 'package:quick_medcare/widgets/audio_player_widget.dart';
@@ -8,9 +9,9 @@ class SenderMessageContainer extends StatelessWidget {
   final String message;
   final String date;
   final String? url;
-
+  final String senderName;
   const SenderMessageContainer(
-      {super.key, required this.message, required this.date, this.url});
+      {super.key, required this.message, required this.date, this.url, required this.senderName});
 
   @override
   Widget build(BuildContext context) {
@@ -20,15 +21,30 @@ class SenderMessageContainer extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           url != null
-              ? Container(
-                  height: 300,
-                  width: 300,
-                  padding: const EdgeInsets.all(2),
-                  margin: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    color: grey,
+              ? GestureDetector(
+                  onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => FilePreview(
+                                user: senderName,
+                                message: message,
+                                url: url,
+                              ))),
+                  child: Container(
+                    padding: const EdgeInsets.all(10),
+                    margin: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                        color: grey,
+                        borderRadius: const BorderRadius.only(
+                          topRight: Radius.circular(15),
+                          bottomLeft: Radius.circular(15),
+                          bottomRight: Radius.circular(15),
+                        )),
+                    child: Text(
+                        message,
+                        style: headLine3(black),
+                      )
                   ),
-                  child: _buildMediaWidget(url!, message),
                 )
               : Container(
                   padding: const EdgeInsets.all(10),
@@ -42,7 +58,7 @@ class SenderMessageContainer extends StatelessWidget {
                       )),
                   child: Text(
                     message,
-                    style: bodyText3(white),
+                    style: bodyText3(black),
                   ),
                 ),
           Text(
@@ -58,18 +74,5 @@ class SenderMessageContainer extends StatelessWidget {
     );
   }
 
-  Widget _buildMediaWidget(String url, String message) {
-    final uri = Uri.parse(url);
-    if (message.endsWith('.jpg') ||
-        message.endsWith('.png') ||
-        message.endsWith('.jpeg')) {
-      return Image.network(url, fit: BoxFit.cover);
-    } else if (message.endsWith('.mp4')) {
-      return VideoPlayerWidget(uri);
-    } else if (message.endsWith('.mp3')) {
-      return AudioPlayerWidgets(url);
-    } else {
-      return const Text('Unsupported media type');
-    }
-  }
+ 
 }
