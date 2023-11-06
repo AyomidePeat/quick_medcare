@@ -90,7 +90,7 @@ if (snapshot.connectionState == ConnectionState.waiting) {
 
     if (auth.currentUser!.email != data['email']) {
       return ListTile(
-        title: Column(
+        title: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             DoctorContainer(image: doctorImage, name: doctorName, role: role),
             MainButton(
@@ -113,8 +113,8 @@ if (snapshot.connectionState == ConnectionState.waiting) {
                               numberOfPatients: numberOfPatients))));
                 },
                 height: 40,
-                width: 150,
-                child: const Text('View Profile'))
+                width: 130,
+                child:  Text('View Profile', style: bodyText3(white),))
           ],
         ),
       );

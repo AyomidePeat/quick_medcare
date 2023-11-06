@@ -30,6 +30,7 @@ class _AdminDashboardState extends ConsumerState<AdminDashboard> {
   final emailController = TextEditingController();
   final uidController = TextEditingController();
   final specializationController = TextEditingController();
+  late File pickedImageFile;
   @override
   void dispose() {
     firstNameController.dispose();
@@ -37,7 +38,25 @@ class _AdminDashboardState extends ConsumerState<AdminDashboard> {
     emailController.dispose();
     uidController.dispose();
     specializationController.dispose();
+    infoController.dispose();
+    numberOfPatientsController.dispose();
+    experienceController.dispose();
     super.dispose();
+  }
+
+  void clear() {
+    firstNameController.clear();
+    lastNameController.clear();
+    emailController.clear();
+    uidController.clear();
+    specializationController.clear();
+    infoController.clear();
+    numberOfPatientsController.clear();
+    experienceController.clear();
+  }
+
+  bool isImageGood() {
+    return _imageFile != null;
   }
 
   var department = 'General';
@@ -70,9 +89,8 @@ class _AdminDashboardState extends ConsumerState<AdminDashboard> {
                     setState(() {
                       _imageFile = pickedImg;
                     });
-                    final pickedImageFile = convertXFileToFile(pickedImg);
-                    firestoreRef.uploadDoctorsImageToFirestore(
-                        pickedImageFile, uidController.text);
+
+                    pickedImageFile = convertXFileToFile(pickedImg);
                   });
                 },
                 child: Center(
@@ -85,6 +103,12 @@ class _AdminDashboardState extends ConsumerState<AdminDashboard> {
                   ),
                 ),
               ),
+              const SizedBox(
+                height: 15,
+              ),
+              InfoTextField(
+                  controller: uidController,
+                  hint: 'Uid(Copy this from firebase)'),
               const SizedBox(
                 height: 15,
               ),
@@ -119,9 +143,6 @@ class _AdminDashboardState extends ConsumerState<AdminDashboard> {
               const SizedBox(
                 height: 15,
               ),
-              InfoTextField(
-                  controller: uidController,
-                  hint: 'Uid(Copy this from firebase)'),
               const SizedBox(
                 height: 15,
               ),
@@ -142,38 +163,66 @@ class _AdminDashboardState extends ConsumerState<AdminDashboard> {
                 height: 15,
               ),
               MainButton(
-                  onpressed: () async {
-                    setState(() {
-                      isLoading = true;
-                    });
-                    final uploadSuccess = await firestoreRef.addDoctor(
-                        specialization: specializationController.text,
-                        uid: uidController.text,
-                        firstName: firstNameController.text,
-                        lastName: lastNameController.text,
-                        email: emailController.text,
-                        department: department,
-                        image: image,
-                        info: infoController.text,
-                        numberOfPatients: numberOfPatientsController.text,
-                        experience: experienceController.text,
-                        role: 'doctor');
-                    if (uploadSuccess == 'Uploaded') {
-                      setState(() {
-                        isUploaded = true;
-                        isLoading = false;
-                      });
-                    } else {
-                      setState(() {
-                        isLoading = false;
-                      });
-                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                          backgroundColor: blue,
-                          content: Text(uploadSuccess,
-                              textAlign: TextAlign.center,
-                              style: const TextStyle(fontSize: 16))));
-                    }
-                  },
+                  onpressed: !isUploaded
+                      ? () async {
+                          setState(() {
+                            isLoading = true;
+                          });
+                          if (uidController.text.isNotEmpty) {
+                            final uploadSuccess = await firestoreRef.addDoctor(
+                                specialization: specializationController.text,
+                                uid: uidController.text,
+                                firstName: firstNameController.text,
+                                lastName: lastNameController.text,
+                                email: emailController.text,
+                                department: department,
+                                image: image,
+                                info: infoController.text,
+                                numberOfPatients:
+                                    numberOfPatientsController.text,
+                                experience: experienceController.text,
+                                role: 'doctor');
+                            setState(() {
+                              firestoreRef.uploadDoctorsImageToFirestore(
+                                  pickedImageFile, uidController.text,department);
+                            });
+                            if (uploadSuccess == 'Uploaded') {
+                              setState(() {
+                                isUploaded = true;
+                                isLoading = false;
+                              });
+                            } else {
+                              setState(() {
+                                isLoading = false;
+                              });
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                      backgroundColor: blue,
+                                      content: Text(
+                                          uploadSuccess,
+                                          textAlign: TextAlign.center,
+                                          style:
+                                              const TextStyle(fontSize: 16))));
+                            }
+                          } else {
+                            setState(() {
+                              isLoading = false;
+                            });
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                backgroundColor: red,
+                                content: const Text('Input the Uid',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                    ))));
+                          }
+                        }
+                      : () {
+                          clear();
+                          setState(() {
+                            isUploaded = false;
+                          });
+                        },
                   height: 40,
                   width: double.infinity,
                   child: isLoading
@@ -223,7 +272,7 @@ class _AdminDashboardState extends ConsumerState<AdminDashboard> {
           'Gynaecology',
           'Neurology',
           'Opthalmology',
-          'Nutriton'
+          'Radiology'
         ].map<DropdownMenuItem<String>>((String value) {
           return DropdownMenuItem<String>(
             value: value,

@@ -16,6 +16,7 @@ import 'package:quick_medcare/screens/patient_dashboard/department/general_scree
 import 'package:quick_medcare/screens/patient_dashboard/department/gynaecologists_screen.dart';
 import 'package:quick_medcare/screens/patient_dashboard/department/neurologists_screen.dart';
 import 'package:quick_medcare/screens/patient_dashboard/department/ophthalmologists_screen.dart';
+import 'package:quick_medcare/screens/patient_dashboard/department/radiologists_screen.dart';
 import 'package:quick_medcare/screens/patient_dashboard/profile_screen.dart';
 import 'package:quick_medcare/utils/colors.dart';
 import 'package:quick_medcare/utils/textstyle.dart';
@@ -82,28 +83,23 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         handleNotification();
       },
     );
+    startTimer();
   }
 
   int currentIndex = 0;
 
-  @override
-  
-  final currentIndexNotifier = ValueNotifier<int>(0);
+ 
+ 
 
-//   void startTimer() async {
-//     await Future.delayed(const Duration(seconds: 2));
-// setState(() {
-//       currentIndex = (currentIndex + 1) % healthTips.length;
-
-// });
-
-//   }
   void startTimer() async {
-    await Future.delayed(const Duration(seconds: 2));
+    await Future.delayed(const Duration(seconds: 7));
+setState(() {
+      currentIndex = (currentIndex + 1) % healthTips.length;
+ startTimer();
+});
 
-    currentIndex = (currentIndex + 1) % healthTips.length;
-    currentIndexNotifier.value = currentIndex;
   }
+  
 
   @override
   Widget build(BuildContext context) {
@@ -126,11 +122,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     return SafeArea(
       top: false,
       child: Scaffold(
+        backgroundColor: Color.fromARGB(255, 244, 245, 247),
         appBar: AppBar(
             automaticallyImplyLeading: false,
             backgroundColor: Colors.transparent,
             centerTitle: false,
-            elevation: 0,
+            elevation: 1,
             title: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -189,145 +186,180 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             )),
         body: Padding(
           padding: const EdgeInsets.all(20.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: [
-                    const SizedBox(width: 20),
-                    DepartmentContainer(
-                        screen: DentistsScreen(
-                            gender: gender,
-                            patientAge: patientAge,
-                            patientEmail: patientEmail,
-                            patientName: '$firstName $lastName',
-                            patientUid: patientUid,
-                            patientImage: patientImage),
-                        icon: 'icons/tooth.png',
-                        text: 'Dentistry'),
-                    const SizedBox(width: 20),
-                    DepartmentContainer(
-                        screen: CardiologistsScreen(
-                            gender: gender,
-                            patientAge: patientAge,
-                            patientEmail: patientEmail,
-                            patientName: patientName,
-                            patientUid: patientUid,
-                            patientImage: patientImage),
-                        icon: 'images/heart.png',
-                        text: 'Cardiology'),
-                    const SizedBox(width: 20),
-                    DepartmentContainer(
-                        screen: DermatologistsScreen(
-                            gender: gender,
-                            patientAge: patientAge,
-                            patientEmail: patientEmail,
-                            patientName: patientName,
-                            patientUid: patientUid,
-                            patientImage: patientImage),
-                        icon: 'icons/skin.png',
-                        text: 'Dermatology'),
-                    const SizedBox(width: 20),
-                    DepartmentContainer(
-                        screen: GeneralDoctorsScreen(
-                            gender: gender,
-                            patientAge: patientAge,
-                            patientEmail: patientEmail,
-                            patientName: patientName,
-                            patientUid: patientUid,
-                            patientImage: patientImage),
-                        icon: 'images/stethoscope.png',
-                        text: 'General Doctors'),
-                    DepartmentContainer(
-                        icon: 'icons/maternity.png',
-                        screen: GynaecologistsScreen(
-                            gender: gender,
-                            patientAge: patientAge,
-                            patientEmail: patientEmail,
-                            patientName: patientName,
-                            patientUid: patientUid,
-                            patientImage: patientImage),
-                        text: 'Gynaecology'),
-                    const SizedBox(width: 20),
-                    DepartmentContainer(
-                        screen: NeurologistsScreen(
-                            gender: gender,
-                            patientAge: patientAge,
-                            patientEmail: patientEmail,
-                            patientName: '$firstName $lastName',
-                            patientUid: patientUid,
-                            patientImage: patientImage),
-                        icon: 'icons/neurologist.png',
-                        text: 'Neurology'),
-                    const SizedBox(width: 20),
-                    DepartmentContainer(
-                        screen: OphthalmologistsScreen(
-                            gender: gender,
-                            patientAge: patientAge,
-                            patientEmail: patientEmail,
-                            patientName: patientName,
-                            patientUid: patientUid,
-                            patientImage: patientImage),
-                        icon: 'icons/eyes.png',
-                        text: 'Ophthalmology'),
-                  ],
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                StreamBuilder<List<OtherInfoModel>>(
+                    stream: cloudStoreRef.getUserDetails(),
+                    builder: (context, snapshot) {
+                      if (snapshot.data == null || snapshot.data!.isEmpty) {
+                        return InkWell(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        const OtherDetailsScreen()));
+                          },
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text('Complete your registration',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(fontSize: 13, color: blue)),
+                              Icon(Icons.arrow_forward_ios,
+                                  color: blue, size: 15)
+                            ],
+                          )
+                              .animate(
+                                onPlay: (controller) =>
+                                    controller.repeat(reverse: true),
+                              )
+                              .fadeIn(duration: 1000.ms),
+                        );
+                      } else {
+                        return const SizedBox(height: 5);
+                      }
+                    }),
+
+               
+                     HealthTipContainer(size: size, healthTip: healthTip),
+                  
+                
+                const SizedBox(
+                  height: 25,
                 ),
-              ),
-              const SizedBox(height: 20),
-              StreamBuilder<List<OtherInfoModel>>(
-                  stream: cloudStoreRef.getUserDetails(),
-                  builder: (context, snapshot) {
-                    if (snapshot.data == null || snapshot.data!.isEmpty) {
-                      return InkWell(
-                        onTap: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      const OtherDetailsScreen()));
-                        },
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text('Complete your registration',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(fontSize: 13, color: blue)),
-                            Icon(Icons.arrow_forward_ios, color: blue, size: 15)
-                          ],
-                        )
-                            .animate(
-                              onPlay: (controller) =>
-                                  controller.repeat(reverse: true),
-                            )
-                            .fadeIn(duration: 1000.ms),
-                      );
-                    } else {
-                      return const SizedBox(height: 5);
-                    }
-                  }),
-              Text(
-                'Health Tips for You',
-                style: headLine3(black),
-              ),
-              const SizedBox(height: 15),
-              ValueListenableBuilder<int>(
-                valueListenable: currentIndexNotifier,
-                builder: (context, currentIndex, child) {
-                  final healthTip = healthTips[currentIndex];
-                  return HealthTipContainer(size: size, healthTip: healthTip);
-                },
-              ),
-              const SizedBox(
-                height: 25,
-              ),
-              Text(
-                'My illness history',
-                style: headLine3(black),
-              ),
-              IllnessHistory(cloudStoreRef: cloudStoreRef),
-            ],
+                Text('Check out our Departments', style: headLine3(black)),
+                const SizedBox(
+                  height: 10,
+                ),
+                SingleChildScrollView(
+                  scrollDirection: Axis.vertical,
+                  child: Column(
+                    children: [
+                      const SizedBox(width: 20),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          DepartmentContainer(
+                              color: Color.fromARGB(255, 248, 143, 136),
+                              screen: DentistsScreen(
+                                  gender: gender,
+                                  patientAge: patientAge,
+                                  patientEmail: patientEmail,
+                                  patientName: '$firstName $lastName',
+                                  patientUid: patientUid,
+                                  patientImage: patientImage),
+                              icon: 'icons/tooth.png',
+                              text: 'Dentistry'),
+                          DepartmentContainer(
+                              color: Color.fromARGB(255, 241, 192, 192),
+                              screen: CardiologistsScreen(
+                                  gender: gender,
+                                  patientAge: patientAge,
+                                  patientEmail: patientEmail,
+                                  patientName: patientName,
+                                  patientUid: patientUid,
+                                  patientImage: patientImage),
+                              icon: 'images/heart.png',
+                              text: 'Cardiology'),
+                        ],
+                      ),
+                      const SizedBox(height: 15),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          DepartmentContainer(
+                              color: Color.fromARGB(255, 199, 222, 243),
+                              screen: DermatologistsScreen(
+                                  gender: gender,
+                                  patientAge: patientAge,
+                                  patientEmail: patientEmail,
+                                  patientName: patientName,
+                                  patientUid: patientUid,
+                                  patientImage: patientImage),
+                              icon: 'icons/skin.png',
+                              text: 'Dermatology'),
+                          DepartmentContainer(
+                              color: Color.fromARGB(255, 218, 218, 218),
+                              screen: GeneralDoctorsScreen(
+                                  gender: gender,
+                                  patientAge: patientAge,
+                                  patientEmail: patientEmail,
+                                  patientName: patientName,
+                                  patientUid: patientUid,
+                                  patientImage: patientImage),
+                              icon: 'images/stethoscope.png',
+                              text: 'General Doctors'),
+                        ],
+                      ),
+                      const SizedBox(height: 15),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          DepartmentContainer(
+                              color: Color.fromARGB(255, 167, 198, 243),
+                              icon: 'icons/maternity.png',
+                              screen: GynaecologistsScreen(
+                                  gender: gender,
+                                  patientAge: patientAge,
+                                  patientEmail: patientEmail,
+                                  patientName: patientName,
+                                  patientUid: patientUid,
+                                  patientImage: patientImage),
+                              text: 'Gynaecology'),
+                          DepartmentContainer(
+                              color: Color.fromARGB(255, 194, 241, 192),
+                              screen: NeurologistsScreen(
+                                  gender: gender,
+                                  patientAge: patientAge,
+                                  patientEmail: patientEmail,
+                                  patientName: '$firstName $lastName',
+                                  patientUid: patientUid,
+                                  patientImage: patientImage),
+                              icon: 'icons/neurologist.png',
+                              text: 'Neurology'),
+                        ],
+                      ),
+                      const SizedBox(height: 15),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          DepartmentContainer(
+                              color: Color.fromARGB(255, 240, 224, 181),
+                              screen: OphthalmologistsScreen(
+                                  gender: gender,
+                                  patientAge: patientAge,
+                                  patientEmail: patientEmail,
+                                  patientName: patientName,
+                                  patientUid: patientUid,
+                                  patientImage: patientImage),
+                              icon: 'icons/eyes.png',
+                              text: 'Ophthalmology'),
+                          DepartmentContainer(
+                              color: Color.fromARGB(255, 240, 224, 181),
+                              screen: RadiologistsScreen(
+                                  gender: gender,
+                                  patientAge: patientAge,
+                                  patientEmail: patientEmail,
+                                  patientName: patientName,
+                                  patientUid: patientUid,
+                                  patientImage: patientImage),
+                              icon: 'icons/xray.png',
+                              text: 'Radiology'),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                // Text(
+                //   'My illness history',
+                //   style: headLine3(black),
+                // ),
+                // IllnessHistory(cloudStoreRef: cloudStoreRef),
+              ],
+            ),
           ),
         ),
       ),
@@ -453,7 +485,7 @@ class HealthTipContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(20.0),
-      height: size.height * 0.16,
+      height: size.height * 0.18,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
         color: blue,
@@ -464,11 +496,11 @@ class HealthTipContainer extends StatelessWidget {
           children: [
             const SizedBox(height: 10),
             Text(
-              healthTip['title'].toString(),
+              healthTip['title'],
               style: headLine1(white),
             ),
             const SizedBox(height: 5),
-            Text(healthTip['content'].toString(), style: bodyText4(white)),
+            Text(healthTip['content'], style: bodyText4(white)),
           ],
         ),
       ),

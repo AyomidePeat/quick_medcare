@@ -1,19 +1,11 @@
-import 'dart:convert';
-
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:quick_medcare/chat_feature/chat_screen.dart';
 import 'package:quick_medcare/firebase_options.dart';
-import 'package:quick_medcare/screens/admin_dashboard/admin.dart';
 import 'package:quick_medcare/screens/patient_dashboard/home_screen.dart';
-import 'package:quick_medcare/screens/patient_dashboard/other_details.dart';
-import 'package:quick_medcare/screens/patient_dashboard/sign_in_screen.dart';
-import 'package:quick_medcare/screens/patient_dashboard/sign_up_screen.dart';
 import 'package:quick_medcare/screens/patient_dashboard/splash_screen.dart';
 import 'package:quick_medcare/utils/colors.dart';
 import 'package:quick_medcare/utils/notification_services.dart';

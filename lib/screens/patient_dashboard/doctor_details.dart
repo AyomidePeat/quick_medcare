@@ -38,7 +38,8 @@ class DoctorDetailsScreen extends StatefulWidget {
       required this.senderName,
       required this.senderEmail,
       required this.senderImage,
-      required this.gender, required this.senderUid});
+      required this.gender,
+      required this.senderUid});
 
   @override
   State<DoctorDetailsScreen> createState() => _DoctorDetailsScreenState();
@@ -50,210 +51,140 @@ class _DoctorDetailsScreenState extends State<DoctorDetailsScreen> {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        backgroundColor: Colors.transparent,
-        centerTitle: true,
-        title: Text('Doctor\'s details', style: headLine2(black)),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
+      // appBar: AppBar(
+      //   elevation: 0,
+      //   backgroundColor: Colors.transparent,
+      //   centerTitle: true,
+      //   title: Text('Doctor\'s details', style: headLine2(black)),
+      // ),
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              height: size.height * 0.3,
+              padding: const EdgeInsets.only(top:15, left:15, right:15),
+              decoration: BoxDecoration(
+                  color: blue, borderRadius: BorderRadius.circular(20)),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Container(
-                    height: 130,
-                    width: size.width * 0.35,
-                    decoration: BoxDecoration(
-                      image: DecorationImage(image: NetworkImage(widget.image)),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
+                  IconButton(
+                    icon: const Icon(Icons.arrow_back_ios),
+                    onPressed: () => Navigator.pop(context),
+                    color: white,
                   ),
                   SizedBox(
-                    width: size.width * 0.5,
-                    child: Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            widget.receiverName,
-                            overflow: TextOverflow.fade,
-                            style: headLine3(black),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 10),
-                            child: Row(
-                              children: [
-                                for (int i = 0; i <= 4; i++)
-                                  const Icon(Icons.star,
-                                      color: Color.fromARGB(255, 255, 204, 65),
-                                      size: 18),
-                                const SizedBox(width: 4),
-                                Text(
-                                  '(24)',
-                                  style: bodyText2(black),
-                                )
-                              ],
-                            ),
-                          ),
-                          Text(
-                            widget.department,
-                            style: bodyText2(black),
-                          ),
-                        ],
-                      ).animate().fadeIn(duration: 500.ms),
-                    ),
-                  )
+                    width: size.width * 0.15,
+                  ),
+                  Image.network(widget.image)
                 ],
               ),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 30),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    DetailsContainer(
-                            aspect: 'patients',
-                            color: Colors.red,
-                            details: widget.numberOfPatients,
-                            icon: Icons.people,
-                            size: size)
-                        .animate()
-                        .then(duration: 300.ms)
-                        .fadeIn(duration: 500.ms),
-                    DetailsContainer(
-                            aspect: 'Experience',
-                            color: const Color.fromARGB(255, 255, 204, 65),
-                            details: '${widget.experience} years',
-                            icon: Icons.shopping_bag_sharp,
-                            size: size)
-                        .animate()
-                        .then(duration: 500.ms)
-                        .fadeIn(duration: 500.ms),
-                    DetailsContainer(
-                            aspect: 'Hospital',
-                            color: const Color.fromARGB(255, 36, 122, 69),
-                            details: '+Health',
-                            icon: Icons.location_on,
-                            size: size)
-                        .animate()
-                        .then(duration: 700.ms)
-                        .fadeIn(duration: 500.ms),
-                  ],
-                ),
-              ),
-              Text('About doctor:', style: headLine4(black)),
-              const SizedBox(height: 15),
-              ExpandableText(widget.info, readMoreText: 'Read more',
-                  onLinkPressed: (readMore) {
-                setState(() {
-                  textRead = readMore;
-                });
-              },
-                  readLessText: "Show less",
-                  linkTextStyle: headLine4(black),
-                  trimType: TrimType.lines,
-                  trim: textRead ? 29 : 4,
-                  style: bodyText2(black)),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 20.0),
-                child: Text('Specialization:', style: headLine4(black)),
-              ),
-              Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                color: const Color.fromARGB(255, 193, 241, 205),
-                child: Text(
-                  widget.specialization,
-                  style:
-                      const TextStyle(color: Color.fromARGB(255, 4, 143, 67)),
-                ),
-              ),
-              const SizedBox(height: 20),
-              Text('Available Times:', style: headLine4(black)),
-              const SizedBox(height: 10),
-              Text(
-                'Today',
-                style: bodyText3(grey),
-              ),
-              const SizedBox(height: 10),
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(children: [
-                  for (int i = 0; i < 3; i++)
-                    Container(
-                      margin: const EdgeInsets.only(right: 20),
-                      padding: const EdgeInsets.all(10.0),
-                      decoration: BoxDecoration(
-                          color: Colors.transparent,
-                          border: Border.all(
-                            width: 0.2,
-                          ),
-                          borderRadius: BorderRadius.circular(5)),
-                      child: Text(
-                        '07:30 PM',
-                        style: bodyText3(black),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Dr. ${widget.receiverName}',
+                    overflow: TextOverflow.fade,
+                    style: headLine2(black),
+                  ),
+                  const SizedBox(
+                    height: 5,
+                  ),
+                  Text(
+                    '${widget.department} • ${widget.experience} years of practice',
+                    style: bodyText4(black),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Row(
+                    children: [
+                      const Icon(Icons.people, color: Colors.green),
+                      const SizedBox(
+                        width: 5,
                       ),
-                    ),
-                ]),
-              ),
-              const SizedBox(height: 15),
-              Text(
-                'Tomorrow',
-                style: bodyText3(grey),
-              ),
-              const SizedBox(height: 10),
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(children: [
-                  for (int i = 0; i <= 3; i++)
-                    Container(
-                      margin: const EdgeInsets.only(right: 20),
-                      padding: const EdgeInsets.all(8.0),
-                      decoration: BoxDecoration(
-                          color: Colors.transparent,
-                          border: Border.all(
-                            width: 0.4,
-                          )),
-                      child: Text(
-                        '1',
-                        style: bodyText3(black),
+                      Text(
+                        'Treated over ${widget.numberOfPatients} patients',
+                        style: bodyText4(black),
                       ),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.history,
+                        color: blue,
+                      ),
+                      const SizedBox(
+                        width: 5,
+                      ),
+                      Text('Works 8am - 4pm', style: bodyText4(black))
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 30,
+                  ),
+                  MainButton(
+                          onpressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => ChatScreen(
+                                        senderUid: widget.senderUid,
+                                        gender: widget.gender,
+                                        receiverUserEmail: widget.receiverEmail,
+                                        receiverUserId: widget.uid,
+                                        receiverName: widget.receiverName,
+                                        senderName: widget.senderName,
+                                        senderEmail: widget.senderEmail,
+                                        receiverImage: widget.image,
+                                        senderImage: widget.senderImage,
+                                        userType: 'patient')));
+                          },
+                          height: 40,
+                          width: double.infinity,
+                          child: Text(
+                            'Chat with doctor',
+                            style: TextStyle(color: white),
+                          ))
+                      .animate()
+                      .then(duration: 300.ms)
+                      .fadeIn(duration: 500.ms)
+                      .slideY(duration: 500.ms, begin: 3),
+                  const SizedBox(height: 30),
+                  Container(
+                    padding: const EdgeInsets.symmetric(vertical:10, horizontal: 15),
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10), color: blue),
+                    child: Text(
+                      'About', 
+                      style: headLine4(white),
                     ),
-                ]),
+                  ),
+                  const SizedBox(height: 15),
+                  ExpandableText(widget.info, readMoreText: 'Read more',
+                      onLinkPressed: (readMore) {
+                    setState(() {
+                      textRead = readMore;
+                    });
+                  },
+                      readLessText: "Show less",
+                      linkTextStyle: headLine4(black),
+                      trimType: TrimType.lines,
+                      trim: textRead ? 29 : 15,
+                      style: bodyText4(black)),
+                ],
               ),
-              const SizedBox(height: 15),
-              MainButton(
-                      onpressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => ChatScreen(senderUid: widget.senderUid,
-                                    gender: widget.gender,
-                                    receiverUserEmail: widget.receiverEmail,
-                                    receiverUserId: widget.uid,
-                                    receiverName: widget.receiverName,
-                                    senderName: widget.senderName,
-                                    senderEmail: widget.senderEmail,
-                                    receiverImage: widget.image,
-                                    senderImage: widget.senderImage,
-                                    userType: 'patient')));
-                      },
-                      height: 40,
-                      width: double.infinity,
-                      child: Text(
-                        'Chat with doctor',
-                        style: TextStyle(color: white),
-                      ))
-                  .animate()
-                  .then(duration: 300.ms)
-                  .fadeIn(duration: 500.ms)
-                  .slideY(duration: 500.ms, begin: 3),
-            ],
-          ),
+            ),
+            
+          ],
         ),
       ),
     );

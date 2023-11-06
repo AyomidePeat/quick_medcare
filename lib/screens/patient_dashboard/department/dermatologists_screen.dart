@@ -89,7 +89,7 @@ class _DermatologistsScreenState extends State<DermatologistsScreen> {
 
     if (auth.currentUser!.email != data['email']) {
       return ListTile(
-        title: Column(
+        title:  Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             DoctorContainer(image: image, name: name, role: role),
             MainButton(
@@ -114,7 +114,7 @@ class _DermatologistsScreenState extends State<DermatologistsScreen> {
                 },
                 height: 40,
                 width: 150,
-                child: const Text('View Profile'))
+                child:  Text('View Profile',style: bodyText3(white),))
           ],
         ),
       );

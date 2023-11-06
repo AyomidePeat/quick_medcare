@@ -1,4 +1,3 @@
-import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -46,27 +45,27 @@ class _DoctorHomeScreenConsumerState extends ConsumerState<DoctorHomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final cloudStoreRef = ref.watch(cloudStoreProvider);
+
     //final patientDetails = ref.watch(patientDetailsProvider);
     final doctorDetails = ref.watch(doctorDetailsProvider);
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        backgroundColor: Colors.transparent,
+        backgroundColor: Colors.blue[100],
         centerTitle: false,
         elevation: 0,
         title: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const CircleAvatar(
-              backgroundImage: AssetImage('images/heritage.jpg'),
-            ),
+            ProfilePicture(cloudStoreRef: cloudStoreRef),
             doctorDetails.when(
                 data: (doctorsDetails) {
                   if (doctorsDetails != null) {
                     firstName = doctorsDetails.firstName;
                     lastName = doctorsDetails.lastName;
                     doctorEmail = doctorsDetails.email;
-                    doctorImage = doctorsDetails.image;
+                    // doctorImage = doctorsDetails.image;
 
                     return Padding(
                       padding: const EdgeInsets.all(10.0),
@@ -76,7 +75,7 @@ class _DoctorHomeScreenConsumerState extends ConsumerState<DoctorHomeScreen> {
                     return const Text('');
                   }
                 },
-                error: (error, StackTrace) => Text('Error: $error'),
+                error: (error, stackTrace) => Text('Error: $error'),
                 loading: () => const SizedBox()),
           ],
         ),
@@ -97,14 +96,12 @@ class _DoctorHomeScreenConsumerState extends ConsumerState<DoctorHomeScreen> {
               icon: Icon(Icons.message, color: blue))
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            buildPatientList(),
-          ],
-        ),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(height:15),
+          buildPatientList(),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
           backgroundColor: blue,
@@ -137,63 +134,48 @@ class _DoctorHomeScreenConsumerState extends ConsumerState<DoctorHomeScreen> {
           );
         }
         if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
-        return Flexible(
-          child: ListView(
-            children: snapshot.data!.docs
-                .map<Widget>((doc) => buildPatientListItem(doc))
-                .toList(),
-          ),
-        );
+          return Flexible(
+            child: ListView(
+              children: snapshot.data!.docs
+                  .map<Widget>((doc) => buildPatientListItem(doc))
+                  .toList(),
+            ),
+          );
+        } else {
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(height: 150),
+                Image.asset('icons/record.png', height: 200, width: 200),
+                const SizedBox(height: 25),
+                const Text('You have no patients yet'),
+              ],
+            ),
+          );
         }
-        else {
-        return Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              SizedBox(height:150),
-              Image.asset('icons/record.png', height: 200, width: 200),
-              const SizedBox(height: 25),
-              const Text('You have no patients yet'),
-            ],
-          ),
-        );
-      }
       },
     );
   }
 
-  // Widget getDoctorDetails(DocumentSnapshot document) {
-  //   Map<String, dynamic> data = document.data()! as Map<String, dynamic>;
-  //   doctorImage = data['image'];
-  //   return const SizedBox();
-  // }
 
-  // Widget getDoctorDp() {
-  //   return StreamBuilder<QuerySnapshot>(
-  //       stream: firebaseFirestore.collection('Opthalmology').snapshots(),
-  //       builder: (context, snapshot) {
-  //         return ListView(
-  //           children: snapshot.data!.docs
-  //               .map<Widget>((doc) => getDoctorDetails(doc))
-  //               .toList(),
-  //         );
-  //       });
-  // }
 
   Widget buildPatientListItem(DocumentSnapshot document) {
     Map<String, dynamic> data = document.data()! as Map<String, dynamic>;
     final patientEmail = data['email'];
     final patientName = data['fullName'];
+   
+      gender = data['gender'];
 
-    // final image = data['patientDp'];
-    // final patientUid = data['uid'];
+
+    
 
     if (auth.currentUser!.email != data['email']) {
       return ListTile(
           title: PatientContainer(
             name: patientName,
             email: patientEmail,
-            gender: gender,
+            // gender: gender,
           ),
           onTap: () {
             Navigator.push(
@@ -207,5 +189,36 @@ class _DoctorHomeScreenConsumerState extends ConsumerState<DoctorHomeScreen> {
     } else {
       return Container();
     }
+  }
+}
+
+class ProfilePicture extends StatelessWidget {
+  const ProfilePicture({
+    super.key,
+    required this.cloudStoreRef,
+  });
+  final FirestoreClass cloudStoreRef;
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder(
+      stream: cloudStoreRef.getDoctorDp(),
+      builder: ((context, snapshot) {
+        if (snapshot.hasData) {
+          final imageUrl = snapshot.data;
+
+          return GestureDetector(
+              onTap: () {},
+              child: CircleAvatar(
+                backgroundImage: NetworkImage(imageUrl!),
+              ));
+        } else {
+          return CircleAvatar(
+            backgroundColor: Colors.grey,
+            radius: 50,
+            backgroundImage: Image.asset('images/userIcon.png').image,
+          );
+        }
+      }),
+    );
   }
 }

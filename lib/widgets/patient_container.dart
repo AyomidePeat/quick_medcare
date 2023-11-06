@@ -6,49 +6,38 @@ class PatientContainer extends StatelessWidget {
   final String name;
   final String email;
   
-  final String gender;
+  //final String gender;
 
   const PatientContainer({
     super.key,
     required this.name,
-    required this.email, required this.gender,
-    //  required this.age, required this.image
+    required this.email, 
+   
   });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      //width: double.infinity,
-      padding: const EdgeInsets.all(10),
-      height: 100,
-      decoration:
-          BoxDecoration(color: grey, borderRadius: BorderRadius.circular(10)),
-      child: Row(children: [
-        CircleAvatar(
-          backgroundColor: blue,
-          backgroundImage: const AssetImage('images/heritage.png'),
-          //backgroundImage: NetworkImage(image),
-          radius: 50,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(left:8.0),
+          child: Text(
+            name,
+            style: headLine4(black),
+          ),
         ),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              name,
-              style: headLine4(black),
-            ),
-            Text(
-              gender,
-              style: bodyText4(black),
-            ),
-            Text(
-              email,
-              style: bodyText4(black),
-            )
-          ],
-        )
-      ]),
+        
+        Padding(
+          padding: const EdgeInsets.only(left:8.0),
+          child: Text(
+            email,
+            style: bodyText4(black),
+          ),
+        ),
+        Divider(color:  Colors.blue[100],)
+      ],
     );
   }
 }

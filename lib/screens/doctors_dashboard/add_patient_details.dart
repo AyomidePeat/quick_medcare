@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
-import 'package:quick_medcare/models/patient_file_model.dart';
-import 'package:quick_medcare/screens/doctors_dashboard/patient_file.dart';
+
 import 'package:quick_medcare/widgets/info_textfield.dart';
 
 import '../../firebase_reposisitories/cloud_firestore.dart';

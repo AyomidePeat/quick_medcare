@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:math';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -69,6 +70,21 @@ class FirestoreClass {
       if (snapshot.exists) {
         var data = snapshot.data() as Map<String, dynamic>;
         return data['imageURL'] ?? '';
+      } else {
+        return null;
+      }
+    });
+  }
+
+  Stream<String?> getDoctorDp() {
+    return FirebaseFirestore.instance
+        .collection('users')
+        .doc(auth.currentUser!.uid)
+        .snapshots()
+        .map((snapshot) {
+      if (snapshot.exists) {
+        var data = snapshot.data() as Map<String, dynamic>;
+        return data['image'] ?? '';
       } else {
         return null;
       }
@@ -242,7 +258,8 @@ class FirestoreClass {
     }
   }
 
-  Future<void> uploadDoctorsImageToFirestore(File pickedImage, uid) async {
+  Future<void> uploadDoctorsImageToFirestore(
+      File pickedImage, uid, department) async {
     try {
       final fileName = path.basename(pickedImage.path);
       final firebaseStorageRef =
@@ -255,101 +272,12 @@ class FirestoreClass {
           .collection('users')
           .doc(uid)
           .update({'image': imageUrl});
+      await FirebaseFirestore.instance
+          .collection(department)
+          .doc(uid)
+          .update({'image': imageUrl});
     } catch (error) {
-      // }
-    }
-
-    // StreamSubscription<DocumentSnapshot>? profileListener;
-
-    // String? currentImageUrl;
-
-    // Future<String?> getDpWithListener(
-    //     Function(String?) onProfilePictureChanged) async {
-    //   String? initialImageUrl = await getDp();
-
-    //   currentImageUrl = initialImageUrl;
-
-    //   profileListener?.cancel();
-
-    //   profileListener = firebaseFirestore
-    //       .collection('users')
-    //       .doc(auth.currentUser!.uid)
-    //       .snapshots()
-    //       .listen((DocumentSnapshot snapshot) {
-    //     if (snapshot.exists) {
-    //       Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
-
-    //       String? newImageUrl = data['imageURL'] as String?;
-
-    //       if (newImageUrl != currentImageUrl) {
-    //         currentImageUrl = newImageUrl;
-
-    //         onProfilePictureChanged(newImageUrl);
-    //       }
-    //     }
-    //   });
-
-    //   return initialImageUrl;
-    // }
-
-    //  void sendFileMessage({
-    //   required BuildContext context,
-    //   required File file,
-    //   required String recieverUserId,
-    //   required ChatModel senderUserData,
-    //   required ProviderRef ref,
-    //   required MessageEnum messageEnum,
-    //   required MessageReply? messageReply,
-    //   required bool isGroupChat,
-    // }) async {
-    //   try {
-    //     var timeSent = DateTime.now();
-    //     var messageId = const Uuid().v1();
-
-    //     String imageUrl = await ref
-    //         .read(firebaseStorageRepositoryProvider)
-    //         .storeFileToFirebase(
-    //           'chat/${messageEnum.type}/${senderUserData.uid}/$recieverUserId/$messageId',
-    //           file,
-    //         );
-
-    //     ChatModel? recieverUserData;
-
-    //       var userDataMap =
-    //           await firebaseFirestore.collection('users').doc(recieverUserId).get();
-    //       recieverUserData = ChatModel.fromJson(userDataMap.data()!);
-
-    //     String contactMsg;
-
-    //     switch (messageEnum) {
-    //       case MessageEnum.image:
-    //         contactMsg = '📷 Photo';
-    //         break;
-    //       case MessageEnum.video:
-    //         contactMsg = '📸 Video';
-    //         break;
-    //       case MessageEnum.audio:
-    //         contactMsg = '🎵 Audio';
-    //         break;
-    //       case MessageEnum.gif:
-    //         contactMsg = 'GIF';
-    //         break;
-    //       default:
-    //         contactMsg = 'GIF';
-    //     }
-
-    //   } catch (e) {
-    //     showSnackBar(context: context, content: e.toString());
-    //   }
-    // }
-
-    void showSnackBar(
-        {required BuildContext context, required String content}) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(content),
-        ),
-      );
+      (error.toString());
     }
 
     Stream<PatientDetailsModel> userData(String userId) {

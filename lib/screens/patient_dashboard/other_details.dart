@@ -55,7 +55,7 @@ class _OtherDetailsScreenState extends State<OtherDetailsScreen> {
     return Scaffold(
       appBar: AppBar(
           elevation: 0,
-          backgroundColor: Colors.blue,
+          backgroundColor: blue,
           leading: IconButton(
               onPressed: () {
                 Navigator.pop(context);
@@ -80,7 +80,7 @@ class _OtherDetailsScreenState extends State<OtherDetailsScreen> {
               const SizedBox(height: 20),
               InfoTextField(
                 controller: heightController,
-                hint: 'Height in ft',
+                hint: 'Height in meters',
               ),
               const SizedBox(height: 20),
               InfoTextField(
@@ -137,6 +137,7 @@ class _OtherDetailsScreenState extends State<OtherDetailsScreen> {
                         isUploaded = true;
                         isLoading = false;
                       });
+                      Navigator.pop(context);
                     } else {
                       setState(() {
                         isLoading = false;

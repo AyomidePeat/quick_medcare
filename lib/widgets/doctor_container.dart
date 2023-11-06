@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:quick_medcare/utils/colors.dart';
+import 'package:quick_medcare/utils/textstyle.dart';
 
 class DoctorContainer extends StatelessWidget {
   final String image;
@@ -10,38 +12,40 @@ class DoctorContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    return Container(
-        
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(6),
-            color: Colors.transparent,
-           
-            ),
-        child: Column(
-          
+    return doctorDetails();
+  }
+
+  Widget doctorDetails() {
+    return Column(
+      children: [
+        SizedBox(height:30),
+        Row(
           children: [
-            Container(
-              height: 200,
-              width: size.width * 0.4,
-              decoration: BoxDecoration(border: Border.all(),
-                borderRadius: BorderRadius.circular(10),
-               
-              ),
-              child: Image (image:NetworkImage(image),  fit: BoxFit.cover,),
+            CircleAvatar(
+              minRadius: 20,
+              backgroundImage: NetworkImage(image),
             ),
-            Padding(
-              padding: const EdgeInsets.all(10),
-              child: Text(
-                name,
-                overflow: TextOverflow.fade,
-                textAlign: TextAlign.center,
-              ),
+            const SizedBox(
+              width: 15,
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal:10),
-              child: Text(role),
+            Column(
+              children: [
+                Text(
+                  name,
+                  style: headLine3(black),
+                  overflow: TextOverflow.fade,
+                  textAlign: TextAlign.center,
+                ),
+                Text(
+                  role,
+                  style: bodyText4(black),
+                ),
+              ],
             )
           ],
-        ));
+        ),
+        Divider(color: Colors.blue[100])
+      ],
+    );
   }
 }

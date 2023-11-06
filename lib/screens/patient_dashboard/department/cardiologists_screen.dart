@@ -41,8 +41,8 @@ class _CardiologistsScreenState extends State<CardiologistsScreen> {
               onPressed: () {
                 Navigator.pop(context);
               },
-              icon: const Icon(
-                Icons.arrow_back_ios,
+              icon:  Icon(
+                Icons.arrow_back_ios, color:white
               )),
           title:  Text("Meet our Cardiologists",style: headLine2(white),),
         ),
@@ -89,7 +89,7 @@ class _CardiologistsScreenState extends State<CardiologistsScreen> {
 
     if (auth.currentUser!.email != data['email']) {
       return ListTile(
-        title: Column(
+        title: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             DoctorContainer(image: image, name: name, role: role),
             MainButton(
@@ -113,7 +113,7 @@ class _CardiologistsScreenState extends State<CardiologistsScreen> {
                 },
                 height: 40,
                 width: 150,
-                child: const Text('View Profile'))
+                child:  Text('View Profile', style: bodyText3(white),))
           ],
         ),
       );

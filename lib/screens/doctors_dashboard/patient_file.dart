@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:quick_medcare/chatting/chat_screen.dart';
 import 'package:quick_medcare/models/patient_file_model.dart';
 import 'package:quick_medcare/utils/colors.dart';
 import 'package:quick_medcare/utils/textstyle.dart';
 import '../../firebase_reposisitories/cloud_firestore.dart';
 import '../../widgets/custom_container.dart';
-import '../../widgets/main_button.dart';
 
 late String email;
 late String fullName;

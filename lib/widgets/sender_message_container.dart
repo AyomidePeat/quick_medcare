@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:quick_medcare/chatting/file_preview.dart';
 import 'package:quick_medcare/utils/colors.dart';
 import 'package:quick_medcare/utils/textstyle.dart';
-import 'package:quick_medcare/widgets/audio_player_widget.dart';
-import 'package:quick_medcare/widgets/video_player_widget.dart';
+
 
 class SenderMessageContainer extends StatelessWidget {
   final String message;

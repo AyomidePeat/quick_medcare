@@ -57,7 +57,6 @@ class _ChatScreenState extends State<ChatScreen> {
       File file = File(result.files.single.path!);
       await chatService.uploadFile(file, widget.receiverUserId);
     } else {
-      print('User canceled file selection');
     }
   }
 
