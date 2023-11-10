@@ -52,15 +52,16 @@ dependencies:
   agora_rtc_engine: ^6.2.2
   url_launcher: ^6.2.1
   permission_handler: ^11.0.0
-  path_provider: ^2.0.15
+  path_provider: ^2.1.1
   flutter_screenutil: ^5.8.4
   http: ^1.1.0
   awesome_notifications: ^0.8.2
   firebase_messaging: ^14.6.9
   file_picker: ^6.0.0
   video_player: ^2.8.1
+  flutter_pdfview: ^1.3.2
   audioplayers: ^5.2.0
-  assets_audio_player: ^3.1.1
+  open_file: ^3.3.2
 dev_dependencies:
   flutter_test:
     sdk: flutter

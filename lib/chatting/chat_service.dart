@@ -28,7 +28,7 @@ class ChatService extends ChangeNotifier {
       message: message,
       timestamp: timestamp,
       time: time,
-      url: url!,
+      url: url,
     );
 
     List<String> ids = [currentUserId, receiverId];
@@ -79,13 +79,12 @@ class ChatService extends ChangeNotifier {
         String downloadURL =
             await storageReference.child(fileName).getDownloadURL();
         sendMessage(receiverId, fileName, downloadURL);
-        print(downloadURL);
       } else {
         // Handle the file upload error.
       }
     } catch (error) {
       // Handle exceptions here.
-      print('Error uploading file: $error');
+      //print('Error uploading file: $error');
     }
   }
 

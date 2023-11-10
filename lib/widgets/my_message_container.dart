@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:quick_medcare/chatting/file_preview.dart';
 import 'package:quick_medcare/utils/colors.dart';
 import 'package:quick_medcare/utils/textstyle.dart';
-import 'package:quick_medcare/widgets/audio_player_widget.dart';
-import 'package:quick_medcare/widgets/video_player_widget.dart';
+
 
 class MyMessageContainer extends StatelessWidget {
   final String message;
@@ -27,7 +26,8 @@ class MyMessageContainer extends StatelessWidget {
         children: [
           url != null
               ? GestureDetector(
-                  onTap: () => Navigator.push(
+                  onTap: () 
+                  => Navigator.push(
                       context,
                       MaterialPageRoute(
                           builder: (context) => FilePreview(user: user,
@@ -77,5 +77,5 @@ class MyMessageContainer extends StatelessWidget {
     );
   }
 
- 
+
 }

@@ -484,24 +484,26 @@ class HealthTipContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(20.0),
+      padding: const EdgeInsets.all(10.0),
       height: size.height * 0.18,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
         color: blue,
       ),
       child: Center(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(height: 10),
-            Text(
-              healthTip['title'],
-              style: headLine1(white),
-            ),
-            const SizedBox(height: 5),
-            Text(healthTip['content'], style: bodyText4(white)),
-          ],
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: 10),
+              Text(
+                healthTip['title'],
+                style: headLine1(white),
+              ),
+              const SizedBox(height: 5),
+              Text(healthTip['content'], style: bodyText4(white)),
+            ],
+          ),
         ),
       ),
     );

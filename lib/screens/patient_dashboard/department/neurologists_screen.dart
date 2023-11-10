@@ -112,7 +112,7 @@ if (snapshot.connectionState == ConnectionState.waiting) {
                               uid: doctorUid,
                               numberOfPatients: numberOfPatients))));
                 },
-                height: 40,
+                height: 45,
                 width: 130,
                 child:  Text('View Profile', style: bodyText3(white),))
           ],

@@ -94,7 +94,7 @@ var gender = 'Male';
                       color: Color.fromARGB(255, 136, 133, 133),
                     )),
                 const SizedBox(height: 30),
-                selectGender(),
+                SizedBox(width:size.width-30, child: selectGender()),
                  const SizedBox(height: 20),
                 Center(
                   child: Text(
@@ -175,6 +175,7 @@ var gender = 'Male';
 
     return SizedBox(
       height: 90,
+      
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -188,10 +189,10 @@ var gender = 'Male';
           Row(
             children: [
               SizedBox(
-                width: 100,
+                width: 90,
                 child: Row(
                   children: [
-                    const Text("Male"),
+                     Text("Male",style: bodyText4(black),),
                     Radio(
                         focusColor: blue,
                         activeColor: blue,
@@ -208,10 +209,10 @@ var gender = 'Male';
                 ),
               ),
               SizedBox(
-                width: 110,
+                width: 105,
                 child: Row(
                   children: [
-                    const Text("Female"),
+                     Text("Female",style: bodyText4(black),),
                     Radio(
                         activeColor: blue,
                         value: "Female",
@@ -227,10 +228,10 @@ var gender = 'Male';
                 ),
               ),
               SizedBox(
-                width: 140,
+                width: 130,
                 child: Row(
                   children: [
-                    const Text("Non-binary"),
+                     Text("Non-binary",style: bodyText4(black),),
                     Radio(
                         activeColor: blue,
                         value: "Non-binary",

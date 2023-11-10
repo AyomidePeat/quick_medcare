@@ -46,24 +46,38 @@ class _ChatScreenState extends State<ChatScreen> {
   final TextEditingController messageController = TextEditingController();
   final ChatService chatService = ChatService();
   final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+final ScrollController _scrollController = ScrollController();
 
   void pickFile() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
       type: FileType.custom, // Specify the file types you want to allow
-      allowedExtensions: ['jpg', 'jpeg', 'png', 'gif', 'mp4', 'mp3', 'wav'],
+      allowedExtensions: [
+        'jpg',
+        'jpeg',
+        'png',
+        'gif',
+        'mp4',
+        'mp3',
+        'wav',
+        'pdf',
+        'aac',
+        'xlsx',
+        'doc',
+        'docx',
+        'mkv'
+      ],
     );
 
     if (result != null) {
       File file = File(result.files.single.path!);
       await chatService.uploadFile(file, widget.receiverUserId);
-    } else {
-    }
+    } else {}
   }
 
   void sendMessage() async {
     if (messageController.text.isNotEmpty) {
       await chatService.sendMessage(
-          widget.receiverUserId, messageController.text.trim(),null);
+          widget.receiverUserId, messageController.text.trim(), null);
       messageController.clear();
     }
 
@@ -121,25 +135,8 @@ class _ChatScreenState extends State<ChatScreen> {
                   width: 30,
                 ),
                 IconButton(
-                    onPressed: () {
-                      // Navigator.push(context,
-                      //     MaterialPageRoute(builder: (context) {
-                      //   return VideoCallScreen(
-                      //       patient: patientN,
-                      //       call: Call(
-                      //           id: null,
-                      //           caller: widget.senderUid,
-                      //           called: widget.receiverUserId,
-                      //           rejected: null,
-                      //           connected: null,
-                      //           accepted: null,
-                      //           channel: 'null',
-                      //           active: null));
-
-                      // })
-                      //  );
-                    },
-                    icon: Icon(Icons.video_call_rounded, color: Colors.white))
+                    onPressed: () {},
+                    icon: const Icon(Icons.video_call_rounded, color: Colors.white))
               ],
             )),
         body: Padding(
@@ -157,7 +154,12 @@ class _ChatScreenState extends State<ChatScreen> {
         IconButton(onPressed: sendMessage, icon: const Icon(Icons.send)),
         IconButton(
             onPressed: () {
-            pickFile();
+              pickFile();
+               ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        backgroundColor: blue, duration: const Duration(seconds: 5),
+                        content: const Text('Sending...',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(fontSize: 16))));
             },
             icon: const Icon(Icons.attach_file_outlined)),
       ],
@@ -169,38 +171,50 @@ class _ChatScreenState extends State<ChatScreen> {
     if (data.containsKey('senderId') &&
         data.containsKey('message') &&
         data.containsKey('time')) {
+
       return (data['senderId'] == firebaseAuth.currentUser!.uid)
-          ? MyMessageContainer(message: data['message'], date: data['time'], url: data['url'],)
-          : SenderMessageContainer(senderName: widget.receiverName,
+          ? MyMessageContainer(
               message: data['message'],
-              date: data['time'], url: data['url']
-            );
+              date: data['time'],
+              url: data['url'],
+            )
+          : SenderMessageContainer(
+              senderName: widget.receiverName,
+              message: data['message'],
+              date: data['time'],
+              url: data['url']);
     } else {
       return Container();
     }
   }
 
   Widget _buildMessageList() {
-    return StreamBuilder<QuerySnapshot>(
-        stream: chatService.getMessages(
-            widget.receiverUserId, firebaseAuth.currentUser!.uid),
-        builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            return Text('Error: ${snapshot.error}');
-          }
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Text('Loading...');
-          }
-          if (!snapshot.hasData) {
-            return const Text('No users available');
-          }
-          return Flexible(
-            child: ListView(
-              children: snapshot.data!.docs
-                  .map((document) => _buildMessageItem(document))
-                  .toList(),
-            ),
-          );
-        });
-  }
+  return StreamBuilder<QuerySnapshot>(
+    stream: chatService.getMessages(
+      widget.receiverUserId, firebaseAuth.currentUser!.uid),
+    builder: (context, snapshot) {
+      if (snapshot.hasError) {
+        return Text('Error: ${snapshot.error}');
+      }
+      if (snapshot.connectionState == ConnectionState.waiting) {
+        return const Text('Loading...');
+      }
+      if (!snapshot.hasData) {
+        return const Text('No users available');
+      }
+ WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+        // Scroll to the bottom once new messages are loaded
+        _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
+      });
+      return Flexible(
+        child: ListView(
+          controller: _scrollController,  // Attach the ScrollController here
+          children: snapshot.data!.docs
+            .map((document) => _buildMessageItem(document))
+            .toList(),
+        ),
+      );
+    },
+  );
+}
 }

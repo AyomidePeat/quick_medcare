@@ -60,7 +60,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           automaticallyImplyLeading: false,
           backgroundColor: blue,
           flexibleSpace: Padding(
-            padding: const EdgeInsets.symmetric(vertical:30.0, horizontal: 30),
+            padding: const EdgeInsets.symmetric(vertical:30.0, horizontal: 22),
             child: Row(
               children: [
                 Stack(

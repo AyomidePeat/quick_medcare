@@ -23,8 +23,8 @@ class DepartmentContainer extends StatelessWidget {
             context, MaterialPageRoute(builder: (context) => screen));
       },
       child: Container(
-        height: 120,
-        width: size.width * 0.42,
+        height: 140,
+        width: size.width * 0.43,
         padding: const EdgeInsets.all(12.0),
         decoration: BoxDecoration(
           color: white,
