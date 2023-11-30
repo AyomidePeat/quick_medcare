@@ -6,6 +6,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:quick_medcare/models/appointment_model.dart';
 import 'package:quick_medcare/models/illness_model.dart';
 import 'package:quick_medcare/models/patient_model.dart';
 import 'package:path/path.dart' as path;
@@ -325,5 +326,49 @@ class FirestoreClass {
       return e.toString();
     }
     return message;
+  }
+
+  Future addAppointment(
+      {required String doctor,
+      required String patient,
+      required String appointmentNote,
+      required String time,
+      required String date,
+      required String doctorUid,
+      required String patientUid
+      }) async {
+    AppointmentModel appointment = AppointmentModel(
+        doctor: doctor,
+        patient: patient,
+        date: date,
+        time: time,
+        appointmentNote: appointmentNote,
+        doctorUid: doctorUid, patinetUid: patientUid
+        );
+         String message = 'Something went wrong';
+          try {
+      await firebaseFirestore.collection('appointments').doc(doctorUid).set(appointment.toJson());
+      await firebaseFirestore.collection('appointments').doc(patientUid).set(appointment.toJson());
+      
+
+      message = 'Uploaded';
+    } catch (e) {
+      return e.toString();
+    }
+    return message;
+  
+  }
+
+   Stream<List<AppointmentModel>> getappointments() {
+    return firebaseFirestore
+        .collection('appointments')
+        .doc(auth.currentUser?.uid)
+        .collection('user-details')
+        .snapshots()
+        .map((querySnapshot) {
+      return querySnapshot.docs
+          .map((doc) => AppointmentModel.fromJson(doc.data()))
+          .toList();
+    });
   }
 }

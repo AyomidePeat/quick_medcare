@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:quick_medcare/utils/colors.dart';
 import 'package:quick_medcare/widgets/calendar_widget.dart';
+import 'package:quick_medcare/widgets/main_button.dart';
 
 import '../../utils/textstyle.dart';
 
@@ -12,9 +14,9 @@ class AppointmentScreen extends StatefulWidget {
 }
 
 class _AppointmentScreenState extends State<AppointmentScreen> {
-  String department = 'Gynaecology';
-  TimeOfDay? _selectedTime;
+  var pickedDate;
 
+  TimeOfDay? _selectedTime;
   Future<void> _selectTime(BuildContext context) async {
     final TimeOfDay? pickedTime = await showTimePicker(
       context: context,
@@ -35,6 +37,8 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
     }
   }
 
+  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -43,7 +47,7 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
           elevation: 0,
           backgroundColor: blue,
           centerTitle: true,
-          title: Text('Book an appointment', style: headLine3(black)),
+          title: Text('Book an appointment', style: headLine3(white)),
           leading: IconButton(
               onPressed: () {
                 Navigator.pop(context);
@@ -57,7 +61,8 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
           padding: const EdgeInsets.all(15.0),
           child: Column(
             children: [
-              const CalenderWidget(),
+              // CalenderWidget(
+              // ),
               InkWell(
                 onTap: () {
                   _selectTime(context);
@@ -85,35 +90,14 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                   ),
                 ),
               ),
-              //  DropdownButton<String>(
-              //                       dropdownColor: const Color.fromARGB(255, 32, 68, 97),
-              //                       value: 'Gynaecology',
-              //                       onChanged: (newValue) {
-              //                         setState(() {
-              //                           department = newValue!;
-              //                         });
-              //                       },
-              //                       items: <String>[
-              //                         'Neurosurgery',
-              //                         'Dentistry',
-              //                         'Ophthamology',
-              //                         'Dermatology'
-              //                         'Gynaecology'
-
-              //                       ].map<DropdownMenuItem<String>>((String value) {
-              //                         return DropdownMenuItem<String>(
-              //                           value: value,
-              //                           child: Text(
-              //                             value,
-              //                             style: const TextStyle(
-              //                                 //fontFamily: 'Poppins',
-              //                                 color: Colors.white,
-              //                                 fontWeight: FontWeight.bold,
-              //                                 fontSize: 14),
-              //                           ),
-              //                         );
-              //                       }).toList(),
-              //                     ),
+              MainButton(
+                  onpressed: () {
+                    print(
+                        'Selected Time: $_selectedTime, Selected date : $pickedDate');
+                  },
+                  child: Text('Print date'),
+                  height: 40,
+                  width: 100)
             ],
           ),
         ));

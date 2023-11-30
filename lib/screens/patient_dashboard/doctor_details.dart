@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_expandable_text/flutter_expandable_text.dart';
+import 'package:intl/intl.dart';
+import 'package:quick_medcare/screens/patient_dashboard/appointment_screen.dart';
 
 import 'package:quick_medcare/utils/colors.dart';
 import 'package:quick_medcare/utils/textstyle.dart';
+import 'package:quick_medcare/widgets/calendar_widget.dart';
 
 import '../../chatting/chat_screen.dart';
 import '../../widgets/main_button.dart';
@@ -47,23 +50,41 @@ class DoctorDetailsScreen extends StatefulWidget {
 
 class _DoctorDetailsScreenState extends State<DoctorDetailsScreen> {
   bool textRead = false;
+  final appointmentController = TextEditingController();
+  TimeOfDay? _selectedTime;
+  var pickedDate;
+  Future<void> _selectTime(BuildContext context) async {
+    final TimeOfDay? pickedTime = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.now(),
+      helpText: 'Select Preferred Time',
+      builder: (context, Widget? child) {
+        return Theme(
+          data: ThemeData(),
+          child: child!,
+        );
+      },
+    );
+
+    if (pickedTime != null) {
+      setState(() {
+        _selectedTime = pickedTime;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     return Scaffold(
-      // appBar: AppBar(
-      //   elevation: 0,
-      //   backgroundColor: Colors.transparent,
-      //   centerTitle: true,
-      //   title: Text('Doctor\'s details', style: headLine2(black)),
-      // ),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
               height: size.height * 0.3,
-              padding: const EdgeInsets.only(top:15, left:15, right:15),
+              padding: const EdgeInsets.only(
+                  top: 15, left: 15, right: 15, bottom: 10),
               decoration: BoxDecoration(
                   color: blue, borderRadius: BorderRadius.circular(20)),
               child: Row(
@@ -74,10 +95,12 @@ class _DoctorDetailsScreenState extends State<DoctorDetailsScreen> {
                     onPressed: () => Navigator.pop(context),
                     color: white,
                   ),
-                  SizedBox(
-                    width: size.width * 0.15,
-                  ),
-                  Image.network(widget.image)
+                  const SizedBox(width: 40),
+                  Center(
+                      child: CircleAvatar(
+                    backgroundImage: NetworkImage(widget.image),
+                    radius: 100,
+                  ))
                 ],
               ),
             ),
@@ -160,11 +183,12 @@ class _DoctorDetailsScreenState extends State<DoctorDetailsScreen> {
                       .slideY(duration: 500.ms, begin: 3),
                   const SizedBox(height: 30),
                   Container(
-                    padding: const EdgeInsets.symmetric(vertical:10, horizontal: 15),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 10, horizontal: 15),
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10), color: blue),
                     child: Text(
-                      'About', 
+                      'About',
                       style: headLine4(white),
                     ),
                   ),
@@ -178,12 +202,115 @@ class _DoctorDetailsScreenState extends State<DoctorDetailsScreen> {
                       readLessText: "Show less",
                       linkTextStyle: headLine4(black),
                       trimType: TrimType.lines,
-                      trim: textRead ? 29 : 15,
+                      trim: textRead ? 29 : 10,
                       style: bodyText4(black)),
+                  const SizedBox(height: 20),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 10, horizontal: 15),
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10), color: blue),
+                    child: Text(
+                      'Book an appointment',
+                      style: headLine4(white),
+                    ),
+                  ),
+                  const SizedBox(height: 15),
+                  InkWell(
+                    onTap: () async {
+                      DateTime? pickeddate = await showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return const CalenderWidget();
+                        },
+                      );
+
+                      if (pickeddate != null) {
+                        setState(() {
+                          pickedDate = DateFormat('EEEE, MMMM dd, yyyy')
+                              .format(pickeddate);
+                        });
+                      }
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: Colors.grey[200],
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            pickedDate != null
+                                ? pickedDate
+                                : 'Select a Convinient Date',
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const Icon(Icons.arrow_drop_down),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  InkWell(
+                    onTap: () {
+                      _selectTime(context);
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: Colors.grey[200],
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            _selectedTime != null
+                                ? _selectedTime!.format(context)
+                                : 'Select a Convinient Time',
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const Icon(Icons.arrow_drop_down),
+                        ],
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 20),
+                  Container(
+                    height: 200,
+                    padding: EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                        color: Colors.grey[300],
+                        borderRadius: BorderRadius.circular(10)),
+                    child: TextField(
+                      controller: appointmentController,
+                      maxLines: null,
+                      decoration: InputDecoration(
+                          hintText: 'Enter Appointment note',
+                          border: InputBorder.none),
+                    ),
+                  ),
+                   SizedBox(height: 15),
+                  MainButton(
+                    onpressed: () {},
+                    child: Text(
+                      'Book appointment with Dr. ${widget.receiverName}',
+                      style: TextStyle(color: white),
+                    ),
+                    height: 40,
+                    width: double.infinity,
+                  )
                 ],
               ),
             ),
-            
           ],
         ),
       ),

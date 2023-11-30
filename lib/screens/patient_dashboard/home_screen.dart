@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
-import 'package:quick_medcare/call_feature/video_call.dart';
 import 'package:quick_medcare/firebase_reposisitories/cloud_firestore.dart';
 import 'package:quick_medcare/models/call_model.dart';
 import 'package:quick_medcare/models/patient_model.dart';
@@ -122,7 +121,7 @@ setState(() {
     return SafeArea(
       top: false,
       child: Scaffold(
-        backgroundColor: Color.fromARGB(255, 244, 245, 247),
+        backgroundColor: const Color.fromARGB(255, 244, 245, 247),
         appBar: AppBar(
             automaticallyImplyLeading: false,
             backgroundColor: Colors.transparent,
@@ -243,7 +242,7 @@ setState(() {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           DepartmentContainer(
-                              color: Color.fromARGB(255, 248, 143, 136),
+                              color: const Color.fromARGB(255, 248, 143, 136),
                               screen: DentistsScreen(
                                   gender: gender,
                                   patientAge: patientAge,
@@ -254,7 +253,7 @@ setState(() {
                               icon: 'icons/tooth.png',
                               text: 'Dentistry'),
                           DepartmentContainer(
-                              color: Color.fromARGB(255, 241, 192, 192),
+                              color: const Color.fromARGB(255, 241, 192, 192),
                               screen: CardiologistsScreen(
                                   gender: gender,
                                   patientAge: patientAge,
@@ -271,7 +270,7 @@ setState(() {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           DepartmentContainer(
-                              color: Color.fromARGB(255, 199, 222, 243),
+                              color: const Color.fromARGB(255, 199, 222, 243),
                               screen: DermatologistsScreen(
                                   gender: gender,
                                   patientAge: patientAge,
@@ -282,7 +281,7 @@ setState(() {
                               icon: 'icons/skin.png',
                               text: 'Dermatology'),
                           DepartmentContainer(
-                              color: Color.fromARGB(255, 218, 218, 218),
+                              color: const Color.fromARGB(255, 218, 218, 218),
                               screen: GeneralDoctorsScreen(
                                   gender: gender,
                                   patientAge: patientAge,
@@ -299,7 +298,7 @@ setState(() {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           DepartmentContainer(
-                              color: Color.fromARGB(255, 167, 198, 243),
+                              color: const Color.fromARGB(255, 167, 198, 243),
                               icon: 'icons/maternity.png',
                               screen: GynaecologistsScreen(
                                   gender: gender,
@@ -310,7 +309,7 @@ setState(() {
                                   patientImage: patientImage),
                               text: 'Gynaecology'),
                           DepartmentContainer(
-                              color: Color.fromARGB(255, 194, 241, 192),
+                              color: const Color.fromARGB(255, 194, 241, 192),
                               screen: NeurologistsScreen(
                                   gender: gender,
                                   patientAge: patientAge,
@@ -327,7 +326,7 @@ setState(() {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           DepartmentContainer(
-                              color: Color.fromARGB(255, 240, 224, 181),
+                              color: const Color.fromARGB(255, 240, 224, 181),
                               screen: OphthalmologistsScreen(
                                   gender: gender,
                                   patientAge: patientAge,
@@ -338,7 +337,7 @@ setState(() {
                               icon: 'icons/eyes.png',
                               text: 'Ophthalmology'),
                           DepartmentContainer(
-                              color: Color.fromARGB(255, 240, 224, 181),
+                              color: const Color.fromARGB(255, 240, 224, 181),
                               screen: RadiologistsScreen(
                                   gender: gender,
                                   patientAge: patientAge,
