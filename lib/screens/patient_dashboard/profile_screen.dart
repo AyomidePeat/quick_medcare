@@ -159,7 +159,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                         cholesterol = userDetails[i].cholesterol;
                         genotype = userDetails[i].genotype;
 
-                        bmi = num.parse(weight) / pow(int.parse(height), 2);
+                        bmi = num.parse(weight) / pow(double.parse(height), 2);
                         if (bmi < 18.5) {
                           condition = 'Underweight';
                         } else if (bmi >= 18.5 && bmi <= 24.9) {
@@ -176,11 +176,11 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               const SizedBox(height: 100),
-                              Image.asset('images/record.png'),
+                              Image.asset('icons/record.png'),
                               const SizedBox(height: 10),
                               const Text(
                                   'You have not completed your registration'),
-                              const SizedBox(height: 10),
+                              const SizedBox(height: 30),
                               MainButton(
                                   onpressed: () {
                                     Navigator.push(

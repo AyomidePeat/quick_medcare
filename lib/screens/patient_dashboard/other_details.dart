@@ -44,14 +44,7 @@ class _OtherDetailsScreenState extends State<OtherDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final age = ageController.text;
-    final weight = weightController.text;
-    final height = heightController.text;
-    final cholesterol = cholesterolController.text;
-    final healthAgency = healthAgencyController.text;
-    final bloodType = bloodTypeController.text;
-    final genotype = genotypeController.text;
-    final bloodPressure = bloodPressureController.text;
+    
     return Scaffold(
       appBar: AppBar(
           elevation: 0,
@@ -124,14 +117,14 @@ class _OtherDetailsScreenState extends State<OtherDetailsScreen> {
                       isLoading = true;
                     });
                     final uploadSuccess = await fireStore.addUserDetails(
-                        age: age,
-                        weight: weight,
-                        height: height,
-                        cholesterol: cholesterol,
-                        healthAgency: healthAgency,
-                        bloodType: bloodType,
-                        genotype: genotype,
-                        bloodPressure: bloodPressure);
+                        age: ageController.text,
+                        weight: weightController.text,
+                        height: heightController.text,
+                        cholesterol: cholesterolController.text,
+                        healthAgency: healthAgencyController.text,
+                        bloodType: bloodTypeController.text,
+                        genotype: genotypeController.text,
+                        bloodPressure: bloodPressureController.text);
                     if (uploadSuccess == 'Uploaded') {
                       setState(() {
                         isUploaded = true;
