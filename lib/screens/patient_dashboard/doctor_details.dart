@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_expandable_text/flutter_expandable_text.dart';
 import 'package:intl/intl.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:quick_medcare/firebase_reposisitories/cloud_firestore.dart';
 import 'package:quick_medcare/screens/patient_dashboard/appointment_screen.dart';
 
 import 'package:quick_medcare/utils/colors.dart';
@@ -49,6 +51,7 @@ class DoctorDetailsScreen extends StatefulWidget {
 }
 
 class _DoctorDetailsScreenState extends State<DoctorDetailsScreen> {
+  bool isLoading = false;
   bool textRead = false;
   final appointmentController = TextEditingController();
   TimeOfDay? _selectedTime;
@@ -283,30 +286,72 @@ class _DoctorDetailsScreenState extends State<DoctorDetailsScreen> {
                       ),
                     ),
                   ),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
                   Container(
                     height: 200,
-                    padding: EdgeInsets.all(10),
+                    padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
                         color: Colors.grey[300],
                         borderRadius: BorderRadius.circular(10)),
                     child: TextField(
                       controller: appointmentController,
                       maxLines: null,
-                      decoration: InputDecoration(
-                          hintText: 'Enter Appointment note',
+                      decoration: const InputDecoration(
+                          hintText: 'Enter Appointment Note',
                           border: InputBorder.none),
                     ),
                   ),
-                   SizedBox(height: 15),
+                  const SizedBox(height: 15),
                   MainButton(
-                    onpressed: () {},
-                    child: Text(
+                    onpressed: () async {
+                      setState(() {
+                        isLoading = true;
+                      });
+                      FirestoreClass firestore = FirestoreClass();
+                      if (_selectedTime != null && pickedDate != null) {
+                        final message = await firestore.addAppointment(
+                            doctor: widget.receiverName,
+                            patient: widget.senderName,
+                            appointmentNote: appointmentController.text,
+                            time: _selectedTime!.format(context),
+                            date: pickedDate,
+                            doctorUid: widget.uid,
+                            patientUid: widget.senderUid);
+                        if (message == 'Uploaded') {
+                          setState(() {
+                            isLoading = false;
+                          });
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => AppointmentScreen(date:pickedDate,time:_selectedTime!.format(context) ,)));
+                        } else {
+                          setState(() {
+                            isLoading = false;
+                          });
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              backgroundColor: blue,
+                              content: const Text(' An error occur',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(fontSize: 16))));
+                        }
+                      } else {
+                        setState(() {
+                          isLoading = false;
+                        });
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                            backgroundColor: blue,
+                            content: const Text('Date or Time Cannot be empty',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(fontSize: 16))));
+                      }
+                    },
+                    height: 40,
+                    width: double.infinity,
+                    child: isLoading?LoadingAnimationWidget.inkDrop(color: white, size: 25): Text(
                       'Book appointment with Dr. ${widget.receiverName}',
                       style: TextStyle(color: white),
                     ),
-                    height: 40,
-                    width: double.infinity,
                   )
                 ],
               ),

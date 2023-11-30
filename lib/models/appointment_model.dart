@@ -5,7 +5,7 @@ class AppointmentModel {
   String time;
   String appointmentNote;
   String doctorUid;
-  String patinetUid;
+  String patientUid;
 
   AppointmentModel(
       {required this.doctor,
@@ -14,7 +14,7 @@ class AppointmentModel {
       required this.time,
       required this.appointmentNote,
       required this.doctorUid,
-      required this.patinetUid});
+      required this.patientUid});
 
   Map<String, dynamic> toJson() {
     return {
@@ -22,7 +22,9 @@ class AppointmentModel {
       'patient': patient,
       'date': date,
       'time': time,
-      'appointmetNote': appointmentNote
+      'appointmetNote': appointmentNote,
+      'patientUid':patientUid,
+      'doctorUid':doctorUid
     };
   }
 
@@ -32,7 +34,8 @@ class AppointmentModel {
         patient: map['patient'] ?? '',
         date: map['date'] ?? '',
         time: map['time'] ?? '',
-        appointmentNote: map['appointmentNote'] ?? '', doctorUid:  map['doctorUid']??'', patinetUid: map['patinetUid']??''
+        
+        appointmentNote: map['appointmentNote'] ?? '', doctorUid:  map['doctorUid']??'', patientUid: map['patientUid']??''
         );
   }
 }

@@ -9,6 +9,7 @@ import 'package:intl/intl.dart';
 import 'package:quick_medcare/firebase_reposisitories/cloud_firestore.dart';
 import 'package:quick_medcare/models/call_model.dart';
 import 'package:quick_medcare/models/patient_model.dart';
+import 'package:quick_medcare/screens/patient_dashboard/booked_appointments.dart';
 import 'package:quick_medcare/screens/patient_dashboard/department/dentists_screen.dart';
 import 'package:quick_medcare/screens/patient_dashboard/department/dermatologists_screen.dart';
 import 'package:quick_medcare/screens/patient_dashboard/department/general_screen.dart';
@@ -87,18 +88,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   int currentIndex = 0;
 
- 
- 
-
   void startTimer() async {
     await Future.delayed(const Duration(seconds: 7));
-setState(() {
+    setState(() {
       currentIndex = (currentIndex + 1) % healthTips.length;
- startTimer();
-});
-
+      startTimer();
+    });
   }
-  
 
   @override
   Widget build(BuildContext context) {
@@ -140,6 +136,7 @@ setState(() {
                           lastName = patientDetails.lastName;
                           patientEmail = patientDetails.email;
                           gender = patientDetails.gender;
+                          patientName = '$firstName $lastName';
                           return Text(
                             'Hello $firstName👋',
                             style: headLine3(black),
@@ -171,6 +168,16 @@ setState(() {
                       },
                       error: (error, stackTrace) => Text('Error: $error'),
                       loading: () => const CircularProgressIndicator(),
+                    ),
+                    const SizedBox(width: 5),
+                    IconButton(
+                      icon: Icon(Icons.notifications, color: blue),
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => BookedAppointments()));
+                      },
                     ),
                     const SizedBox(width: 5),
                     ProfilePicture(
@@ -221,11 +228,7 @@ setState(() {
                         return const SizedBox(height: 5);
                       }
                     }),
-
-               
-                     HealthTipContainer(size: size, healthTip: healthTip),
-                  
-                
+                HealthTipContainer(size: size, healthTip: healthTip),
                 const SizedBox(
                   height: 25,
                 ),
@@ -258,7 +261,7 @@ setState(() {
                                   gender: gender,
                                   patientAge: patientAge,
                                   patientEmail: patientEmail,
-                                  patientName: patientName,
+                                  patientName: '$firstName $lastName',
                                   patientUid: patientUid,
                                   patientImage: patientImage),
                               icon: 'images/heart.png',
@@ -275,7 +278,7 @@ setState(() {
                                   gender: gender,
                                   patientAge: patientAge,
                                   patientEmail: patientEmail,
-                                  patientName: patientName,
+                                  patientName: '$firstName $lastName',
                                   patientUid: patientUid,
                                   patientImage: patientImage),
                               icon: 'icons/skin.png',
@@ -286,7 +289,7 @@ setState(() {
                                   gender: gender,
                                   patientAge: patientAge,
                                   patientEmail: patientEmail,
-                                  patientName: patientName,
+                                  patientName: '$firstName $lastName',
                                   patientUid: patientUid,
                                   patientImage: patientImage),
                               icon: 'images/stethoscope.png',
@@ -304,7 +307,7 @@ setState(() {
                                   gender: gender,
                                   patientAge: patientAge,
                                   patientEmail: patientEmail,
-                                  patientName: patientName,
+                                  patientName: '$firstName $lastName',
                                   patientUid: patientUid,
                                   patientImage: patientImage),
                               text: 'Gynaecology'),
@@ -331,7 +334,7 @@ setState(() {
                                   gender: gender,
                                   patientAge: patientAge,
                                   patientEmail: patientEmail,
-                                  patientName: patientName,
+                                  patientName: '$firstName $lastName',
                                   patientUid: patientUid,
                                   patientImage: patientImage),
                               icon: 'icons/eyes.png',
@@ -342,7 +345,7 @@ setState(() {
                                   gender: gender,
                                   patientAge: patientAge,
                                   patientEmail: patientEmail,
-                                  patientName: patientName,
+                                  patientName: '$firstName $lastName',
                                   patientUid: patientUid,
                                   patientImage: patientImage),
                               icon: 'icons/xray.png',
@@ -352,11 +355,6 @@ setState(() {
                     ],
                   ),
                 ),
-                // Text(
-                //   'My illness history',
-                //   style: headLine3(black),
-                // ),
-                // IllnessHistory(cloudStoreRef: cloudStoreRef),
               ],
             ),
           ),

@@ -1,43 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:quick_medcare/utils/colors.dart';
-import 'package:quick_medcare/widgets/calendar_widget.dart';
 import 'package:quick_medcare/widgets/main_button.dart';
 
 import '../../utils/textstyle.dart';
 
 class AppointmentScreen extends StatefulWidget {
-  const AppointmentScreen({super.key});
+   final String date; final String time;
+  const AppointmentScreen({super.key, required this.date, required this.time});
 
   @override
   State<AppointmentScreen> createState() => _AppointmentScreenState();
 }
 
 class _AppointmentScreenState extends State<AppointmentScreen> {
-  var pickedDate;
-
-  TimeOfDay? _selectedTime;
-  Future<void> _selectTime(BuildContext context) async {
-    final TimeOfDay? pickedTime = await showTimePicker(
-      context: context,
-      initialTime: TimeOfDay.now(),
-      helpText: 'Select Preferred Time',
-      builder: (context, Widget? child) {
-        return Theme(
-          data: ThemeData(),
-          child: child!,
-        );
-      },
-    );
-
-    if (pickedTime != null) {
-      setState(() {
-        _selectedTime = pickedTime;
-      });
-    }
-  }
-
-  
+ 
 
   @override
   Widget build(BuildContext context) {
@@ -45,60 +22,49 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
         appBar: AppBar(
           automaticallyImplyLeading: false,
           elevation: 0,
-          backgroundColor: blue,
+          backgroundColor: Colors.transparent,
           centerTitle: true,
-          title: Text('Book an appointment', style: headLine3(white)),
           leading: IconButton(
               onPressed: () {
                 Navigator.pop(context);
               },
               icon: Icon(
                 Icons.arrow_back_ios,
-                color: white,
+                color: blue,
               )),
         ),
         body: Padding(
           padding: const EdgeInsets.all(15.0),
-          child: Column(
-            children: [
-              // CalenderWidget(
-              // ),
-              InkWell(
-                onTap: () {
-                  _selectTime(context);
-                },
-                child: Container(
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: Colors.grey[200],
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        _selectedTime != null
-                            ? _selectedTime!.format(context)
-                            : 'Select a Convinient Time',
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const Icon(Icons.arrow_drop_down),
-                    ],
-                  ),
-                ),
-              ),
-              MainButton(
-                  onpressed: () {
-                    print(
-                        'Selected Time: $_selectedTime, Selected date : $pickedDate');
-                  },
-                  child: Text('Print date'),
-                  height: 40,
-                  width: 100)
-            ],
+          child: Center(
+            child: Column(mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                    padding: EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      color: Colors.blue[50],
+                      shape: BoxShape.circle,
+                    ),
+                    child: CircleAvatar(
+                      radius: 50,
+                      backgroundColor: Colors.blue[100],
+                      child: Icon(Icons.done, color: blue, size:50),
+                    )),
+                SizedBox(height: 15),
+                Text('Thank You!', style: headLine2(blue)),
+                SizedBox(height: 8),
+                Text('Your Appointment has been Created', style: headLine3(black)),
+                SizedBox(height: 15),
+                Text('You booked an appointment on ${widget.date} at ${widget.time}', style: bodyText3(black), textAlign: TextAlign.center),
+                 SizedBox(height: MediaQuery.of(context).size.height*0.45),
+                MainButton(
+                    onpressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: Text('Done', style: TextStyle(color:white),),
+                    height: 40,
+                    width: double.infinity)
+              ],
+            ).animate().slideY(duration:3000.ms),
           ),
         ));
   }

@@ -343,12 +343,12 @@ class FirestoreClass {
         date: date,
         time: time,
         appointmentNote: appointmentNote,
-        doctorUid: doctorUid, patinetUid: patientUid
+        doctorUid: doctorUid, patientUid: patientUid
         );
          String message = 'Something went wrong';
           try {
-      await firebaseFirestore.collection('appointments').doc(doctorUid).set(appointment.toJson());
-      await firebaseFirestore.collection('appointments').doc(patientUid).set(appointment.toJson());
+      await firebaseFirestore.collection('appointments').doc('$doctorUid').set(appointment.toJson());
+      await firebaseFirestore.collection('appointments').doc('$patient  $time $doctor $patientUid').set(appointment.toJson());
       
 
       message = 'Uploaded';
@@ -359,16 +359,26 @@ class FirestoreClass {
   
   }
 
-   Stream<List<AppointmentModel>> getappointments() {
-    return firebaseFirestore
-        .collection('appointments')
-        .doc(auth.currentUser?.uid)
-        .collection('user-details')
-        .snapshots()
-        .map((querySnapshot) {
-      return querySnapshot.docs
-          .map((doc) => AppointmentModel.fromJson(doc.data()))
-          .toList();
-    });
-  }
+ Stream<List<AppointmentModel>> getappointmentsForPatients() {
+  return firebaseFirestore
+      .collection('appointments')
+      .where('patientUid', isEqualTo: auth.currentUser?.uid) // Use where clause to filter by patientUid
+      .snapshots()
+      .map((querySnapshot) {
+    return querySnapshot.docs
+        .map((doc) => AppointmentModel.fromJson(doc.data()))
+        .toList();
+  });
+}
+ Stream<List<AppointmentModel>> getappointmentsForDoctors() {
+  return firebaseFirestore
+      .collection('appointments')
+      .where('doctorUid', isEqualTo: auth.currentUser?.uid) // Use where clause to filter by patientUid
+      .snapshots()
+      .map((querySnapshot) {
+    return querySnapshot.docs
+        .map((doc) => AppointmentModel.fromJson(doc.data()))
+        .toList();
+  });
+}
 }

@@ -6,6 +6,7 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:quick_medcare/models/doctor_model.dart';
 import 'package:quick_medcare/screens/chat_list_screen.dart';
 import 'package:quick_medcare/screens/doctors_dashboard/add_patient_details.dart';
+import 'package:quick_medcare/screens/doctors_dashboard/appointments_screen.dart';
 import 'package:quick_medcare/screens/doctors_dashboard/patient_file.dart';
 import 'package:quick_medcare/widgets/patient_container.dart';
 import '../../firebase_reposisitories/cloud_firestore.dart';
@@ -80,7 +81,15 @@ class _DoctorHomeScreenConsumerState extends ConsumerState<DoctorHomeScreen> {
           ],
         ),
         actions: [
-          const Icon(Icons.notifications_none_sharp),
+          IconButton(
+            icon: const Icon(Icons.notifications_none_sharp),
+            onPressed: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => AppointmentsScreen()));
+            },
+          ),
           IconButton(
               onPressed: () {
                 Navigator.push(
@@ -99,7 +108,7 @@ class _DoctorHomeScreenConsumerState extends ConsumerState<DoctorHomeScreen> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(height:15),
+          SizedBox(height: 15),
           buildPatientList(),
         ],
       ),
@@ -158,17 +167,12 @@ class _DoctorHomeScreenConsumerState extends ConsumerState<DoctorHomeScreen> {
     );
   }
 
-
-
   Widget buildPatientListItem(DocumentSnapshot document) {
     Map<String, dynamic> data = document.data()! as Map<String, dynamic>;
     final patientEmail = data['email'];
     final patientName = data['fullName'];
-   
-      gender = data['gender'];
 
-
-    
+    gender = data['gender'];
 
     if (auth.currentUser!.email != data['email']) {
       return ListTile(
