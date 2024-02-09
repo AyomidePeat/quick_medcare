@@ -70,14 +70,14 @@ final ScrollController _scrollController = ScrollController();
 
     if (result != null) {
       File file = File(result.files.single.path!);
-      await chatService.uploadFile(file, widget.receiverUserId);
+      await chatService.uploadFile(file, widget.receiverUserId, widget.senderName, widget.senderImage);
     } else {}
   }
 
   void sendMessage() async {
     if (messageController.text.isNotEmpty) {
       await chatService.sendMessage(
-          widget.receiverUserId, messageController.text.trim(), null);
+          widget.receiverUserId, messageController.text.trim(), null, widget.senderName, widget.senderImage);
       messageController.clear();
     }
 

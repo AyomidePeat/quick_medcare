@@ -47,8 +47,8 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                     child: CircleAvatar(
                       radius: 50,
                       backgroundColor: Colors.blue[100],
-                      child: Icon(Icons.done, color: blue, size:50),
-                    )),
+                      child: Icon(Icons.done, color: blue, size:50).animate().fadeIn(duration:3000.ms),
+                    )).animate().fadeIn(duration:3000.ms),
                 SizedBox(height: 15),
                 Text('Thank You!', style: headLine2(blue)),
                 SizedBox(height: 8),
@@ -64,7 +64,7 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                     height: 40,
                     width: double.infinity)
               ],
-            ).animate().slideY(duration:3000.ms),
+            )
           ),
         ));
   }

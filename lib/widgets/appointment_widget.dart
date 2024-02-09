@@ -13,14 +13,16 @@ class AppointmentWidget extends StatelessWidget {
     return Row(crossAxisAlignment: CrossAxisAlignment.start, mainAxisAlignment: MainAxisAlignment.start,
       children: [
         Text(
-          '•',
+          '• ',
           style: headLine2(blue),
         ),
-        Column(
+        Column(crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('You have an appointment with Dr. $doctor',
-                style: headLine3(black)),
-            Text('by $date at $time', style: bodyText3(black)),
+            SizedBox(width:MediaQuery.of(context).size.width-60,
+              child: Text('You have an appointment with Dr. $doctor by $date at $time',overflow: TextOverflow.clip,
+                  style: headLine3(black)),
+            ),
+           
           ],
         )
       ],

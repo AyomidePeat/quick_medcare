@@ -309,15 +309,24 @@ class _DoctorDetailsScreenState extends State<DoctorDetailsScreen> {
                       });
                       FirestoreClass firestore = FirestoreClass();
                       if (_selectedTime != null && pickedDate != null) {
-                        final message = await firestore.addAppointment(
+                        final message = await firestore.addPatientAppointment(
                             doctor: widget.receiverName,
                             patient: widget.senderName,
                             appointmentNote: appointmentController.text,
                             time: _selectedTime!.format(context),
                             date: pickedDate,
-                            doctorUid: widget.uid,
+                          
                             patientUid: widget.senderUid);
-                        if (message == 'Uploaded') {
+
+                            final doctorMessage =  await firestore.addDoctorAppointment(doctorUid:widget.uid ,
+                            doctor: widget.receiverName,
+                            patient: widget.senderName,
+                            appointmentNote: appointmentController.text,
+                            time: _selectedTime!.format(context),
+                            date: pickedDate,
+                         
+                            patientUid: widget.senderUid);
+                        if (message == 'Uploaded' && doctorMessage == 'Uploaded') {
                           setState(() {
                             isLoading = false;
                           });
@@ -331,7 +340,7 @@ class _DoctorDetailsScreenState extends State<DoctorDetailsScreen> {
                           });
                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                               backgroundColor: blue,
-                              content: const Text(' An error occur',
+                              content: const Text(' An error occured',
                                   textAlign: TextAlign.center,
                                   style: TextStyle(fontSize: 16))));
                         }

@@ -15,15 +15,16 @@ class ChatService extends ChangeNotifier {
   final FirebaseStorage storage = FirebaseStorage.instance;
   final Reference storageReference =
       FirebaseStorage.instance.ref().child('uploads');
-  sendMessage(String receiverId, String message, String? url) async {
+  sendMessage(String receiverId, String message, String? url, String senderName, String senderImage) async {
     final String currentUserId = firebaseAuth.currentUser!.uid;
     final String currentUserEmail = firebaseAuth.currentUser!.email.toString();
     final Timestamp timestamp = Timestamp.now();
     DateTime dateTime = timestamp.toDate();
     final time = DateFormat.Hm().format(dateTime);
-    final newMessage = Message(
+    final newMessage = Message(senderImage: senderImage,
       senderId: currentUserId,
       senderEmail: currentUserEmail,
+      senderName:senderName,
       receiverId: receiverId,
       message: message,
       timestamp: timestamp,
@@ -37,7 +38,7 @@ class ChatService extends ChangeNotifier {
 
     await firebaseFirestore
         .collection('chat_rooms')
-        .doc(chatRoomId)
+        .doc(receiverId)
         .collection('messages')
         .add(newMessage.toMap());
   }
@@ -48,10 +49,10 @@ class ChatService extends ChangeNotifier {
   ) {
     List<String> ids = [receiverId, senderId];
     ids.sort();
-    String chatRoomId = ids.join("_");
+   /// String chatRoomId = ids.join();
     return firebaseFirestore
         .collection('chat_rooms')
-        .doc(chatRoomId)
+        .doc(receiverId)
         .collection('messages')
         .orderBy('timestamp', descending: false)
         .snapshots();
@@ -65,7 +66,7 @@ class ChatService extends ChangeNotifier {
     return await snapshot.ref.getDownloadURL();
   }
 
-  Future<void> uploadFile(File file, receiverId) async {
+  Future<void> uploadFile(File file, receiverId, senderName, senderImage) async {
     final String fileName = file.path.split('/').last;
     const String mimeType = 'application/octet-stream';
     try {
@@ -78,7 +79,7 @@ class ChatService extends ChangeNotifier {
       if (uploadTask.snapshot.state == TaskState.success) {
         String downloadURL =
             await storageReference.child(fileName).getDownloadURL();
-        sendMessage(receiverId, fileName, downloadURL);
+        sendMessage(receiverId, fileName, downloadURL, senderName, senderImage);
       } else {
         // Handle the file upload error.
       }

@@ -36,19 +36,38 @@ class _AppointmentsScreenState extends ConsumerState<AppointmentsScreen> {
           stream: getAppointmentRef.getappointmentsForDoctors(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [CircularProgressIndicator(color: blue)]);
+              return Center(
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    // crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Center(child: CircularProgressIndicator(color: blue))
+                    ]),
+              );
+            }
+            if (snapshot.data!.isEmpty) {
+              return Center(
+                child: Column(
+                  // mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(height: 150),
+                    Image.asset('icons/record.png', height: 200, width: 200),
+                    const SizedBox(height: 25),
+                    const Text('You have no appointment yet'),
+                  ],
+                ),
+              );
             } else {
               final appointments = snapshot.data!;
               String patient = '';
               String time = '';
               String date = '';
+              String appointmentNote = '';
               for (int index = 0; index < appointments.length; index++) {
                 patient = appointments[index].patient;
                 time = appointments[index].time;
                 date = appointments[index].date;
+                appointmentNote = appointments[index].appointmentNote;
               }
               return ListView.builder(
                   itemCount: appointments.length,
@@ -56,7 +75,7 @@ class _AppointmentsScreenState extends ConsumerState<AppointmentsScreen> {
                     return Padding(
                       padding: const EdgeInsets.all(20.0),
                       child: DoctorAppointmentWidget(
-                          patient: patient, time: time, date: date),
+                          patient: patient, time: time, date: date,appointmentNote: appointmentNote),
                     );
                   });
             }

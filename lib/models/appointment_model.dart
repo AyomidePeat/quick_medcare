@@ -22,7 +22,7 @@ class AppointmentModel {
       'patient': patient,
       'date': date,
       'time': time,
-      'appointmetNote': appointmentNote,
+      'appointmentNote': appointmentNote,
       'patientUid':patientUid,
       'doctorUid':doctorUid
     };

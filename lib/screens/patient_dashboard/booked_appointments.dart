@@ -40,6 +40,18 @@ class _BookedAppointmentsState extends ConsumerState<BookedAppointments> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [CircularProgressIndicator(color: blue)]);
+            }if (snapshot.data!.isEmpty) {
+              return Center(
+            child: Column(
+             // mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(height: 150),
+                Image.asset('icons/record.png', height: 200, width: 200),
+                const SizedBox(height: 25),
+                const Text('You have not booked appointment yet'),
+              ],
+            ),
+          );
             } else {
               final appointments = snapshot.data!;
               String doctor = '';

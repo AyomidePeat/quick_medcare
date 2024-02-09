@@ -6,23 +6,20 @@ import 'package:quick_medcare/utils/colors.dart';
 import 'package:quick_medcare/utils/textstyle.dart';
 
 class ChatListScreen extends StatefulWidget {
-  
   final String senderEmail;
   final String userType;
   final String senderImage;
-  
+
   final String doctorId;
- 
+
   final String senderName;
   const ChatListScreen(
       {super.key,
       required this.doctorId,
-    
       required this.senderEmail,
       required this.userType,
       required this.senderImage,
-  
-     required this.senderName});
+      required this.senderName});
 
   @override
   State<ChatListScreen> createState() => _ChatListScreenState();
@@ -45,13 +42,13 @@ class _ChatListScreenState extends State<ChatListScreen> {
                 size: 20,
               )),
           title: Text(
-            " Chats",
+            "Chats",
             style: headLine2(white),
           ),
           backgroundColor: blue,
         ),
         body: Padding(
-          padding: const EdgeInsets.symmetric(vertical:15.0),
+          padding: const EdgeInsets.symmetric(vertical: 15.0),
           child: buildUserList(),
         ));
   }
@@ -59,15 +56,19 @@ class _ChatListScreenState extends State<ChatListScreen> {
   Widget buildUserList() {
     return StreamBuilder<QuerySnapshot>(
         stream: firebaseFirestore
-            .collection('${widget.doctorId}patientList')
+            .collection('chat_rooms')
+            .doc(widget
+                .doctorId) // Assuming widget.doctorId is the document ID under chat_room
+            .collection('messages')
             .snapshots(),
         builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(
               child: CircularProgressIndicator(),
             );
           } else {
             final doctors = snapshot.data!.docs;
+            
             if (doctors.isNotEmpty) {
               return ListView(
                 children: doctors
@@ -76,26 +77,27 @@ class _ChatListScreenState extends State<ChatListScreen> {
               );
             }
           }
-          return Center(
-            child: Text('No chat yet!', style: headLine2(blue))
-               
-          );
+          return Center(child: Text('No chat yet!', style: headLine2(blue)));
         });
   }
 
   Widget buildUserListItem(DocumentSnapshot document) {
     Map<String, dynamic> data = document.data()! as Map<String, dynamic>;
-    if (auth.currentUser!.email != data['patientEmail']) {
+    if (auth.currentUser!.email != data['senderEmail']) {
       return ListTile(
           title: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
-                children: [CircleAvatar(),SizedBox(width:5),
-                  Text(data['patientName']),
+                children: [
+                  CircleAvatar(),
+                  SizedBox(width: 5),
+                  Text(data['senderName']),
                 ],
               ),
-              Divider(color: grey,)
+              Divider(
+                color: grey,
+              )
             ],
           ),
           onTap: () {
@@ -103,12 +105,12 @@ class _ChatListScreenState extends State<ChatListScreen> {
                 context,
                 MaterialPageRoute(
                     builder: ((context) => ChatScreen(
-                        receiverUserEmail: data['patientEmail'],
-                        receiverUserId: data['uid'],
-                        receiverName: data['patientName'],
+                        receiverUserEmail: data['senderEmail'],
+                        receiverUserId: widget.doctorId,
+                        receiverName: data['senderName'],
                         senderName: widget.senderName,
                         senderEmail: widget.senderEmail,
-                        receiverImage: data['patientDp'],
+                        receiverImage: data['senderImage'],
                         senderImage: widget.senderImage,
                         userType: widget.userType,
                         gender: '',
