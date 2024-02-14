@@ -12,7 +12,7 @@ import 'package:quick_medcare/widgets/my_message_container.dart';
 import 'package:quick_medcare/widgets/sender_message_container.dart';
 import 'package:file_picker/file_picker.dart';
 
-class ChatScreen extends StatefulWidget {
+class DoctorChatScreen extends StatefulWidget {
   final String receiverUserEmail;
   final String receiverUserId;
   final String receiverName;
@@ -22,10 +22,10 @@ class ChatScreen extends StatefulWidget {
   final String receiverImage;
   final String senderImage;
   final String userType;
- 
+
   final String gender;
 
-  const ChatScreen(
+  const DoctorChatScreen(
       {super.key,
       required this.receiverUserEmail,
       required this.receiverUserId,
@@ -36,17 +36,17 @@ class ChatScreen extends StatefulWidget {
       required this.senderImage,
       required this.userType,
       required this.gender,
-      required this.senderUid,});
+      required this.senderUid});
 
   @override
-  State<ChatScreen> createState() => _ChatScreenState();
+  State<DoctorChatScreen> createState() => _DoctorChatScreenState();
 }
 
-class _ChatScreenState extends State<ChatScreen> {
+class _DoctorChatScreenState extends State<DoctorChatScreen> {
   final TextEditingController messageController = TextEditingController();
   final ChatService chatService = ChatService();
   final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
-  final ScrollController _scrollController = ScrollController();
+final ScrollController _scrollController = ScrollController();
 
   void pickFile() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
@@ -70,19 +70,14 @@ class _ChatScreenState extends State<ChatScreen> {
 
     if (result != null) {
       File file = File(result.files.single.path!);
-      await chatService.uploadFile(
-          file, widget.receiverUserId, widget.senderName, widget.senderImage);
+      await chatService.uploadFile(file, widget.receiverUserId, widget.senderName, widget.senderImage);
     } else {}
   }
 
   void sendMessage() async {
     if (messageController.text.isNotEmpty) {
-      await chatService.sendMessage(
-          receiverId:widget.receiverUserId,
-          message: messageController.text.trim(),
-          url: null,
-          senderName: widget.senderName,
-          senderImage: widget.senderImage);
+      await chatService.sendMessage(senderImage: widget.senderImage,senderName:widget.senderName,  
+        receiverId:   widget.receiverUserId,message:  messageController.text.trim(),url: null, );
       messageController.clear();
     }
 
@@ -142,8 +137,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 ),
                 IconButton(
                     onPressed: () {},
-                    icon: const Icon(Icons.video_call_rounded,
-                        color: Colors.white))
+                    icon: const Icon(Icons.video_call_rounded, color: Colors.white))
               ],
             )),
         body: Padding(
@@ -162,12 +156,11 @@ class _ChatScreenState extends State<ChatScreen> {
         IconButton(
             onPressed: () {
               pickFile();
-              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                  backgroundColor: blue,
-                  duration: const Duration(seconds: 5),
-                  content: const Text('Sending...',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 16))));
+               ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        backgroundColor: blue, duration: const Duration(seconds: 5),
+                        content: const Text('Sending...',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(fontSize: 16))));
             },
             icon: const Icon(Icons.attach_file_outlined)),
       ],
@@ -179,6 +172,7 @@ class _ChatScreenState extends State<ChatScreen> {
     if (data.containsKey('senderId') &&
         data.containsKey('message') &&
         data.containsKey('time')) {
+
       return (data['senderId'] == firebaseAuth.currentUser!.uid)
           ? MyMessageContainer(
               message: data['message'],
@@ -196,32 +190,32 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   Widget _buildMessageList() {
-    return StreamBuilder<QuerySnapshot>(
-      stream: chatService.getMessages(
-          widget.receiverUserId, firebaseAuth.currentUser!.uid),
-      builder: (context, snapshot) {
-        if (snapshot.hasError) {
-          return Text('Error: ${snapshot.error}');
-        }
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Text('Loading...');
-        }
-        if (!snapshot.hasData) {
-          return const Text('No users available');
-        }
-        WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-          // Scroll to the bottom once new messages are loaded
-          _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
-        });
-        return Flexible(
-          child: ListView(
-            controller: _scrollController, // Attach the ScrollController here
-            children: snapshot.data!.docs
-                .map((document) => _buildMessageItem(document))
-                .toList(),
-          ),
-        );
-      },
-    );
-  }
+  return StreamBuilder<QuerySnapshot>(
+    stream: chatService.getDoctorMessages(
+      widget.receiverUserId, firebaseAuth.currentUser!.uid),
+    builder: (context, snapshot) {
+      if (snapshot.hasError) {
+        return Text('Error: ${snapshot.error}');
+      }
+      if (snapshot.connectionState == ConnectionState.waiting) {
+        return const Text('Loading...');
+      }
+      if (!snapshot.hasData) {
+        return const Text('No users available');
+      }
+ WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+        // Scroll to the bottom once new messages are loaded
+        _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
+      });
+      return Flexible(
+        child: ListView(
+          controller: _scrollController,  // Attach the ScrollController here
+          children: snapshot.data!.docs
+            .map((document) => _buildMessageItem(document))
+            .toList(),
+        ),
+      );
+    },
+  );
+}
 }

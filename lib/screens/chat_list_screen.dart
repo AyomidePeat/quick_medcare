@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:quick_medcare/chatting/chat_screen.dart';
+import 'package:quick_medcare/chatting/chat_service.dart';
+import 'package:quick_medcare/chatting/doctor_chat_screen.dart';
 import 'package:quick_medcare/utils/colors.dart';
 import 'package:quick_medcare/utils/textstyle.dart';
 
@@ -42,7 +44,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
                 size: 20,
               )),
           title: Text(
-            "Chats",
+            "Users",
             style: headLine2(white),
           ),
           backgroundColor: blue,
@@ -55,69 +57,73 @@ class _ChatListScreenState extends State<ChatListScreen> {
 
   Widget buildUserList() {
     return StreamBuilder<QuerySnapshot>(
-        stream: firebaseFirestore
-            .collection('chat_rooms')
-            .doc(widget
-                .doctorId) // Assuming widget.doctorId is the document ID under chat_room
-            .collection('messages')
-            .snapshots(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(
-              child: CircularProgressIndicator(),
+      stream: FirebaseFirestore.instance
+          .collection('users')
+          .where('role', isEqualTo: 'patient')
+          .snapshots(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        } else if (snapshot.hasData) {
+          final users = snapshot.data!.docs;
+
+          if (users.isNotEmpty) {
+            return ListView.builder(
+              itemCount: users.length,
+              itemBuilder: (context, index) {
+                return buildUserListItem(users[index]);
+              },
             );
-          } else {
-            final doctors = snapshot.data!.docs;
-            
-            if (doctors.isNotEmpty) {
-              return ListView(
-                children: doctors
-                    .map<Widget>((doc) => buildUserListItem(doc))
-                    .toList(),
-              );
-            }
           }
-          return Center(child: Text('No chat yet!', style: headLine2(blue)));
-        });
+        }
+        return Center(child: Text('No chat yet!', style: headLine2(blue)));
+      },
+    );
   }
 
   Widget buildUserListItem(DocumentSnapshot document) {
     Map<String, dynamic> data = document.data()! as Map<String, dynamic>;
-    if (auth.currentUser!.email != data['senderEmail']) {
-      return ListTile(
-          title: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  CircleAvatar(),
-                  SizedBox(width: 5),
-                  Text(data['senderName']),
-                ],
-              ),
-              Divider(
-                color: grey,
-              )
-            ],
-          ),
-          onTap: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: ((context) => ChatScreen(
-                        receiverUserEmail: data['senderEmail'],
-                        receiverUserId: widget.doctorId,
-                        receiverName: data['senderName'],
-                        senderName: widget.senderName,
-                        senderEmail: widget.senderEmail,
-                        receiverImage: data['senderImage'],
-                        senderImage: widget.senderImage,
-                        userType: widget.userType,
-                        gender: '',
-                        senderUid: widget.doctorId))));
-          });
-    } else {
-      return Container();
-    }
+
+    return ListTile(
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                CircleAvatar(
+                    backgroundImage: data.containsKey('imageURL')
+                        ? NetworkImage(data['imageURL'])
+                        : NetworkImage(
+                            'https://img.freepik.com/premium-vector/anonymous-user-circle-icon-vector-illustration-flat-style-with-long-shadow_520826-1931.jpg')),
+                SizedBox(width: 5),
+                Text('${data['firstName']} ${data['lastName']}'),
+              ],
+            ),
+            Divider(
+              color: grey,
+            )
+          ],
+        ),
+        onTap: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: ((context) => DoctorChatScreen(
+                     
+                      receiverUserEmail: data['email'],
+                      receiverUserId: data['uid'],
+                      receiverName: '${data['firstName']} ${data['lastName']}',
+                      senderName: widget.senderName,
+                      senderEmail: widget.senderEmail,
+                      receiverImage: data.containsKey('imageURL')
+                          ? data['imageURL']
+                          : 'https://img.freepik.com/premium-vector/anonymous-user-circle-icon-vector-illustration-flat-style-with-long-shadow_520826-1931.jpg',
+                      senderImage: widget.senderImage,
+                      userType: widget.userType,
+                      gender: '',
+                      senderUid: widget.doctorId))));
+        });
   }
 }

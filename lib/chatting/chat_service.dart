@@ -15,32 +15,52 @@ class ChatService extends ChangeNotifier {
   final FirebaseStorage storage = FirebaseStorage.instance;
   final Reference storageReference =
       FirebaseStorage.instance.ref().child('uploads');
-  sendMessage(String receiverId, String message, String? url, String senderName, String senderImage) async {
+   Future<void> sendMessage({
+    required String receiverId,
+    required String message,
+     String? url,
+    required String senderName,
+    required String senderImage,
+  }) async {
     final String currentUserId = firebaseAuth.currentUser!.uid;
-    final String currentUserEmail = firebaseAuth.currentUser!.email.toString();
+
+    // Generate chat room ID using sender's and receiver's IDs
+    String chatRoomId = _generateChatRoomId(currentUserId, receiverId);
+
+    // Message data
     final Timestamp timestamp = Timestamp.now();
     DateTime dateTime = timestamp.toDate();
     final time = DateFormat.Hm().format(dateTime);
-    final newMessage = Message(senderImage: senderImage,
-      senderId: currentUserId,
-      senderEmail: currentUserEmail,
-      senderName:senderName,
-      receiverId: receiverId,
-      message: message,
-      timestamp: timestamp,
-      time: time,
-      url: url,
-    );
+    final newMessage = {
+      'senderId': currentUserId,
+      'senderEmail': firebaseAuth.currentUser!.email,
+      'senderName': senderName,
+      'senderImage': senderImage,
+      'receiverId': receiverId,
+      'message': message,
+      'timestamp': timestamp,
+      'time': time,
+      'url': url,
+    };
 
-    List<String> ids = [currentUserId, receiverId];
-    ids.sort();
-    String chatRoomId = ids.join("_");
-
+    // Store message in Firestore
     await firebaseFirestore
         .collection('chat_rooms')
-        .doc(receiverId)
+        .doc('$currentUserId$receiverId')
         .collection('messages')
-        .add(newMessage.toMap());
+        .add(newMessage);
+    await firebaseFirestore
+        .collection('chat_rooms')
+        .doc('$receiverId$currentUserId')
+        .collection('messages')
+        .add(newMessage);
+  }
+
+  // Generate chat room ID
+  String _generateChatRoomId(String senderId, String receiverId) {
+    List<String> ids = [senderId, receiverId];
+    ids.sort();
+    return ids.join("_");
   }
 
   Stream<QuerySnapshot> getMessages(
@@ -49,10 +69,24 @@ class ChatService extends ChangeNotifier {
   ) {
     List<String> ids = [receiverId, senderId];
     ids.sort();
-   /// String chatRoomId = ids.join();
     return firebaseFirestore
         .collection('chat_rooms')
-        .doc(receiverId)
+        .doc(
+        '$senderId$receiverId')
+        .collection('messages')
+        .orderBy('timestamp', descending: false)
+        .snapshots();
+  }
+  Stream<QuerySnapshot> getDoctorMessages(
+    String receiverId,
+    String senderId,
+  ) {
+    List<String> ids = [receiverId, senderId];
+    ids.sort();
+    return firebaseFirestore
+        .collection('chat_rooms')
+        .doc(
+         '$senderId$receiverId')
         .collection('messages')
         .orderBy('timestamp', descending: false)
         .snapshots();
@@ -79,7 +113,7 @@ class ChatService extends ChangeNotifier {
       if (uploadTask.snapshot.state == TaskState.success) {
         String downloadURL =
             await storageReference.child(fileName).getDownloadURL();
-        sendMessage(receiverId, fileName, downloadURL, senderName, senderImage);
+        sendMessage(receiverId:  receiverId, message:  fileName, url: downloadURL,senderName:  senderName, senderImage:  senderImage, );
       } else {
         // Handle the file upload error.
       }
